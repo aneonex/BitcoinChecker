@@ -1,84 +1,79 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONObject;
+class CoinMarketIO : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+    companion object {
+        private const val NAME = "CoinMarket.io"
+        private const val TTS_NAME = "Coin Market IO"
+        private const val URL = "https://coinmarket.io/ticker/%1\$s%2\$s"
+        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
-
-public class CoinMarketIO extends Market {
-
-	private final static String NAME = "CoinMarket.io";
-	private final static String TTS_NAME = "Coin Market IO";
-	private final static String URL = "https://coinmarket.io/ticker/%1$s%2$s";
-	private final static HashMap<String, CharSequence[]> CURRENCY_PAIRS = new LinkedHashMap<String, CharSequence[]>();
-	static {
-		CURRENCY_PAIRS.put(VirtualCurrency.LEAF, new String[]{
-				VirtualCurrency.BTC
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.USDE, new String[]{
-				VirtualCurrency.BTC
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.DGB, new String[]{
-				VirtualCurrency.BTC
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.KDC, new String[]{
-				VirtualCurrency.BTC
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.CON, new String[]{
-				VirtualCurrency.BTC
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.NOBL, new String[]{
-				VirtualCurrency.BTC
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.SMC, new String[]{
-				VirtualCurrency.BTC
-			});
-//		CURRENCY_PAIRS.put(VirtualCurrency.PRT, new String[]{
+        init {
+            CURRENCY_PAIRS[VirtualCurrency.LEAF] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            CURRENCY_PAIRS[VirtualCurrency.USDE] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            CURRENCY_PAIRS[VirtualCurrency.DGB] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            CURRENCY_PAIRS[VirtualCurrency.KDC] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            CURRENCY_PAIRS[VirtualCurrency.CON] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            CURRENCY_PAIRS[VirtualCurrency.NOBL] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            CURRENCY_PAIRS[VirtualCurrency.SMC] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            //		CURRENCY_PAIRS.put(VirtualCurrency.PRT, new String[]{
 //				VirtualCurrency.BTC
 //			});
-		CURRENCY_PAIRS.put(VirtualCurrency.VTC, new String[]{
-				VirtualCurrency.BTC
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.UTC, new String[]{
-				VirtualCurrency.BTC
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.KARM, new String[]{
-				VirtualCurrency.BTC
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.RDD, new String[]{
-				VirtualCurrency.BTC
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.RPD, new String[]{
-				VirtualCurrency.BTC
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.ICN, new String[]{
-				VirtualCurrency.BTC
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.PENG, new String[]{
-				VirtualCurrency.BTC
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.MINT, new String[]{
-				VirtualCurrency.BTC
-			});
-	}
-	
-	public CoinMarketIO() {
-		super(NAME, TTS_NAME, CURRENCY_PAIRS);
-	}
-	
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return String.format(URL, checkerInfo.getCurrencyBase(), checkerInfo.getCurrencyCounter());
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		ticker.vol = jsonObject.getDouble("volume24");
-		ticker.last = jsonObject.getDouble("last");
-	}
+            CURRENCY_PAIRS[VirtualCurrency.VTC] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            CURRENCY_PAIRS[VirtualCurrency.UTC] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            CURRENCY_PAIRS[VirtualCurrency.KARM] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            CURRENCY_PAIRS[VirtualCurrency.RDD] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            CURRENCY_PAIRS[VirtualCurrency.RPD] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ICN] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            CURRENCY_PAIRS[VirtualCurrency.PENG] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+            CURRENCY_PAIRS[VirtualCurrency.MINT] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+        }
+    }
+
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyBase, checkerInfo.currencyCounter)
+    }
+
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        ticker.vol = jsonObject.getDouble("volume24")
+        ticker.last = jsonObject.getDouble("last")
+    }
 }

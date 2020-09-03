@@ -1,62 +1,52 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class Coinome : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return URL
+    }
 
-import java.util.List;
-import java.util.Locale;
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        val tickerJsonObject = jsonObject.getJSONObject(checkerInfo.currencyPairId)
+        ticker.bid = tickerJsonObject.getDouble("highest_bid")
+        ticker.ask = tickerJsonObject.getDouble("lowest_ask")
+        //ticker.vol = tickerJsonObject.getDouble("24hr_volume"); Currently null
+        ticker.last = tickerJsonObject.getDouble("last")
+    }
 
-public class Coinome extends Market {
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL
+    }
 
-	private final static String NAME = "Coinome";
-	private final static String TTS_NAME = "Coin ome";
-	private final static String URL = "https://www.coinome.com/api/v1/ticker.json";
+    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        val pairArray = jsonObject.names()
+        for (i in 0 until pairArray.length()) {
+            val pairId = pairArray.getString(i)
+            val currencies = pairId.split("-".toRegex()).toTypedArray()
+            if (currencies.size >= 2) {
+                pairs.add(CurrencyPairInfo(
+                        currencies[0].toUpperCase(Locale.US),
+                        currencies[1].toUpperCase(Locale.US),
+                        pairId
+                ))
+            }
+        }
+    }
 
-	public Coinome() {
-		super(NAME, TTS_NAME, null);
-	}
-
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return URL;
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		final JSONObject tickerJsonObject = jsonObject.getJSONObject(checkerInfo.getCurrencyPairId());
-		ticker.bid = tickerJsonObject.getDouble("highest_bid");
-		ticker.ask = tickerJsonObject.getDouble("lowest_ask");
-		//ticker.vol = tickerJsonObject.getDouble("24hr_volume"); Currently null
-		ticker.last = tickerJsonObject.getDouble("last");
-	}
-
-	// ====================
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL;
-	}
-
-	@Override
-	protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-		final JSONArray pairArray = jsonObject.names();
-		for(int i=0; i<pairArray.length(); ++i) {
-			String pairId = pairArray.getString(i);
-			String[] currencies = pairId.split("-");
-			if(currencies.length >= 2){
-				pairs.add(new CurrencyPairInfo(
-						currencies[0].toUpperCase(Locale.US),
-						currencies[1].toUpperCase(Locale.US),
-						pairId
-				));
-			}
-		}
-	}
+    companion object {
+        private const val NAME = "Coinome"
+        private const val TTS_NAME = "Coin ome"
+        private const val URL = "https://www.coinome.com/api/v1/ticker.json"
+    }
 }
-

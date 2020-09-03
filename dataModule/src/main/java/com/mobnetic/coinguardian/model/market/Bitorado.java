@@ -1,66 +1,51 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.List;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import org.json.JSONObject
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-
-public class Bitorado extends Market
-{
-    private final static String NAME = "Bitorado";
-    private final static String TTS_NAME = NAME;
-    private final static String URL = "https://www.bitorado.com/api/market/%1$s-%2$s/ticker";
-    private final static String URL_CURRENCY_PAIRS = "https://www.bitorado.com/api/ticker";
-    
-    public Bitorado() {
-        super(NAME, TTS_NAME, null);
+class Bitorado : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyBase, checkerInfo.currencyCounter)
     }
 
-    @Override
-    public String getUrl(int requestId, CheckerInfo checkerInfo) {
-        return String.format(URL, checkerInfo.getCurrencyBase(), checkerInfo.getCurrencyCounter());
-    }
-
-    @Override
-    protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-        final JSONObject resultObject = jsonObject.getJSONObject("result");
-        ticker.bid = resultObject.optDouble("buy", Ticker.NO_DATA);
-        ticker.ask = resultObject.optDouble("sell", Ticker.NO_DATA);
-        ticker.vol = resultObject.optDouble("vol", Ticker.NO_DATA);
-        ticker.high = resultObject.optDouble("high", Ticker.NO_DATA);
-        ticker.low = resultObject.optDouble("low", Ticker.NO_DATA);
-        ticker.last = resultObject.optDouble("last", 0);
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        val resultObject = jsonObject.getJSONObject("result")
+        ticker.bid = resultObject.optDouble("buy", Ticker.Companion.NO_DATA.toDouble())
+        ticker.ask = resultObject.optDouble("sell", Ticker.Companion.NO_DATA.toDouble())
+        ticker.vol = resultObject.optDouble("vol", Ticker.Companion.NO_DATA.toDouble())
+        ticker.high = resultObject.optDouble("high", Ticker.Companion.NO_DATA.toDouble())
+        ticker.low = resultObject.optDouble("low", Ticker.Companion.NO_DATA.toDouble())
+        ticker.last = resultObject.optDouble("last", 0.0)
     }
 
     // ====================
     // Get currency pairs
     // ====================
-    @Override
-    public String getCurrencyPairsUrl(int requestId) {
-        return URL_CURRENCY_PAIRS;
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL_CURRENCY_PAIRS
     }
-    
-    @Override
-    protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-        final JSONObject result = jsonObject.getJSONObject("result");
-        final JSONObject markets = result.getJSONObject("markets");
-        final JSONArray pairNames = markets.names();
-        
-        for(int i=0; i<pairNames.length(); ++i) {
-            String pairId = pairNames.getString(i);
-            if(pairId==null)
-                continue;
-            String[] currencies = pairId.split("-");
-            if(currencies.length!=2)
-                continue;
-            
-            pairs.add(new CurrencyPairInfo(currencies[0], currencies[1], pairId));
+
+    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        val result = jsonObject.getJSONObject("result")
+        val markets = result.getJSONObject("markets")
+        val pairNames = markets.names()
+        for (i in 0 until pairNames.length()) {
+            val pairId = pairNames.getString(i) ?: continue
+            val currencies = pairId.split("-".toRegex()).toTypedArray()
+            if (currencies.size != 2) continue
+            pairs.add(CurrencyPairInfo(currencies[0], currencies[1], pairId))
         }
     }
-}
 
+    companion object {
+        private const val NAME = "Bitorado"
+        private const val TTS_NAME = NAME
+        private const val URL = "https://www.bitorado.com/api/market/%1\$s-%2\$s/ticker"
+        private const val URL_CURRENCY_PAIRS = "https://www.bitorado.com/api/ticker"
+    }
+}

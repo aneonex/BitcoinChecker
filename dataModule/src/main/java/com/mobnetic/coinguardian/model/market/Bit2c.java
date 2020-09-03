@@ -1,59 +1,52 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.Currency
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import org.json.JSONObject
 
-import org.json.JSONObject;
+class Bit2c : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+    companion object {
+        private const val NAME = "Bit2c"
+        private const val TTS_NAME = "Bit 2c"
+        private const val URL = "https://www.bit2c.co.il/Exchanges/%1\$s%2\$s/Ticker.json"
+        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.Currency;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
+        //GET https://bit2c.co.il/Exchanges/[BtcNis/EthNis/BchNis/LtcNis/EtcNis/BtgNis]/Ticker.json
+        init {
+            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
+                    Currency.NIS
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ETH] = arrayOf(
+                    Currency.NIS
+            )
+            CURRENCY_PAIRS[VirtualCurrency.BCH] = arrayOf(
+                    Currency.NIS
+            )
+            CURRENCY_PAIRS[VirtualCurrency.LTC] = arrayOf(
+                    Currency.NIS
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ETC] = arrayOf(
+                    Currency.NIS
+            )
+            CURRENCY_PAIRS[VirtualCurrency.BTG] = arrayOf(
+                    Currency.NIS
+            )
+        }
+    }
 
-public class Bit2c extends Market {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyBase, checkerInfo.currencyCounter)
+    }
 
-	private final static String NAME = "Bit2c";
-	private final static String TTS_NAME = "Bit 2c";
-	private final static String URL = "https://www.bit2c.co.il/Exchanges/%1$s%2$s/Ticker.json";
-	private final static HashMap<String, CharSequence[]> CURRENCY_PAIRS = new LinkedHashMap<>();
-
-	//GET https://bit2c.co.il/Exchanges/[BtcNis/EthNis/BchNis/LtcNis/EtcNis/BtgNis]/Ticker.json
-	static {
-		CURRENCY_PAIRS.put(VirtualCurrency.BTC, new String[]{
-				Currency.NIS
-		});
-		CURRENCY_PAIRS.put(VirtualCurrency.ETH, new String[]{
-				Currency.NIS
-		});
-		CURRENCY_PAIRS.put(VirtualCurrency.BCH, new String[]{
-				Currency.NIS
-		});
-		CURRENCY_PAIRS.put(VirtualCurrency.LTC, new String[]{
-				Currency.NIS
-		});
-		CURRENCY_PAIRS.put(VirtualCurrency.ETC, new String[]{
-				Currency.NIS
-		});
-		CURRENCY_PAIRS.put(VirtualCurrency.BTG, new String[]{
-				Currency.NIS
-		});
-	}
-	
-	public Bit2c() {
-		super(NAME, TTS_NAME, CURRENCY_PAIRS);
-	}
-
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return String.format(URL, checkerInfo.getCurrencyBase(), checkerInfo.getCurrencyCounter());
-	}
-
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		ticker.bid = jsonObject.getDouble("h");
-		ticker.ask = jsonObject.getDouble("l");
-		ticker.vol = jsonObject.getDouble("a");
-		ticker.last = jsonObject.getDouble("ll");
-	}
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        ticker.bid = jsonObject.getDouble("h")
+        ticker.ask = jsonObject.getDouble("l")
+        ticker.vol = jsonObject.getDouble("a")
+        ticker.last = jsonObject.getDouble("ll")
+    }
 }

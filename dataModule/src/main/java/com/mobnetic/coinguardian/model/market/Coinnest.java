@@ -1,78 +1,72 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.Currency;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
-import com.mobnetic.coinguardian.util.TimeUtils;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.Currency
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import com.mobnetic.coinguardian.util.TimeUtils
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONObject;
+class Coinnest : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+    companion object {
+        private const val NAME = "Coinnest"
+        private const val TTS_NAME = NAME
+        private const val URL = "https://api.coinnest.co.kr/api/pub/ticker?coin=%1\$s"
+        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-
-public class Coinnest extends Market {
-
-    private final static String NAME = "Coinnest";
-    private final static String TTS_NAME = NAME;
-    private final static String URL = "https://api.coinnest.co.kr/api/pub/ticker?coin=%1$s";
-    private final static HashMap<String, CharSequence[]> CURRENCY_PAIRS = new LinkedHashMap<>();
-
-    static {
-        CURRENCY_PAIRS.put(VirtualCurrency.BTC, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.BCC, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.ETH, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.ETC, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.QTUM, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.NEO, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.KNC, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.TSL, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.OMG, new String[]{
-                Currency.KRW
-        });
+        init {
+            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.BCC] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ETH] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ETC] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.QTUM] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.NEO] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.KNC] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.TSL] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.OMG] = arrayOf(
+                    Currency.KRW
+            )
+        }
     }
 
-    public Coinnest() {
-        super(NAME, TTS_NAME, CURRENCY_PAIRS);
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyBaseLowerCase)
     }
 
-    @Override
-    public String getUrl(int requestId, CheckerInfo checkerInfo) {
-        return String.format(URL, checkerInfo.getCurrencyBaseLowerCase());
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker,
+                                           checkerInfo: CheckerInfo) {
+        ticker.high = jsonObject.getDouble("high")
+        ticker.low = jsonObject.getDouble("low")
+        ticker.bid = jsonObject.getDouble("buy")
+        ticker.ask = jsonObject.getDouble("sell")
+        ticker.last = jsonObject.getDouble("last")
+        ticker.vol = jsonObject.getDouble("vol")
+        ticker.timestamp = jsonObject.getLong("time") * TimeUtils.MILLIS_IN_SECOND
     }
 
-    @Override
-    protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker,
-                                             CheckerInfo checkerInfo) throws Exception {
-        ticker.high = jsonObject.getDouble("high");
-        ticker.low = jsonObject.getDouble("low");
-        ticker.bid = jsonObject.getDouble("buy");
-        ticker.ask = jsonObject.getDouble("sell");
-        ticker.last = jsonObject.getDouble("last");
-        ticker.vol = jsonObject.getDouble("vol");
-        ticker.timestamp = jsonObject.getLong("time") * TimeUtils.MILLIS_IN_SECOND;
-    }
-
-    @Override
-    protected String parseErrorFromJsonObject(int requestId, JSONObject jsonObject,
-                                              CheckerInfo checkerInfo) throws Exception {
-        return jsonObject.getString("msg");
+    @Throws(Exception::class)
+    override fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject,
+                                          checkerInfo: CheckerInfo?): String? {
+        return jsonObject.getString("msg")
     }
 }

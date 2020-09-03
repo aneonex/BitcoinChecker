@@ -1,101 +1,85 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.io.StringReader;
-import java.util.List;
+import android.text.TextUtils
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import com.mobnetic.coinguardian.util.XmlParserUtils
+import org.w3c.dom.Document
+import org.w3c.dom.Element
+import org.xml.sax.InputSource
+import java.io.StringReader
+import javax.xml.parsers.DocumentBuilderFactory
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+class McxNOW : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyBase)
+    }
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+    @Throws(Exception::class)
+    override fun parseTicker(requestId: Int, responseString: String, ticker: Ticker, checkerInfo: CheckerInfo) {
+        val db = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        val `is` = InputSource()
+        `is`.characterStream = StringReader(responseString)
+        val doc = db.parse(`is`)
+        ticker.bid = getFirstPriceFromOrder(doc, "buy")
+        ticker.ask = getFirstPriceFromOrder(doc, "sell")
+        ticker.vol = XmlParserUtils.getDoubleNodeValue(XmlParserUtils.getFirstElementByTagName(doc, "curvol"))
+        ticker.high = XmlParserUtils.getDoubleNodeValue(XmlParserUtils.getFirstElementByTagName(doc, "priceh"))
+        ticker.low = XmlParserUtils.getDoubleNodeValue(XmlParserUtils.getFirstElementByTagName(doc, "pricel"))
+        ticker.last = XmlParserUtils.getDoubleNodeValue(XmlParserUtils.getFirstElementByTagName(doc, "lprice"))
+    }
 
-import android.text.TextUtils;
-
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
-import com.mobnetic.coinguardian.util.XmlParserUtils;
-
-public class McxNOW extends Market {
-
-	private final static String NAME = "McxNOW";
-	private final static String TTS_NAME = "MCX now";
-	private final static String URL = "https://mcxnow.com/orders?cur=%1$s";
-	private final static String URL_CURRENCY_PAIRS = "https://mcxnow.com/current";
-	
-	public McxNOW() {
-		super(NAME, TTS_NAME, null);
-	}
-
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return String.format(URL, checkerInfo.getCurrencyBase());
-	}
-	
-	@Override
-	protected void parseTicker(int requestId, String responseString, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-        DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        InputSource is = new InputSource();
-        is.setCharacterStream(new StringReader(responseString));
-        Document doc = db.parse(is);
-        
-        ticker.bid = getFirstPriceFromOrder(doc, "buy");
-        ticker.ask = getFirstPriceFromOrder(doc, "sell");
-        ticker.vol = XmlParserUtils.getDoubleNodeValue(XmlParserUtils.getFirstElementByTagName(doc, "curvol"));
-        ticker.high = XmlParserUtils.getDoubleNodeValue(XmlParserUtils.getFirstElementByTagName(doc, "priceh"));
-        ticker.low = XmlParserUtils.getDoubleNodeValue(XmlParserUtils.getFirstElementByTagName(doc, "pricel"));
-        ticker.last = XmlParserUtils.getDoubleNodeValue(XmlParserUtils.getFirstElementByTagName(doc, "lprice"));
-	}
-	
-	private double getFirstPriceFromOrder(Document doc, String arrayName) throws Exception {
-		Node arrayNode = XmlParserUtils.getFirstElementByTagName(doc, arrayName);
-		if(arrayNode!=null) {
-			NodeList orderNodes = ((Element)arrayNode).getElementsByTagName("o");
-			if(orderNodes!=null && orderNodes.getLength()>1) {
-				Node orderNode = orderNodes.item(1);
-				if(orderNode!=null && orderNode instanceof Element) {
-					NodeList priceNodes = ((Element)orderNode).getElementsByTagName("p");
-					if(priceNodes!=null && priceNodes.getLength()>0) {
-						return XmlParserUtils.getDoubleNodeValue(priceNodes.item(0));
-					}
-				}
-			}
-		}
-        return Ticker.NO_DATA;
-	}
-	
-	// ====================
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL_CURRENCY_PAIRS;
-	}
-	
-	@Override
-	protected void parseCurrencyPairs(int requestId, String responseString, List<CurrencyPairInfo> pairs) throws Exception {
-        DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        InputSource is = new InputSource();
-        is.setCharacterStream(new StringReader(responseString));
-        Document doc = db.parse(is);
-        
-        
-        final NodeList nodes = doc.getElementsByTagName("cur");
-        Element node = null;
-        if(nodes!=null) {
-        	for(int i=0; i<nodes.getLength(); ++i) {
-        		node = (Element)nodes.item(i);
-        		if(node!=null) {
-        			final String currency = node.getAttribute("tla");
-        			if(!TextUtils.isEmpty(currency) && !VirtualCurrency.BTC.equals(currency))
-        			pairs.add(new CurrencyPairInfo(currency, VirtualCurrency.BTC, null));
-        		}
-        	}
+    @Throws(Exception::class)
+    private fun getFirstPriceFromOrder(doc: Document, arrayName: String): Double {
+        val arrayNode = XmlParserUtils.getFirstElementByTagName(doc, arrayName)
+        if (arrayNode != null) {
+            val orderNodes = (arrayNode as Element).getElementsByTagName("o")
+            if (orderNodes != null && orderNodes.length > 1) {
+                val orderNode = orderNodes.item(1)
+                if (orderNode != null && orderNode is Element) {
+                    val priceNodes = orderNode.getElementsByTagName("p")
+                    if (priceNodes != null && priceNodes.length > 0) {
+                        return XmlParserUtils.getDoubleNodeValue(priceNodes.item(0))
+                    }
+                }
+            }
         }
-	}
+        return Ticker.Companion.NO_DATA.toDouble()
+    }
+
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL_CURRENCY_PAIRS
+    }
+
+    @Throws(Exception::class)
+    override fun parseCurrencyPairs(requestId: Int, responseString: String?, pairs: MutableList<CurrencyPairInfo?>) {
+        val db = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        val `is` = InputSource()
+        `is`.characterStream = StringReader(responseString)
+        val doc = db.parse(`is`)
+        val nodes = doc.getElementsByTagName("cur")
+        var node: Element? = null
+        if (nodes != null) {
+            for (i in 0 until nodes.length) {
+                node = nodes.item(i) as Element
+                if (node != null) {
+                    val currency = node.getAttribute("tla")
+                    if (!TextUtils.isEmpty(currency) && VirtualCurrency.BTC != currency) pairs.add(CurrencyPairInfo(currency, VirtualCurrency.BTC, null))
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val NAME = "McxNOW"
+        private const val TTS_NAME = "MCX now"
+        private const val URL = "https://mcxnow.com/orders?cur=%1\$s"
+        private const val URL_CURRENCY_PAIRS = "https://mcxnow.com/current"
+    }
 }

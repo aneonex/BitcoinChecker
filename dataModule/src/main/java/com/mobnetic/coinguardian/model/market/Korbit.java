@@ -1,55 +1,50 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.Currency;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.Currency
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONObject;
+class Korbit : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+    companion object {
+        private const val NAME = "Korbit"
+        private const val TTS_NAME = NAME
+        private const val URL = "https://api.korbit.co.kr/v1/ticker/detailed?currency_pair=%1\$s_%2\$s"
+        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+        init {
+            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ETH] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ETC] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.XRP] = arrayOf(
+                    Currency.KRW
+            )
+        }
+    }
 
-public class Korbit extends Market {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyBaseLowerCase,
+                checkerInfo.currencyCounterLowerCase)
+    }
 
-	private final static String NAME = "Korbit";
-	private final static String TTS_NAME = NAME;
-	private final static String URL = "https://api.korbit.co.kr/v1/ticker/detailed?currency_pair=%1$s_%2$s";
-	private final static HashMap<String, CharSequence[]> CURRENCY_PAIRS = new LinkedHashMap<>();
-	static {
-		CURRENCY_PAIRS.put(VirtualCurrency.BTC, new String[]{
-				Currency.KRW
-		});
-		CURRENCY_PAIRS.put(VirtualCurrency.ETH, new String[]{
-				Currency.KRW
-		});
-		CURRENCY_PAIRS.put(VirtualCurrency.ETC, new String[]{
-				Currency.KRW
-		});
-		CURRENCY_PAIRS.put(VirtualCurrency.XRP, new String[]{
-				Currency.KRW
-		});
-	}
-
-	public Korbit() {
-		super(NAME, TTS_NAME, CURRENCY_PAIRS);
-	}
-	
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return String.format(URL, checkerInfo.getCurrencyBaseLowerCase(),
-				checkerInfo.getCurrencyCounterLowerCase());
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		ticker.bid = jsonObject.getDouble("bid");
-		ticker.ask = jsonObject.getDouble("ask");
-		ticker.vol = jsonObject.getDouble("volume");
-		ticker.high = jsonObject.getDouble("high");
-		ticker.low = jsonObject.getDouble("low");
-		ticker.last = jsonObject.getDouble("last");
-		ticker.timestamp = jsonObject.getLong("timestamp");
-	}
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        ticker.bid = jsonObject.getDouble("bid")
+        ticker.ask = jsonObject.getDouble("ask")
+        ticker.vol = jsonObject.getDouble("volume")
+        ticker.high = jsonObject.getDouble("high")
+        ticker.low = jsonObject.getDouble("low")
+        ticker.last = jsonObject.getDouble("last")
+        ticker.timestamp = jsonObject.getLong("timestamp")
+    }
 }

@@ -1,7 +1,5 @@
-package com.mobnetic.coinguardian.config;
+package com.mobnetic.coinguardian.config
 
-public class Settings {
-
-	public static String userCountry;
-	
+object Settings {
+    var userCountry: String? = null
 }

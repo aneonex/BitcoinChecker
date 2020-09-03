@@ -1,59 +1,50 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import org.json.JSONObject
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class Coinsph : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyPairId)
+    }
 
-import java.util.List;
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        val marketJsonObject = jsonObject.getJSONObject("market")
+        ticker.bid = marketJsonObject.getDouble("bid")
+        ticker.ask = marketJsonObject.getDouble("ask")
+        ticker.last = ticker.ask
+    }
 
-public class Coinsph extends Market {
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL_CURRENCY_PAIRS
+    }
 
-	private final static String NAME = "Coins.ph";
-	private final static String TTS_NAME = NAME;
-	private final static String URL = "https://quote.coins.ph/v1/markets/%1$s";
-	private final static String URL_CURRENCY_PAIRS = "https://quote.coins.ph/v1/markets";
+    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        val marketsJsonArray = jsonObject.getJSONArray("markets")
+        for (i in 0 until marketsJsonArray.length()) {
+            val pairJsonObject = marketsJsonArray.getJSONObject(i)
+            if (pairJsonObject != null) {
+                pairs.add(CurrencyPairInfo(
+                        pairJsonObject.getString("product"),
+                        pairJsonObject.getString("currency"),
+                        pairJsonObject.getString("symbol")
+                ))
+            }
+        }
+    }
 
-	public Coinsph() {
-		super(NAME, TTS_NAME, null);
-	}
-
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return String.format(URL, checkerInfo.getCurrencyPairId());
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		JSONObject marketJsonObject = jsonObject.getJSONObject("market");
-		ticker.bid = marketJsonObject.getDouble("bid");
-		ticker.ask = marketJsonObject.getDouble("ask");
-		ticker.last = ticker.ask;
-	}
-
-	// ====================
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL_CURRENCY_PAIRS;
-	}
-
-	@Override
-	protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-		final JSONArray marketsJsonArray = jsonObject.getJSONArray("markets");
-		for(int i=0; i<marketsJsonArray.length(); ++i) {
-			final JSONObject pairJsonObject = marketsJsonArray.getJSONObject(i);
-			if(pairJsonObject != null) {
-				pairs.add(new CurrencyPairInfo(
-						pairJsonObject.getString("product"),
-						pairJsonObject.getString("currency"),
-						pairJsonObject.getString("symbol")
-				));
-			}
-		}
-	}
+    companion object {
+        private const val NAME = "Coins.ph"
+        private const val TTS_NAME = NAME
+        private const val URL = "https://quote.coins.ph/v1/markets/%1\$s"
+        private const val URL_CURRENCY_PAIRS = "https://quote.coins.ph/v1/markets"
+    }
 }

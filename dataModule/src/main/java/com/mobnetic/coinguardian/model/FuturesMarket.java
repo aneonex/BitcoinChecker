@@ -1,21 +1,15 @@
-package com.mobnetic.coinguardian.model;
+package com.mobnetic.coinguardian.model
 
-import java.util.HashMap;
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
 
-public abstract class FuturesMarket extends Market {
-	
-	public final int[] contractTypes;
-			
-	public FuturesMarket(String name, String ttsName, HashMap<String, CharSequence[]> currencyPairs, int[] contractTypes) {
-		super(name, ttsName, currencyPairs);
-		this.contractTypes = contractTypes;
-	}
+abstract class FuturesMarket(name: String, ttsName: String, currencyPairs: CurrencyPairsMap?, contractTypes: IntArray)
+    : Market(name, ttsName, currencyPairs) {
 
-	@Override
-	public final String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return getUrl(requestId, checkerInfo, checkerInfo.getContractType());
-	}
-	
-	protected abstract String getUrl(int requestId, CheckerInfo checkerInfo, int contractType);
-	
+    val contractTypes = contractTypes
+
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return getUrl(requestId, checkerInfo, checkerInfo.contractType)
+    }
+
+    protected abstract fun getUrl(requestId: Int, checkerInfo: CheckerInfo, contractType: Int): String
 }

@@ -1,40 +1,33 @@
-package com.mobnetic.coinguardian.util;
+package com.mobnetic.coinguardian.util
 
-import java.util.ArrayList;
+import com.mobnetic.coinguardian.config.MarketsConfig
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.market.Unknown
+import java.util.*
 
-import com.mobnetic.coinguardian.config.MarketsConfig;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.market.Unknown;
+object MarketsConfigUtils {
+    private val UNKNOWN: Market = Unknown()
+    fun getMarketById(id: Int): Market? {
+        synchronized(MarketsConfig.MARKETS) {
+            if (id >= 0 && id < MarketsConfig.MARKETS.size) {
+                return ArrayList(MarketsConfig.MARKETS.values)[id]
+            }
+        }
+        return UNKNOWN
+    }
 
-public class MarketsConfigUtils {
+    @kotlin.jvm.JvmStatic
+    fun getMarketByKey(key: String?): Market? {
+        synchronized(MarketsConfig.MARKETS) { if (MarketsConfig.MARKETS.containsKey(key)) return MarketsConfig.MARKETS[key] }
+        return UNKNOWN
+    }
 
-	private final static Market UNKNOWN = new Unknown();
-
-	public static Market getMarketById(int id) {
-		synchronized (MarketsConfig.MARKETS) {
-			if(id>=0 && id<MarketsConfig.MARKETS.size()) {
-				return new ArrayList<Market>(MarketsConfig.MARKETS.values()).get(id);
-			}
-		}
-		return UNKNOWN;
-	}
-
-	public static Market getMarketByKey(String key) {
-		synchronized (MarketsConfig.MARKETS) {
-			if(MarketsConfig.MARKETS.containsKey(key))
-				return MarketsConfig.MARKETS.get(key);
-		}
-		return UNKNOWN;
-	}
-	
-	public static int getMarketIdByKey(String key) {
-		int i=0;
-		for(Market market : MarketsConfig.MARKETS.values()){
-			if(market.key.equals(key))
-				return i;
-			++i;
-		}
-		
-		return 0;
-	}
+    fun getMarketIdByKey(key: String): Int {
+        var i = 0
+        for (market in MarketsConfig.MARKETS.values) {
+            if (market!!.key == key) return i
+            ++i
+        }
+        return 0
+    }
 }

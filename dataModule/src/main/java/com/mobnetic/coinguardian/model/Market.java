@@ -1,98 +1,98 @@
-package com.mobnetic.coinguardian.model;
+package com.mobnetic.coinguardian.model
 
-import java.util.HashMap;
-import java.util.List;
+import android.text.TextUtils
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import com.mobnetic.coinguardian.util.TimeUtils
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONObject;
+abstract class Market(name: String, ttsName: String, currencyPairs: CurrencyPairsMap?) {
+    @kotlin.jvm.JvmField
+	val key: String
+    @kotlin.jvm.JvmField
+	val name: String
+    val ttsName: String
+    @kotlin.jvm.JvmField
+	var currencyPairs: HashMap<String, Array<CharSequence>>?
+    open val cautionResId: Int
+        get() = 0
 
-import android.text.TextUtils;
+    // ====================
+    // Parse Ticker
+    // ====================
+    open fun getNumOfRequests(checkerInfo: CheckerInfo?): Int {
+        return 1
+    }
 
-import com.mobnetic.coinguardian.util.TimeUtils;
+    abstract fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String
+    @Throws(Exception::class)
+    fun parseTickerMain(requestId: Int, responseString: String, ticker: Ticker, checkerInfo: CheckerInfo): Ticker {
+        parseTicker(requestId, responseString, ticker, checkerInfo)
+        if (ticker.timestamp <= 0) ticker.timestamp = System.currentTimeMillis() else ticker.timestamp = TimeUtils.parseTimeToMillis(ticker.timestamp)
+        return ticker
+    }
 
-public abstract class Market {
+    @Throws(Exception::class)
+    protected open fun parseTicker(requestId: Int, responseString: String, ticker: Ticker, checkerInfo: CheckerInfo) {
+        parseTickerFromJsonObject(requestId, JSONObject(responseString), ticker, checkerInfo)
+    }
 
-	public final String key;
-	public final String name;
-	public final String ttsName;
-	public HashMap<String, CharSequence[]> currencyPairs;
-	
-	public Market(String name, String ttsName, HashMap<String, CharSequence[]> currencyPairs) {
-		this.key = this.getClass().getSimpleName();
-		this.name = name;
-		this.ttsName = ttsName;
-		this.currencyPairs = currencyPairs;
-	}
-	
-	public int getCautionResId() {
-		return 0;
-	}
-	
+    @Throws(Exception::class)
+    protected open fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        // do parsing
+    }
 
-	// ====================
-	// Parse Ticker
-	// ====================
-	public int getNumOfRequests(CheckerInfo checkerInfo) {
-		return 1;
-	}
-	
-	public abstract String getUrl(int requestId, CheckerInfo checkerInfo);
-	
-	public final Ticker parseTickerMain(int requestId, String responseString, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		parseTicker(requestId, responseString, ticker, checkerInfo);
-		if(ticker.timestamp<=0)
-			ticker.timestamp = System.currentTimeMillis();
-		else
-			ticker.timestamp = TimeUtils.parseTimeToMillis(ticker.timestamp);
-		
-		return ticker;
-	}
-	
-	protected void parseTicker(int requestId, String responseString, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		parseTickerFromJsonObject(requestId, new JSONObject(responseString), ticker, checkerInfo);
-	}
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		// do parsing
-	}
-	
-	// ====================
-	// Parse Ticker Error
-	// ====================
-	public final String parseErrorMain(int requestId, String responseString, CheckerInfo checkerInfo) throws Exception {
-		return parseError(requestId, responseString, checkerInfo);
-	}
-	
-	protected String parseError(int requestId, String responseString, CheckerInfo checkerInfo) throws Exception {
-		return parseErrorFromJsonObject(requestId, new JSONObject(responseString), checkerInfo);
-	}
-	protected String parseErrorFromJsonObject(int requestId, JSONObject jsonObject, CheckerInfo checkerInfo) throws Exception {
-		throw new Exception();
-	}
-	
-	// ====================
-	// Parse currency pairs
-	// ====================
-	public int getCurrencyPairsNumOfRequests() {
-		return 1;
-	}
-	
-	public String getCurrencyPairsUrl(int requestId) {
-		return null;
-	}
-	
-	public final void parseCurrencyPairsMain(int requestId, String responseString, List<CurrencyPairInfo> pairs) throws Exception {
-		parseCurrencyPairs(requestId, responseString, pairs);
-		
-		for(int i=pairs.size()-1; i>=0; --i) {
-			CurrencyPairInfo currencyPairInfo = pairs.get(i);
-			if(currencyPairInfo==null || TextUtils.isEmpty(currencyPairInfo.getCurrencyBase()) || TextUtils.isEmpty(currencyPairInfo.getCurrencyCounter()))
-				pairs.remove(i);
-		}
-	}
-	
-	protected void parseCurrencyPairs(int requestId, String responseString, List<CurrencyPairInfo> pairs) throws Exception {
-		parseCurrencyPairsFromJsonObject(requestId, new JSONObject(responseString), pairs);
-	}
-	protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-		// do parsing
-	}
+    // ====================
+    // Parse Ticker Error
+    // ====================
+    @Throws(Exception::class)
+    fun parseErrorMain(requestId: Int, responseString: String?, checkerInfo: CheckerInfo): String? {
+        return parseError(requestId, responseString, checkerInfo)
+    }
+
+    @Throws(Exception::class)
+    protected open fun parseError(requestId: Int, responseString: String?, checkerInfo: CheckerInfo): String? {
+        return parseErrorFromJsonObject(requestId, JSONObject(responseString), checkerInfo)
+    }
+
+    @Throws(Exception::class)
+    protected open fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject, checkerInfo: CheckerInfo?): String? {
+        throw Exception()
+    }
+
+    // ====================
+    // Parse currency pairs
+    // ====================
+    open val currencyPairsNumOfRequests: Int
+        get() = 1
+
+    open fun getCurrencyPairsUrl(requestId: Int): String? {
+        return null
+    }
+
+    @Throws(Exception::class)
+    fun parseCurrencyPairsMain(requestId: Int, responseString: String?, pairs: MutableList<CurrencyPairInfo?>) {
+        parseCurrencyPairs(requestId, responseString, pairs)
+        for (i in pairs.indices.reversed()) {
+            val currencyPairInfo = pairs[i]
+            if (currencyPairInfo == null || TextUtils.isEmpty(currencyPairInfo.currencyBase) || TextUtils.isEmpty(currencyPairInfo.currencyCounter)) pairs.removeAt(i)
+        }
+    }
+
+    @Throws(Exception::class)
+    protected open fun parseCurrencyPairs(requestId: Int, responseString: String?, pairs: MutableList<CurrencyPairInfo?>) {
+        parseCurrencyPairsFromJsonObject(requestId, JSONObject(responseString), pairs)
+    }
+
+    @Throws(Exception::class)
+    protected open fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        // do parsing
+    }
+
+    init {
+        key = this.javaClass.simpleName
+        this.name = name
+        this.ttsName = ttsName
+        this.currencyPairs = currencyPairs
+    }
 }

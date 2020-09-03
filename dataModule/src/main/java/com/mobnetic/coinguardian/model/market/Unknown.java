@@ -1,34 +1,28 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import com.mobnetic.coinguardiandatamodule.R
+import java.util.*
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
-import com.mobnetic.coinguardiandatamodule.R;
+class Unknown : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+    companion object {
+        private const val NAME = "UNKNOWN"
+        private const val TTS_NAME = NAME
+        private const val URL = ""
+        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
-public class Unknown extends Market {
+        init {
+            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(VirtualCurrency.BTC)
+        }
+    }
 
-	private final static String NAME = "UNKNOWN";
-	private final static String TTS_NAME = NAME;
-	private final static String URL = "";
-	private final static HashMap<String, CharSequence[]> CURRENCY_PAIRS = new LinkedHashMap<String, CharSequence[]>();
-	static {
-		CURRENCY_PAIRS.put(VirtualCurrency.BTC, new String[]{ VirtualCurrency.BTC });
-	}
-	
-	public Unknown() {
-		super(NAME, TTS_NAME, CURRENCY_PAIRS);
-	}
-	
-	@Override
-	public int getCautionResId() {
-		return R.string.market_caution_unknown;
-	}
-	
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return URL;
-	}
+    override val cautionResId: Int
+        get() = R.string.market_caution_unknown
+
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return URL
+    }
 }

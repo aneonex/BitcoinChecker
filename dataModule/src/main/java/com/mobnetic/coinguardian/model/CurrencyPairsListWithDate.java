@@ -1,10 +1,8 @@
-package com.mobnetic.coinguardian.model;
+package com.mobnetic.coinguardian.model
 
-import java.util.List;
-
-public class CurrencyPairsListWithDate {
-
-	public long date;
-	public List<CurrencyPairInfo> pairs;
-	
+class CurrencyPairsListWithDate {
+    @kotlin.jvm.JvmField
+    var date: Long = 0
+    @kotlin.jvm.JvmField
+    var pairs: List<CurrencyPairInfo>? = null
 }

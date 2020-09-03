@@ -1,59 +1,54 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.Currency
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONObject;
+class QuadrigaCX : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+    companion object {
+        private const val NAME = "QuadrigaCX"
+        private const val TTS_NAME = "Quadriga CX"
+        private const val URL = "https://api.quadrigacx.com/v2/ticker?book=%1\$s_%2\$s"
+        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.Currency;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
+        init {
+            CURRENCY_PAIRS[VirtualCurrency.BCH] = arrayOf(
+                    Currency.CAD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
+                    Currency.CAD,
+                    Currency.USD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.BTG] = arrayOf(
+                    Currency.CAD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ETH] = arrayOf(
+                    VirtualCurrency.BTC,
+                    Currency.CAD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.LTC] = arrayOf(
+                    Currency.CAD
+            )
+        }
+    }
 
-public class QuadrigaCX extends Market {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyBaseLowerCase, checkerInfo.currencyCounterLowerCase)
+    }
 
-	private final static String NAME = "QuadrigaCX";
-	private final static String TTS_NAME = "Quadriga CX";
-	private final static String URL = "https://api.quadrigacx.com/v2/ticker?book=%1$s_%2$s";
-	private final static HashMap<String, CharSequence[]> CURRENCY_PAIRS = new LinkedHashMap<String, CharSequence[]>();
-	static {
-		CURRENCY_PAIRS.put(VirtualCurrency.BCH, new String[]{
-				Currency.CAD
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.BTC, new String[]{
-				Currency.CAD,
-				Currency.USD
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.BTG, new String[]{
-				Currency.CAD
-		});
-		CURRENCY_PAIRS.put(VirtualCurrency.ETH, new String[]{
-				VirtualCurrency.BTC,
-				Currency.CAD
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.LTC, new String[]{
-				Currency.CAD
-			});
-	}
-	
-	public QuadrigaCX() {
-		super(NAME, TTS_NAME, CURRENCY_PAIRS);
-	}
-	
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return String.format(URL, checkerInfo.getCurrencyBaseLowerCase(), checkerInfo.getCurrencyCounterLowerCase());
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		ticker.bid = jsonObject.getDouble("bid");
-		ticker.ask = jsonObject.getDouble("ask");
-		ticker.vol = jsonObject.getDouble("volume");
-		ticker.high = jsonObject.getDouble("high");
-		ticker.low = jsonObject.getDouble("low");
-		ticker.last = jsonObject.getDouble("last");
-		ticker.timestamp = jsonObject.getLong("timestamp");
-	}
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        ticker.bid = jsonObject.getDouble("bid")
+        ticker.ask = jsonObject.getDouble("ask")
+        ticker.vol = jsonObject.getDouble("volume")
+        ticker.high = jsonObject.getDouble("high")
+        ticker.low = jsonObject.getDouble("low")
+        ticker.last = jsonObject.getDouble("last")
+        ticker.timestamp = jsonObject.getLong("timestamp")
+    }
 }

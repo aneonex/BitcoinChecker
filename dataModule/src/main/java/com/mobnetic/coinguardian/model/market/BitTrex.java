@@ -1,57 +1,47 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.List;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import org.json.JSONObject
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class BitTrex : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyCounter, checkerInfo.currencyBase) // reversed
+    }
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        val resultJsonObject = jsonObject.getJSONObject("result")
+        ticker.bid = resultJsonObject.getDouble("Bid")
+        ticker.ask = resultJsonObject.getDouble("Ask")
+        ticker.last = resultJsonObject.getDouble("Last")
+    }
 
-public class BitTrex extends Market {
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL_CURRENCY_PAIRS
+    }
 
-	private final static String NAME = "BitTrex";
-	private final static String TTS_NAME = "Bit Trex";
-	private final static String URL = "https://bittrex.com/api/v1.1/public/getticker?market=%1$s-%2$s";
-	private final static String URL_CURRENCY_PAIRS = "https://bittrex.com/api/v1.1/public/getmarkets";
-	
-	public BitTrex() {
-		super(NAME, TTS_NAME, null);
-	}
+    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        val resultJsonArray = jsonObject.getJSONArray("result")
+        for (i in 0 until resultJsonArray.length()) {
+            val marketJsonObject = resultJsonArray.getJSONObject(i)
+            pairs.add(CurrencyPairInfo(
+                    marketJsonObject.getString("MarketCurrency"),  // reversed
+                    marketJsonObject.getString("BaseCurrency"),  // reversed
+                    marketJsonObject.getString("MarketName")))
+        }
+    }
 
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return String.format(URL, checkerInfo.getCurrencyCounter(), checkerInfo.getCurrencyBase());		// reversed
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		final JSONObject resultJsonObject = jsonObject.getJSONObject("result");
-		ticker.bid = resultJsonObject.getDouble("Bid");
-		ticker.ask = resultJsonObject.getDouble("Ask");
-		ticker.last = resultJsonObject.getDouble("Last");
-	}
-	
-	// ====================
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL_CURRENCY_PAIRS;
-	}
-	
-	@Override
-	protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-		final JSONArray resultJsonArray = jsonObject.getJSONArray("result");
-		
-		for(int i=0; i<resultJsonArray.length(); ++i) {
-			final JSONObject marketJsonObject = resultJsonArray.getJSONObject(i);
-			pairs.add(new CurrencyPairInfo(
-					marketJsonObject.getString("MarketCurrency"),		// reversed
-					marketJsonObject.getString("BaseCurrency"),			// reversed
-					marketJsonObject.getString("MarketName")));
-		}
-	}
+    companion object {
+        private const val NAME = "BitTrex"
+        private const val TTS_NAME = "Bit Trex"
+        private const val URL = "https://bittrex.com/api/v1.1/public/getticker?market=%1\$s-%2\$s"
+        private const val URL_CURRENCY_PAIRS = "https://bittrex.com/api/v1.1/public/getmarkets"
+    }
 }

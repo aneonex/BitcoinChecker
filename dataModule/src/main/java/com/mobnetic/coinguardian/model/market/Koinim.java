@@ -1,51 +1,45 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.Currency
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONObject;
+class Koinim : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+    companion object {
+        const val NAME = "Koinim"
+        const val TTS_NAME = NAME
+        const val URL_BTC = "https://koinim.com/ticker/"
+        const val URL_LTC = "https://koinim.com/ticker/ltc/"
+        val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.Currency;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
+        init {
+            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
+                    Currency.TRY
+            )
+            CURRENCY_PAIRS[VirtualCurrency.LTC] = arrayOf(
+                    Currency.TRY
+            )
+        }
+    }
 
-public class Koinim extends Market {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return if (VirtualCurrency.LTC == checkerInfo.currencyBase) {
+            URL_LTC
+        } else URL_BTC
+    }
 
-	public final static String NAME = "Koinim";
-	public final static String TTS_NAME = NAME;
-	public final static String URL_BTC = "https://koinim.com/ticker/";
-	public final static String URL_LTC = "https://koinim.com/ticker/ltc/";
-	public final static HashMap<String, CharSequence[]> CURRENCY_PAIRS = new LinkedHashMap<String, CharSequence[]>();
-	static {
-		CURRENCY_PAIRS.put(VirtualCurrency.BTC, new String[]{
-				Currency.TRY
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.LTC, new String[]{
-				Currency.TRY
-			});
-	}
-	
-	public Koinim() {
-		super(NAME, TTS_NAME, CURRENCY_PAIRS);
-	}
-	
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		if(VirtualCurrency.LTC.equals(checkerInfo.getCurrencyBase())) {
-			return URL_LTC;
-		}
-		return URL_BTC;
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		ticker.bid = jsonObject.getDouble("buy");
-		ticker.ask = jsonObject.getDouble("sell");
-		ticker.vol = jsonObject.getDouble("volume");
-		ticker.high = jsonObject.getDouble("high");
-		ticker.low = jsonObject.getDouble("low");
-		ticker.last = jsonObject.getDouble("last_order");
-	}
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        ticker.bid = jsonObject.getDouble("buy")
+        ticker.ask = jsonObject.getDouble("sell")
+        ticker.vol = jsonObject.getDouble("volume")
+        ticker.high = jsonObject.getDouble("high")
+        ticker.low = jsonObject.getDouble("low")
+        ticker.last = jsonObject.getDouble("last_order")
+    }
 }
