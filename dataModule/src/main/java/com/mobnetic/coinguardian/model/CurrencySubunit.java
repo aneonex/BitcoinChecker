@@ -1,18 +1,3 @@
-package com.mobnetic.coinguardian.model;
+package com.mobnetic.coinguardian.model
 
-public class CurrencySubunit {
-
-	public final String name;
-	public final long subunitToUnit;
-	public final boolean allowDecimal;
-	
-	public CurrencySubunit(String name, long subunitToUnit) {
-		this(name, subunitToUnit, true);
-	}
-	
-	public CurrencySubunit(String name, long subunitToUnit, boolean allowDecimal) {
-		this.name = name;
-		this.subunitToUnit = subunitToUnit;
-		this.allowDecimal = allowDecimal;
-	}
-}
+class CurrencySubunit @JvmOverloads constructor(val name: String?, val subunitToUnit: Long, val allowDecimal: Boolean = true)

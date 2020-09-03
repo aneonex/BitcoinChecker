@@ -1,64 +1,51 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class Braziliex : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyPairId)
+    }
 
-import java.util.List;
-import java.util.Locale;
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        ticker.bid = jsonObject.getDouble("highestBid")
+        ticker.ask = jsonObject.getDouble("lowestAsk")
+        ticker.vol = jsonObject.getDouble("baseVolume24")
+        ticker.high = jsonObject.getDouble("highestBid24")
+        ticker.low = jsonObject.getDouble("lowestAsk24")
+        ticker.last = jsonObject.getDouble("last")
+    }
 
-public class Braziliex extends Market {
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL_CURRENCY_PAIRS
+    }
 
-	private final static String NAME = "Braziliex";
-	private final static String TTS_NAME = NAME;
-	private final static String URL = "https://braziliex.com/api/v1/public/ticker/%1$s";
-	private final static String URL_CURRENCY_PAIRS = "https://braziliex.com/api/v1/public/ticker";
+    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        val pairIds = jsonObject.names()
+        for (i in 0 until pairIds.length()) {
+            val pairId = pairIds.getString(i) ?: continue
+            val currencies = pairId.split("_".toRegex()).toTypedArray()
+            if (currencies.size != 2) continue
+            val currencyBase = currencies[0].toUpperCase(Locale.ENGLISH)
+            val currencyCounter = currencies[1].toUpperCase(Locale.ENGLISH)
+            pairs.add(CurrencyPairInfo(currencyBase, currencyCounter, pairId))
+        }
+    }
 
-	public Braziliex() {
-		super(NAME, TTS_NAME, null);
-	}
-
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return String.format(URL, checkerInfo.getCurrencyPairId());
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		ticker.bid = jsonObject.getDouble("highestBid");
-		ticker.ask = jsonObject.getDouble("lowestAsk");
-		ticker.vol = jsonObject.getDouble("baseVolume24");
-		ticker.high = jsonObject.getDouble("highestBid24");
-		ticker.low = jsonObject.getDouble("lowestAsk24");
-		ticker.last = jsonObject.getDouble("last");
-	}
-	
-	// ====================
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL_CURRENCY_PAIRS;
-	}
-
-	@Override
-	protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-		final JSONArray pairIds = jsonObject.names();
-		for(int i=0; i<pairIds.length(); ++i) {
-			String pairId = pairIds.getString(i);
-			if(pairId==null)
-				continue;
-			String[] currencies = pairId.split("_");
-			if(currencies.length!=2)
-				continue;
-
-			String currencyBase = currencies[0].toUpperCase(Locale.ENGLISH);
-			String currencyCounter = currencies[1].toUpperCase(Locale.ENGLISH);
-			pairs.add(new CurrencyPairInfo(currencyBase, currencyCounter, pairId));
-		}
-	}
+    companion object {
+        private const val NAME = "Braziliex"
+        private const val TTS_NAME = NAME
+        private const val URL = "https://braziliex.com/api/v1/public/ticker/%1\$s"
+        private const val URL_CURRENCY_PAIRS = "https://braziliex.com/api/v1/public/ticker"
+    }
 }

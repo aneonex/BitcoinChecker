@@ -1,99 +1,86 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.Currency
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import org.json.JSONObject
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class BitX : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+    companion object {
+        private const val NAME = "Luno"
+        private const val TTS_NAME = NAME
+        private const val URL = "https://api.mybitx.com/api/1/ticker?pair=%1\$s"
+        private const val URL_CURRENCY_PAIRS = "https://api.mybitx.com/api/1/tickers"
+        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.Currency;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
+        init {
+            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
+                    Currency.IDR,
+                    Currency.SGD,
+                    Currency.MYR,
+                    Currency.NGN,
+                    Currency.ZAR
+            )
+        }
+    }
 
-public class BitX extends Market {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        val pairString: String?
+        pairString = if (checkerInfo.currencyPairId == null) {
+            String.format("%1\$s%2\$s", fixCurrency(checkerInfo.currencyBase), fixCurrency(checkerInfo.currencyCounter))
+        } else {
+            checkerInfo.currencyPairId
+        }
+        return String.format(URL, pairString)
+    }
 
-	private final static String NAME = "Luno";
-	private final static String TTS_NAME = NAME;
-	private final static String URL = "https://api.mybitx.com/api/1/ticker?pair=%1$s";
-	private final static String URL_CURRENCY_PAIRS = "https://api.mybitx.com/api/1/tickers";
-	private final static HashMap<String, CharSequence[]> CURRENCY_PAIRS = new LinkedHashMap<String, CharSequence[]>();
-	static {
-		CURRENCY_PAIRS.put(VirtualCurrency.BTC, new String[]{
-				Currency.IDR,
-				Currency.SGD,
-				Currency.MYR,
-				Currency.NGN,
-				Currency.ZAR
-			});
-	}
-	
-	public BitX() {
-		super(NAME, TTS_NAME, CURRENCY_PAIRS);
-	}
-	
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		final String pairString;
-		if(checkerInfo.getCurrencyPairId()==null) {
-			pairString = String.format("%1$s%2$s", fixCurrency(checkerInfo.getCurrencyBase()), fixCurrency(checkerInfo.getCurrencyCounter()));
-		} else {
-			pairString = checkerInfo.getCurrencyPairId();
-		}
-		return String.format(URL, pairString);
-	}
-	
-	private String fixCurrency(String currency) {
-		if(VirtualCurrency.BTC.equals(currency)) {
-			return VirtualCurrency.XBT;
-		} else if(VirtualCurrency.XBT.equals(currency)) {
-			return VirtualCurrency.BTC;
-		}
+    private fun fixCurrency(currency: String): String {
+        if (VirtualCurrency.BTC == currency) {
+            return VirtualCurrency.XBT
+        } else if (VirtualCurrency.XBT == currency) {
+            return VirtualCurrency.BTC
+        }
+        return currency
+    }
 
-		return currency;
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		ticker.bid = jsonObject.getDouble("bid");
-		ticker.ask = jsonObject.getDouble("ask");
-		ticker.vol = jsonObject.getDouble("rolling_24_hour_volume");		
-		ticker.last = jsonObject.getDouble("last_trade");		
-		ticker.timestamp = jsonObject.getLong("timestamp");
-	}
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        ticker.bid = jsonObject.getDouble("bid")
+        ticker.ask = jsonObject.getDouble("ask")
+        ticker.vol = jsonObject.getDouble("rolling_24_hour_volume")
+        ticker.last = jsonObject.getDouble("last_trade")
+        ticker.timestamp = jsonObject.getLong("timestamp")
+    }
 
-	// ====================
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL_CURRENCY_PAIRS;
-	}
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL_CURRENCY_PAIRS
+    }
 
-	@Override
-	protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-		final JSONArray dataJsonArray = jsonObject.getJSONArray("tickers");
-		for(int i=0; i<dataJsonArray.length(); ++i) {
-			final String currencyPair = dataJsonArray.getJSONObject(i).getString("pair");
-			if(currencyPair==null) {
-				continue;
-			}
-			String currencyBase;
-			String currencyCounter;
-			try {
-				currencyBase = fixCurrency(currencyPair.substring(0, 3));
-				currencyCounter = fixCurrency(currencyPair.substring(3));
-			} catch (Exception e) {
-				continue;
-			}
-			pairs.add(new CurrencyPairInfo(
-					currencyBase,
-					currencyCounter,
-					currencyPair
-			));
-		}
-	}
+    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        val dataJsonArray = jsonObject.getJSONArray("tickers")
+        for (i in 0 until dataJsonArray.length()) {
+            val currencyPair = dataJsonArray.getJSONObject(i).getString("pair") ?: continue
+            var currencyBase: String
+            var currencyCounter: String
+            try {
+                currencyBase = fixCurrency(currencyPair.substring(0, 3))
+                currencyCounter = fixCurrency(currencyPair.substring(3))
+            } catch (e: Exception) {
+                continue
+            }
+            pairs.add(CurrencyPairInfo(
+                    currencyBase,
+                    currencyCounter,
+                    currencyPair
+            ))
+        }
+    }
 }

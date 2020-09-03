@@ -1,69 +1,59 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.ArrayList;
-import java.util.List;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.util.ParseUtils
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class ShapeShift : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyBase, checkerInfo.currencyCounter)
+    }
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.util.ParseUtils;
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        ticker.last = ParseUtils.getDoubleFromString(jsonObject, "rate")
+    }
 
-public class ShapeShift extends Market {
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL_CURRENCY_PAIRS
+    }
 
-	private final static String NAME = "ShapeShift";
-	private final static String TTS_NAME = "Shape Shift";
-	private final static String URL = "https://shapeshift.io/rate/%1$s_%2$s";
-	private final static String URL_CURRENCY_PAIRS = "https://shapeshift.io/getcoins";
-	
-	public ShapeShift() {
-		super(NAME, TTS_NAME, null);
-	}
+    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        val jsonCoinNames = jsonObject.names()
+        val availableCoinNames: MutableList<String> = ArrayList(jsonCoinNames.length())
+        for (i in 0 until jsonCoinNames.length()) {
+            val coinJsonObject = jsonObject.getJSONObject(jsonCoinNames.getString(i))
+            if ("available" == coinJsonObject.optString("status")) {
+                availableCoinNames.add(coinJsonObject.getString("symbol"))
+            }
+        }
+        val coinesCount = availableCoinNames.size
+        for (i in 0 until coinesCount) {
+            for (j in 0 until coinesCount) {
+                if (i != j) {
+                    val currencyBase = availableCoinNames[i]
+                    val currencyCounter = availableCoinNames[j]
+                    pairs.add(CurrencyPairInfo(
+                            currencyBase,
+                            currencyCounter,
+                            null))
+                }
+            }
+        }
+    }
 
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return String.format(URL, checkerInfo.getCurrencyBase(), checkerInfo.getCurrencyCounter());
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		ticker.last = ParseUtils.getDoubleFromString(jsonObject, "rate");
-	}
-	
-	// ====================	
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL_CURRENCY_PAIRS;
-	}
-	
-	@Override
-	protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-		final JSONArray jsonCoinNames = jsonObject.names();
-		final List<String> availableCoinNames = new ArrayList<String>(jsonCoinNames.length());
-		for(int i=0; i<jsonCoinNames.length(); ++i) {
-			final JSONObject coinJsonObject = jsonObject.getJSONObject(jsonCoinNames.getString(i));
-			if ("available".equals(coinJsonObject.optString("status"))) {
-				availableCoinNames.add(coinJsonObject.getString("symbol"));
-			}
-		}
-		
-		final int coinesCount = availableCoinNames.size();
-		for (int i = 0; i < coinesCount; ++i) {
-			for (int j = 0; j < coinesCount; ++j) {
-				if (i != j) {
-					String currencyBase = availableCoinNames.get(i);
-					String currencyCounter = availableCoinNames.get(j);
-					pairs.add(new CurrencyPairInfo(
-							currencyBase,
-							currencyCounter,
-							null));
-				}
-			}
-		}
-	}
+    companion object {
+        private const val NAME = "ShapeShift"
+        private const val TTS_NAME = "Shape Shift"
+        private const val URL = "https://shapeshift.io/rate/%1\$s_%2\$s"
+        private const val URL_CURRENCY_PAIRS = "https://shapeshift.io/getcoins"
+    }
 }

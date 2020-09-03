@@ -1,25 +1,32 @@
-package com.mobnetic.coinguardian.model;
+package com.mobnetic.coinguardian.model
 
+class Ticker {
+    @kotlin.jvm.JvmField
+	var bid: Double
+    @kotlin.jvm.JvmField
+	var ask: Double
+    @kotlin.jvm.JvmField
+	var vol: Double
+    @kotlin.jvm.JvmField
+	var high: Double
+    @kotlin.jvm.JvmField
+	var low: Double
+    @kotlin.jvm.JvmField
+	var last: Double
+    @kotlin.jvm.JvmField
+	var timestamp: Long
 
-public class Ticker {
+    companion object {
+        const val NO_DATA = -1
+    }
 
-	public double bid;
-	public double ask;
-	public double vol;
-	public double high;
-	public double low;
-	public double last;
-	public long timestamp;
-	
-	public final static int NO_DATA = -1;
-	
-	public Ticker() {
-		bid = NO_DATA;
-		ask = NO_DATA;
-		vol = NO_DATA;
-		high = NO_DATA;
-		low = NO_DATA;
-		last = NO_DATA;
-		timestamp = NO_DATA;
-	}
+    init {
+        bid = NO_DATA.toDouble()
+        ask = NO_DATA.toDouble()
+        vol = NO_DATA.toDouble()
+        high = NO_DATA.toDouble()
+        low = NO_DATA.toDouble()
+        last = NO_DATA.toDouble()
+        timestamp = NO_DATA.toLong()
+    }
 }

@@ -166,7 +166,7 @@ public class MainActivity extends Activity {
 		if (market instanceof FuturesMarket) {
 			final FuturesMarket futuresMarket = (FuturesMarket) market;
 			int selection = futuresContractTypeSpinner.getSelectedItemPosition();
-			return futuresMarket.contractTypes[selection];
+			return futuresMarket.getContractTypes()[selection];
 		}
 		return Futures.CONTRACT_TYPE_WEEKLY;
 	}
@@ -231,9 +231,9 @@ public class MainActivity extends Activity {
 		SpinnerAdapter spinnerAdapter = null;
 		if (market instanceof FuturesMarket) {
 			final FuturesMarket futuresMarket = (FuturesMarket)market;
-			CharSequence[] entries = new CharSequence[futuresMarket.contractTypes.length];
-			for (int i = 0; i<futuresMarket.contractTypes.length; ++i) {
-				int contractType = futuresMarket.contractTypes[i];
+			CharSequence[] entries = new CharSequence[futuresMarket.getContractTypes().length];
+			for (int i = 0; i<futuresMarket.getContractTypes().length; ++i) {
+				int contractType = futuresMarket.getContractTypes()[i];
 				entries[i] = Futures.getContractTypeShortName(contractType);
 			}
 			spinnerAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_dropdown_item, entries);

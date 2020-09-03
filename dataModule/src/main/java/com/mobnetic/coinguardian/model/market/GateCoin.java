@@ -1,74 +1,63 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import org.json.JSONObject
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class GateCoin : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return URL
+    }
 
-import java.util.List;
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        val pairNames = jsonObject.getJSONArray("tickers") //returned JSON text is an ARRAY of JSONObjects
+        val userCurrencyPairChoice = checkerInfo.currencyBase + checkerInfo.currencyCounter
+        //each JSONObject in the Array has a currency pair and its corresponding ticker details
+        for (i in 0 until pairNames.length()) {
+            val tickerDetails = pairNames.getJSONObject(i)
+            val currentPairId = tickerDetails.getString("currencyPair")
+            if (currentPairId == userCurrencyPairChoice) {
+                ticker.bid = tickerDetails.getDouble("bid")
+                ticker.ask = tickerDetails.getDouble("ask")
+                ticker.vol = tickerDetails.getDouble("volume")
+                ticker.high = tickerDetails.getDouble("high")
+                ticker.low = tickerDetails.getDouble("low")
+                ticker.last = tickerDetails.getDouble("last")
+                ticker.timestamp = tickerDetails.getLong("createDateTime")
+                break
+            }
+        }
+    }
 
-public class GateCoin extends Market {
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL
+    }
 
-	private final static String NAME = "GateCoin";
-	private final static String TTS_NAME = "Gate Coin";
-	private final static String URL = "https://api.gatecoin.com/Public/LiveTickers";
+    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        val pairNames = jsonObject.getJSONArray("tickers") //returned JSON text is an ARRAY of JSONObjects
+        for (i in 0 until pairNames.length()) {
+            //each JSONObject in the Array has a currency pair and its corresponding ticker details
+            val pairId = pairNames.getJSONObject(i).getString("currencyPair") ?: continue
+            //split by index - use char positions (start, end+1) as index
+            val baseCurrency = pairId.substring(0, 3) //base currency
+            var counterCurrency = pairId.substring(3, 6) //counter currency
 
-	public GateCoin() {
-		super(NAME, TTS_NAME, null);
-	}
+            if(baseCurrency.isEmpty() || counterCurrency.isEmpty()) continue
 
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return URL;
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		final JSONArray pairNames = jsonObject.getJSONArray("tickers"); //returned JSON text is an ARRAY of JSONObjects
-		String userCurrencyPairChoice = checkerInfo.getCurrencyBase().concat(checkerInfo.getCurrencyCounter());
-		//each JSONObject in the Array has a currency pair and its corresponding ticker details
-		for (int i = 0; i < pairNames.length(); ++i) {
-			JSONObject tickerDetails = pairNames.getJSONObject(i);
-			String currentPairId = tickerDetails.getString("currencyPair");
-			if (currentPairId.equals(userCurrencyPairChoice)) {
-				ticker.bid = tickerDetails.getDouble("bid");
-				ticker.ask = tickerDetails.getDouble("ask");
-				ticker.vol = tickerDetails.getDouble("volume");
-				ticker.high = tickerDetails.getDouble("high");
-				ticker.low = tickerDetails.getDouble("low");
-				ticker.last = tickerDetails.getDouble("last");
-				ticker.timestamp = tickerDetails.getLong("createDateTime");
-				break;
-			}
-		}
-	}
+            pairs.add(CurrencyPairInfo(baseCurrency, counterCurrency, pairId))
+        }
+    }
 
-	// ====================
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL;
-	}
-
-	@Override
-	protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-			final JSONArray pairNames = jsonObject.getJSONArray("tickers"); //returned JSON text is an ARRAY of JSONObjects
-			for (int i = 0; i < pairNames.length(); ++i) {
-				//each JSONObject in the Array has a currency pair and its corresponding ticker details
-				String pairId = pairNames.getJSONObject(i).getString("currencyPair");
-				if (pairId == null)
-					continue;
-				String[] currencies = new String[2];
-				//split by index - use char positions (start, end+1) as index
-				currencies[0] = pairId.substring(0, 3); //base currency
-				currencies[1] = pairId.substring(3, 6); //counter currency
-				if (currencies.length != 2)
-					continue;
-				pairs.add(new CurrencyPairInfo(currencies[0], currencies[1], pairId));
-			}
-	}
+    companion object {
+        private const val NAME = "GateCoin"
+        private const val TTS_NAME = "Gate Coin"
+        private const val URL = "https://api.gatecoin.com/Public/LiveTickers"
+    }
 }

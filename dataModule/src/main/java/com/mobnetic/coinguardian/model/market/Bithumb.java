@@ -1,110 +1,99 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.Currency;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.Currency
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import org.json.JSONObject
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class Bithumb : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+    companion object {
+        private const val NAME = "Bithumb"
+        private const val TTS_NAME = NAME
+        private const val URL_TICKER = "https://api.bithumb.com/public/ticker/%1\$s"
+        private const val URL_ORDERS = "https://api.bithumb.com/public/orderbook/%1\$s?count=1"
+        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-
-public class Bithumb extends Market {
-
-    private final static String NAME = "Bithumb";
-    private final static String TTS_NAME = NAME;
-    private final static String URL_TICKER = "https://api.bithumb.com/public/ticker/%1$s";
-    private final static String URL_ORDERS = "https://api.bithumb.com/public/orderbook/%1$s?count=1";
-    private final static HashMap<String, CharSequence[]> CURRENCY_PAIRS = new LinkedHashMap<>();
-
-    static {
-        CURRENCY_PAIRS.put(VirtualCurrency.BTC, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.ETH, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.ETC, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.DASH, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.LTC, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.XRP, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.BCH, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.XMR, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.ZEC, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.QTUM, new String[]{
-                Currency.KRW
-        });
-        CURRENCY_PAIRS.put(VirtualCurrency.CON, new String[]{
-                Currency.KRW
-        });
-    }
-
-    public Bithumb() {
-        super(NAME, TTS_NAME, CURRENCY_PAIRS);
-    }
-
-    @Override
-    public int getNumOfRequests(CheckerInfo checkerRecord) {
-        return 2;
-    }
-
-    @Override
-    public String getUrl(int requestId, CheckerInfo checkerInfo) {
-        if (requestId == 0) {
-            return String.format(URL_TICKER, checkerInfo.getCurrencyBaseLowerCase());
-        } else {
-            return String.format(URL_ORDERS, checkerInfo.getCurrencyBaseLowerCase());
+        init {
+            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ETH] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ETC] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.DASH] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.LTC] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.XRP] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.BCH] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.XMR] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ZEC] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.QTUM] = arrayOf(
+                    Currency.KRW
+            )
+            CURRENCY_PAIRS[VirtualCurrency.CON] = arrayOf(
+                    Currency.KRW
+            )
         }
     }
 
-    @Override
-    protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker,
-                                             CheckerInfo checkerInfo) throws Exception {
-        JSONObject dataObject = jsonObject.getJSONObject("data");
+    override fun getNumOfRequests(checkerRecord: CheckerInfo?): Int {
+        return 2
+    }
 
-        if (requestId == 0) {
-            ticker.vol = dataObject.getDouble("units_traded_24H");
-            ticker.high = dataObject.getDouble("max_price");
-            ticker.low = dataObject.getDouble("min_price");
-            ticker.last = dataObject.getDouble("closing_price");
-            ticker.timestamp = dataObject.getLong("date");
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return if (requestId == 0) {
+            String.format(URL_TICKER, checkerInfo.currencyBaseLowerCase)
         } else {
-            ticker.bid = getFirstPriceFromOrder(dataObject, "bids");
-            ticker.ask = getFirstPriceFromOrder(dataObject, "asks");
+            String.format(URL_ORDERS, checkerInfo.currencyBaseLowerCase)
         }
     }
 
-    @Override
-    protected String parseErrorFromJsonObject(int requestId, JSONObject jsonObject,
-                                              CheckerInfo checkerInfo) throws Exception {
-        return jsonObject.getString("message");
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker,
+                                           checkerInfo: CheckerInfo) {
+        val dataObject = jsonObject.getJSONObject("data")
+        if (requestId == 0) {
+            ticker.vol = dataObject.getDouble("units_traded_24H")
+            ticker.high = dataObject.getDouble("max_price")
+            ticker.low = dataObject.getDouble("min_price")
+            ticker.last = dataObject.getDouble("closing_price")
+            ticker.timestamp = dataObject.getLong("date")
+        } else {
+            ticker.bid = getFirstPriceFromOrder(dataObject, "bids")
+            ticker.ask = getFirstPriceFromOrder(dataObject, "asks")
+        }
     }
 
-    private double getFirstPriceFromOrder(JSONObject jsonObject, String key) throws Exception {
-        JSONArray array = jsonObject.getJSONArray(key);
+    @Throws(Exception::class)
+    override fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject,
+                                          checkerInfo: CheckerInfo?): String? {
+        return jsonObject.getString("message")
+    }
 
+    @Throws(Exception::class)
+    private fun getFirstPriceFromOrder(jsonObject: JSONObject, key: String): Double {
+        val array = jsonObject.getJSONArray(key)
         if (array.length() == 0) {
-            return Ticker.NO_DATA;
+            return Ticker.Companion.NO_DATA.toDouble()
         }
-
-        JSONObject first = array.getJSONObject(0);
-        return first.getDouble("price");
+        val first = array.getJSONObject(0)
+        return first.getDouble("price")
     }
 }

@@ -1,50 +1,43 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.Currency
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import com.mobnetic.coinguardian.util.ParseUtils
+import com.mobnetic.coinguardian.util.TimeUtils
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONObject;
+class FoscEx : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+    companion object {
+        private const val NAME = "Fosc-Ex"
+        private const val TTS_NAME = "Fosc Ex"
+        private const val URL = "http://www.fosc-ex.com/api-public-ticker"
+        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.Currency;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
-import com.mobnetic.coinguardian.util.ParseUtils;
-import com.mobnetic.coinguardian.util.TimeUtils;
+        init {
+            CURRENCY_PAIRS[VirtualCurrency.KNC] = arrayOf(
+                    Currency.KRW
+            )
+        }
+    }
 
-public class FoscEx extends Market {
-	
-	private final static String NAME = "Fosc-Ex";
-	private final static String TTS_NAME = "Fosc Ex";
-	private final static String URL = "http://www.fosc-ex.com/api-public-ticker";
-	private final static HashMap<String, CharSequence[]> CURRENCY_PAIRS = new LinkedHashMap<String, CharSequence[]>();
-	static {
-		CURRENCY_PAIRS.put(VirtualCurrency.KNC, new String[]{
-				Currency.KRW
-			});
-	}
-	
-	public FoscEx() {
-		super(NAME, TTS_NAME, CURRENCY_PAIRS);
-	}
-	
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return URL;
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		ticker.vol = ParseUtils.getDoubleFromString(jsonObject, "volume");
-		ticker.last = ParseUtils.getDoubleFromString(jsonObject, "last");
-		ticker.timestamp = jsonObject.getLong("timestamp") * TimeUtils.MILLIS_IN_SECOND;
-		
-	}
-	
-	@Override
-	protected String parseErrorFromJsonObject(int requestId, JSONObject jsonObject, CheckerInfo checkerInfo) throws Exception {
-		return jsonObject.getString("error");
-	}
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return URL
+    }
 
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        ticker.vol = ParseUtils.getDoubleFromString(jsonObject, "volume")
+        ticker.last = ParseUtils.getDoubleFromString(jsonObject, "last")
+        ticker.timestamp = jsonObject.getLong("timestamp") * TimeUtils.MILLIS_IN_SECOND
+    }
+
+    @Throws(Exception::class)
+    override fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject, checkerInfo: CheckerInfo?): String? {
+        return jsonObject.getString("error")
+    }
 }

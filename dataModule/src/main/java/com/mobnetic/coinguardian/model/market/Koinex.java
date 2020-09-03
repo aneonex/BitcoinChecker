@@ -1,59 +1,49 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.Currency;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.Currency
+import org.json.JSONObject
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class Koinex : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return URL
+    }
 
-import java.util.List;
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        val names = jsonObject.getJSONObject("stats")
+        val tickerJsonObject = names.getJSONObject(checkerInfo.currencyBase)
+        ticker.bid = tickerJsonObject.getDouble("highest_bid")
+        ticker.ask = tickerJsonObject.getDouble("lowest_ask")
+        ticker.vol = tickerJsonObject.getDouble("vol_24hrs")
+        ticker.high = tickerJsonObject.getDouble("max_24hrs")
+        ticker.low = tickerJsonObject.getDouble("min_24hrs")
+        ticker.last = tickerJsonObject.getDouble("last_traded_price")
+    }
 
-public class Koinex extends Market {
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL_CURRENCY_PAIRS
+    }
 
-	private final static String NAME = "Koinex";
-	private final static String TTS_NAME = "Koin ex";
-	private final static String URL = "https://koinex.in/api/ticker";
-	private final static String URL_CURRENCY_PAIRS = URL;
+    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        val currencyJSONObject = jsonObject.getJSONObject("stats")
+        val currencyArray = currencyJSONObject.names()
+        for (i in 0 until currencyArray.length()) {
+            pairs.add(CurrencyPairInfo(currencyArray.getString(i), Currency.INR, null))
+        }
+    }
 
-	public Koinex() {
-		super(NAME, TTS_NAME, null);
-	}
-
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return URL;
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		final JSONObject names = jsonObject.getJSONObject("stats");
-		JSONObject tickerJsonObject = names.getJSONObject(checkerInfo.getCurrencyBase());
-		ticker.bid = tickerJsonObject.getDouble("highest_bid");
-		ticker.ask = tickerJsonObject.getDouble("lowest_ask");
-		ticker.vol = tickerJsonObject.getDouble("vol_24hrs");
-		ticker.high = tickerJsonObject.getDouble("max_24hrs");
-		ticker.low = tickerJsonObject.getDouble("min_24hrs");
-		ticker.last = tickerJsonObject.getDouble("last_traded_price");
-	}
-
-	// ====================
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL_CURRENCY_PAIRS;
-	}
-
-	@Override
-	protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-		final JSONObject currencyJSONObject = jsonObject.getJSONObject("stats");
-		final JSONArray currencyArray = currencyJSONObject.names();
-		for(int i=0; i<currencyArray.length(); ++i) {
-			pairs.add(new CurrencyPairInfo(currencyArray.getString(i), Currency.INR, null));
-		}
-	}
+    companion object {
+        private const val NAME = "Koinex"
+        private const val TTS_NAME = "Koin ex"
+        private const val URL = "https://koinex.in/api/ticker"
+        private const val URL_CURRENCY_PAIRS = URL
+    }
 }
-

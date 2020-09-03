@@ -1,37 +1,33 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.Currency
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import java.util.*
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.Currency;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
+class Vaultoro : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+    companion object {
+        private const val NAME = "Vaultoro"
+        private const val TTS_NAME = NAME
+        private const val URL = "https://api.vaultoro.com/latest/"
+        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
-public class Vaultoro extends Market {
+        init {
+            CURRENCY_PAIRS[Currency.GOLD] = arrayOf(
+                    VirtualCurrency.BTC
+            )
+        }
+    }
 
-	private final static String NAME = "Vaultoro";
-	private final static String TTS_NAME = NAME;
-	private final static String URL = "https://api.vaultoro.com/latest/";
-	private final static HashMap<String, CharSequence[]> CURRENCY_PAIRS = new LinkedHashMap<String, CharSequence[]>();
-	static {
-		CURRENCY_PAIRS.put(Currency.GOLD, new String[]{
-				VirtualCurrency.BTC
-			});
-	}
-	
-	public Vaultoro() {
-		super(NAME, TTS_NAME, CURRENCY_PAIRS);
-	}
-	
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return URL;
-	}
-	
-	@Override
-	protected void parseTicker(int requestId, String responseString, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		ticker.last = Double.parseDouble(responseString); 
-	}
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return URL
+    }
+
+    @Throws(Exception::class)
+    override fun parseTicker(requestId: Int, responseString: String, ticker: Ticker, checkerInfo: CheckerInfo) {
+        ticker.last = responseString.toDouble()
+    }
 }

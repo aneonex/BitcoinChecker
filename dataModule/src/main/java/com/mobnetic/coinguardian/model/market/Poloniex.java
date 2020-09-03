@@ -1,61 +1,46 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.List;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import org.json.JSONObject
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class Poloniex : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return URL
+    }
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        val pairJsonObject = jsonObject.getJSONObject(checkerInfo.currencyCounter + "_" + checkerInfo.currencyBase) // Reversed currencies
+        ticker.bid = pairJsonObject.getDouble("highestBid")
+        ticker.ask = pairJsonObject.getDouble("lowestAsk")
+        ticker.vol = pairJsonObject.getDouble("baseVolume")
+        ticker.last = pairJsonObject.getDouble("last")
+    }
 
-public class Poloniex extends Market {
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL
+    }
 
-	private final static String NAME = "Poloniex";
-	private final static String TTS_NAME = NAME;
-	private final static String URL = "https://poloniex.com/public?command=returnTicker";
-	
-	public Poloniex() {
-		super(NAME, TTS_NAME, null);
-	}
+    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        val pairNames = jsonObject.names()
+        for (i in 0 until pairNames.length()) {
+            val pairId = pairNames.getString(i) ?: continue
+            val currencies = pairId.split("_".toRegex()).toTypedArray()
+            if (currencies.size != 2) continue
+            pairs.add(CurrencyPairInfo(currencies[1], currencies[0], pairId)) //reversed pairs
+        }
+    }
 
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return URL;
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		final JSONObject pairJsonObject = jsonObject.getJSONObject(checkerInfo.getCurrencyCounter()+"_"+checkerInfo.getCurrencyBase());	// Reversed currencies
-
-		ticker.bid = pairJsonObject.getDouble("highestBid");
-		ticker.ask = pairJsonObject.getDouble("lowestAsk");
-		ticker.vol = pairJsonObject.getDouble("baseVolume");
-		ticker.last = pairJsonObject.getDouble("last");
-	}
-	
-	// ====================
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL;
-	}
-	
-	@Override
-	protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-		final JSONArray pairNames = jsonObject.names();
-		
-		for(int i=0; i<pairNames.length(); ++i) {
-			String pairId = pairNames.getString(i);
-			if(pairId==null)
-				continue;
-			String[] currencies = pairId.split("_");
-			if(currencies.length!=2)
-				continue;
-			
-			pairs.add(new CurrencyPairInfo(currencies[1], currencies[0], pairId)); //reversed pairs
-		}
-	}
+    companion object {
+        private const val NAME = "Poloniex"
+        private const val TTS_NAME = NAME
+        private const val URL = "https://poloniex.com/public?command=returnTicker"
+    }
 }

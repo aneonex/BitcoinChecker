@@ -1,49 +1,43 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.Currency
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class CoinTraderNet : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+    companion object {
+        private const val NAME = "CoinTrader.net"
+        private const val TTS_NAME = "Coin Trader"
+        private const val URL = "https://www.cointrader.net/api4/stats/daily/%1\$s%2\$s"
+        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.Currency;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
+        init {
+            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
+                    Currency.USD,
+                    Currency.CAD
+            )
+        }
+    }
 
-public class CoinTraderNet extends Market {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyBase, checkerInfo.currencyCounter)
+    }
 
-	private final static String NAME = "CoinTrader.net";
-	private final static String TTS_NAME = "Coin Trader";
-	private final static String URL = "https://www.cointrader.net/api4/stats/daily/%1$s%2$s";
-	private final static HashMap<String, CharSequence[]> CURRENCY_PAIRS = new LinkedHashMap<String, CharSequence[]>();
-	static {
-		CURRENCY_PAIRS.put(VirtualCurrency.BTC, new String[]{
-				Currency.USD,
-				Currency.CAD
-			});
-	}
-	
-	public CoinTraderNet() {
-		super(NAME, TTS_NAME, CURRENCY_PAIRS);
-	}
-
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return String.format(URL, checkerInfo.getCurrencyBase(), checkerInfo.getCurrencyCounter());
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		final JSONObject dataJsonObject = jsonObject.getJSONObject("data");
-		final JSONArray dataNamesArray = dataJsonObject.names();
-		final JSONObject tickerJsonObject = dataJsonObject.getJSONObject(dataNamesArray.getString(0));
-		ticker.bid = tickerJsonObject.getDouble("bid");
-		ticker.ask = tickerJsonObject.getDouble("offer");
-		ticker.vol = tickerJsonObject.getDouble("volume");
-		ticker.high = tickerJsonObject.getDouble("high");
-		ticker.low = tickerJsonObject.getDouble("low");
-		ticker.last = tickerJsonObject.getDouble("lastTradePrice");
-	}
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        val dataJsonObject = jsonObject.getJSONObject("data")
+        val dataNamesArray = dataJsonObject.names()
+        val tickerJsonObject = dataJsonObject.getJSONObject(dataNamesArray.getString(0))
+        ticker.bid = tickerJsonObject.getDouble("bid")
+        ticker.ask = tickerJsonObject.getDouble("offer")
+        ticker.vol = tickerJsonObject.getDouble("volume")
+        ticker.high = tickerJsonObject.getDouble("high")
+        ticker.low = tickerJsonObject.getDouble("low")
+        ticker.last = tickerJsonObject.getDouble("lastTradePrice")
+    }
 }

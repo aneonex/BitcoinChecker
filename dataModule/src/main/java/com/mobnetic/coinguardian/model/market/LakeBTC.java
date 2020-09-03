@@ -1,67 +1,56 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.List;
-import java.util.Locale;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class LakeBTC : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return URL
+    }
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        val pairId: String?
+        pairId = if (checkerInfo.currencyPairId == null) {
+            checkerInfo.currencyBaseLowerCase + checkerInfo.currencyCounterLowerCase
+        } else {
+            checkerInfo.currencyPairId
+        }
+        val pairJsonObject = jsonObject.getJSONObject(pairId)
+        ticker.bid = pairJsonObject.getDouble("bid")
+        ticker.ask = pairJsonObject.getDouble("ask")
+        ticker.vol = pairJsonObject.getDouble("volume")
+        ticker.high = pairJsonObject.getDouble("high")
+        ticker.low = pairJsonObject.getDouble("low")
+        ticker.last = pairJsonObject.getDouble("last")
+    }
 
-public class LakeBTC extends Market {
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL_CURRENCY_PAIRS
+    }
 
-	private final static String NAME = "LakeBTC";
-	private final static String TTS_NAME = "Lake BTC";
-	private final static String URL = "https://api.lakebtc.com/api_v2/ticker";
-	private final static String URL_CURRENCY_PAIRS = URL;
-	
-	public LakeBTC() {
-		super(NAME, TTS_NAME, null);
-	}
+    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        val pairsJsonArray = jsonObject.names()
+        for (i in 0 until pairsJsonArray.length()) {
+            val pairId = pairsJsonArray.getString(i)
+            val currencyBase = pairId.substring(0, 3).toUpperCase(Locale.ENGLISH)
+            val currencyCounter = pairId.substring(3).toUpperCase(Locale.ENGLISH)
+            pairs.add(CurrencyPairInfo(currencyBase, currencyCounter, pairId))
+        }
+    }
 
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return URL;
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		final String pairId;
-		if (checkerInfo.getCurrencyPairId() == null) {
-			pairId = checkerInfo.getCurrencyBaseLowerCase() + checkerInfo.getCurrencyCounterLowerCase();
-		} else {
-			pairId = checkerInfo.getCurrencyPairId();
-		}
-		final JSONObject pairJsonObject = jsonObject.getJSONObject(pairId);
-		
-		ticker.bid = pairJsonObject.getDouble("bid");
-		ticker.ask = pairJsonObject.getDouble("ask");
-		ticker.vol = pairJsonObject.getDouble("volume");
-		ticker.high = pairJsonObject.getDouble("high");
-		ticker.low = pairJsonObject.getDouble("low");
-		ticker.last = pairJsonObject.getDouble("last");
-	}
-	
-	// ====================
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL_CURRENCY_PAIRS;
-	}
-	
-	@Override
-	protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-		final JSONArray pairsJsonArray = jsonObject.names();
-		for(int i=0; i<pairsJsonArray.length(); ++i) {
-			final String pairId = pairsJsonArray.getString(i);
-			final String currencyBase = pairId.substring(0, 3).toUpperCase(Locale.ENGLISH);
-			final String currencyCounter = pairId.substring(3).toUpperCase(Locale.ENGLISH);
-			pairs.add(new CurrencyPairInfo(currencyBase, currencyCounter, pairId));
-		}
-	}
+    companion object {
+        private const val NAME = "LakeBTC"
+        private const val TTS_NAME = "Lake BTC"
+        private const val URL = "https://api.lakebtc.com/api_v2/ticker"
+        private const val URL_CURRENCY_PAIRS = URL
+    }
 }

@@ -1,35 +1,33 @@
-package com.mobnetic.coinguardian.util;
+package com.mobnetic.coinguardian.util
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.Document
+import org.w3c.dom.Node
 
-public class XmlParserUtils {
+object XmlParserUtils {
+    fun getFirstElementByTagName(doc: Document, name: String?): Node? {
+        val nodes = doc.getElementsByTagName(name)
+        return if (nodes != null && nodes.length > 0) nodes.item(0) else null
+    }
 
-	public static Node getFirstElementByTagName(Document doc, String name) {
-		NodeList nodes = doc.getElementsByTagName(name);
-        if(nodes!=null && nodes.getLength()>0)
-        	return nodes.item(0);
-        return null;
-	}
-        
-	public static double getDoubleNodeValue(Node node) throws Exception {
-		return Double.parseDouble(getTextNodeValue(node));
-	}
-	
-	public static String getTextNodeValue(Node node) throws Exception {
-        Node child;
+    @Throws(Exception::class)
+    fun getDoubleNodeValue(node: Node?): Double {
+        return getTextNodeValue(node).toDouble()
+    }
+
+    @Throws(Exception::class)
+    fun getTextNodeValue(node: Node?): String {
+        var child: Node?
         if (node != null) {
             if (node.hasChildNodes()) {
-                child = node.getFirstChild();
-                while(child != null) {
-                    if (child.getNodeType() == Node.TEXT_NODE) {
-                        return child.getNodeValue();
+                child = node.firstChild
+                while (child != null) {
+                    if (child.nodeType == Node.TEXT_NODE) {
+                        return child.nodeValue
                     }
-                    child = child.getNextSibling();
+                    child = child.nextSibling
                 }
             }
         }
-        return "";
+        return ""
     }
 }

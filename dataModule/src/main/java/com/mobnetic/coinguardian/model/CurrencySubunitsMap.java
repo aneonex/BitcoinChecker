@@ -1,14 +1,13 @@
-package com.mobnetic.coinguardian.model;
+package com.mobnetic.coinguardian.model
 
-import java.util.LinkedHashMap;
+import java.util.*
 
-public class CurrencySubunitsMap extends LinkedHashMap<Long, CurrencySubunit> {
+class CurrencySubunitsMap(vararg currencySubunits: CurrencySubunit) : LinkedHashMap<Long?, CurrencySubunit?>() {
+    companion object {
+        private const val serialVersionUID = -7219011491064245859L
+    }
 
-	private static final long serialVersionUID = -7219011491064245859L;
-	
-	public CurrencySubunitsMap(CurrencySubunit... currencySubunits) {
-		for(CurrencySubunit currencySubunit : currencySubunits)
-			put(currencySubunit.subunitToUnit, currencySubunit);
-	}
-	
+    init {
+        for (currencySubunit in currencySubunits) put(currencySubunit.subunitToUnit, currencySubunit)
+    }
 }

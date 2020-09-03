@@ -1,97 +1,90 @@
-package com.mobnetic.coinguardian.util;
+package com.mobnetic.coinguardian.util
 
-import java.text.DecimalFormat;
-import java.util.Date;
+import android.content.Context
+import android.text.format.DateFormat
+import android.text.format.DateUtils
+import com.mobnetic.coinguardian.model.CurrencySubunit
+import java.text.DecimalFormat
+import java.util.*
 
-import android.content.Context;
-import android.text.format.DateFormat;
-import android.text.format.DateUtils;
+object FormatUtilsBase {
+    // ====================
+    // Double formatting
+    // ====================
+    private val FORMAT_TWO_DECIMAL = DecimalFormat("0.00")
+    private val FORMAT_FIVE_SIGNIFICANT_AT_MOST = DecimalFormat("@#####")
+    private val FORMAT_EIGHT_SIGNIFICANT_AT_MOST = DecimalFormat("@#######")
 
-import com.mobnetic.coinguardian.model.CurrencySubunit;
+    // ====================
+    // Format methods
+    // ====================
+    fun formatDouble(value: Double/*, isPrice: Boolean*/): String {
+        return formatDouble(if (value < 1) FORMAT_FIVE_SIGNIFICANT_AT_MOST else FORMAT_TWO_DECIMAL, value)
+    }
 
-public class FormatUtilsBase {
+    fun formatDoubleWithFiveMax(value: Double): String {
+        return formatDouble(FORMAT_FIVE_SIGNIFICANT_AT_MOST, value)
+    }
 
-	// ====================
-	// Double formatting
-	// ====================
-	private final static DecimalFormat FORMAT_TWO_DECIMAL = new DecimalFormat("0.00");
-	private final static DecimalFormat FORMAT_FIVE_SIGNIFICANT_AT_MOST = new DecimalFormat("@#####");
-	private final static DecimalFormat FORMAT_EIGHT_SIGNIFICANT_AT_MOST = new DecimalFormat("@#######");
-	
-	// ====================
-	// Format methods
-	// ====================
-	public static String formatDouble(double value, boolean isPrice) {
-		return formatDouble(value<1 ? FORMAT_FIVE_SIGNIFICANT_AT_MOST : FORMAT_TWO_DECIMAL, value);
-	}
-	
-	public static String formatDoubleWithFiveMax(double value) {
-		return formatDouble(FORMAT_FIVE_SIGNIFICANT_AT_MOST, value);
-	}
-	
-	protected static String formatDoubleWithEightMax(double value) {
-		return formatDouble(FORMAT_EIGHT_SIGNIFICANT_AT_MOST, value);
-	}
+    internal fun formatDoubleWithEightMax(value: Double): String {
+        return formatDouble(FORMAT_EIGHT_SIGNIFICANT_AT_MOST, value)
+    }
 
-	protected final static String formatDouble(DecimalFormat decimalFormat, double value) {
-		synchronized (decimalFormat) {
-			try {
-				return decimalFormat.format(value);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+    internal fun formatDouble(decimalFormat: DecimalFormat, value: Double): String {
+        synchronized(decimalFormat) {
+            try {
+                return decimalFormat.format(value)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return value.toString()
+        }
+    }
 
-			return String.valueOf(value);
-		}
-	}
-	
-	// ====================
-	// Price formatting
-	// ====================
-	public static String formatPriceWithCurrency(double price, CurrencySubunit subunitDst) {
-		return formatPriceWithCurrency(price, subunitDst, true);
-	}
-	
-	protected static String formatPriceWithCurrency(double price, CurrencySubunit subunitDst, boolean showCurrencyDst) {
-		String priceString = formatPriceValueForSubunit(price, subunitDst, false, false);
-		if(showCurrencyDst) {
-			priceString = formatPriceWithCurrency(priceString, subunitDst.name);
-		}
-		
-		return priceString;
-	}
-	
-	public static String formatPriceWithCurrency(double value, String currency) {
-		return formatPriceWithCurrency(formatDouble(value, true), currency);
-	}
-	
-	public static String formatPriceWithCurrency(String priceString, String currency) {
-		return priceString+" "+CurrencyUtils.getCurrencySymbol(currency);
-	}
-	
-	public static String formatPriceValueForSubunit(double price, CurrencySubunit subunitDst, boolean forceInteger, boolean skipNoSignificantDecimal) {
-		price *= subunitDst.subunitToUnit;
-		if(!subunitDst.allowDecimal || forceInteger)
-			return String.valueOf((long)(price+0.5f));
-		else if(skipNoSignificantDecimal)
-			return formatDoubleWithEightMax(price);
-		else
-			return formatDouble(price, true);
-	}
-	
-	// ====================
-	// Date && Time formatting
-	// ====================
-	public static String formatSameDayTimeOrDate(Context context, long time) {
-		if (DateUtils.isToday(time)) {
-	        return DateFormat.getTimeFormat(context).format(new Date(time));
-	    } else {
-	    	return DateFormat.getDateFormat(context).format(new Date(time));
-	    }
-	}
-	
-	public static String formatDateTime(Context context, long time) {
-		final Date date = new Date(time);
-		return DateFormat.getTimeFormat(context).format(date)+", "+DateFormat.getDateFormat(context).format(date);
-	}
+    // ====================
+    // Price formatting
+    // ====================
+    fun formatPriceWithCurrency(price: Double, subunitDst: CurrencySubunit): String {
+        return formatPriceWithCurrency(price, subunitDst, true)
+    }
+
+    internal fun formatPriceWithCurrency(price: Double, subunitDst: CurrencySubunit, showCurrencyDst: Boolean): String {
+        var priceString = formatPriceValueForSubunit(price, subunitDst, false, false)
+        if (showCurrencyDst) {
+            priceString = formatPriceWithCurrency(priceString, subunitDst.name)
+        }
+        return priceString
+    }
+
+    @kotlin.jvm.JvmStatic
+    fun formatPriceWithCurrency(value: Double, currency: String?): String {
+        return formatPriceWithCurrency(formatDouble(value), currency)
+    }
+
+    fun formatPriceWithCurrency(priceString: String, currency: String?): String {
+        return priceString + " " + CurrencyUtils.getCurrencySymbol(currency)
+    }
+
+    fun formatPriceValueForSubunit(price: Double, subunitDst: CurrencySubunit, forceInteger: Boolean, skipNoSignificantDecimal: Boolean): String {
+        val calcPrice = price * subunitDst.subunitToUnit.toDouble()
+        return if (!subunitDst.allowDecimal || forceInteger) return (calcPrice + 0.5f).toLong().toString()
+            else if (skipNoSignificantDecimal) formatDoubleWithEightMax(calcPrice) else formatDouble(calcPrice)
+    }
+
+    // ====================
+    // Date && Time formatting
+    // ====================
+    @kotlin.jvm.JvmStatic
+    fun formatSameDayTimeOrDate(context: Context?, time: Long): String {
+        return if (DateUtils.isToday(time)) {
+            DateFormat.getTimeFormat(context).format(Date(time))
+        } else {
+            DateFormat.getDateFormat(context).format(Date(time))
+        }
+    }
+
+    fun formatDateTime(context: Context?, time: Long): String {
+        val date = Date(time)
+        return DateFormat.getTimeFormat(context).format(date) + ", " + DateFormat.getDateFormat(context).format(date)
+    }
 }

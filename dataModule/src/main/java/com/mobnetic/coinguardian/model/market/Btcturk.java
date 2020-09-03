@@ -1,59 +1,52 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.Currency;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
-import com.mobnetic.coinguardian.util.TimeUtils;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.Currency
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import com.mobnetic.coinguardian.model.currency.CurrencyPairsMap
+import com.mobnetic.coinguardian.util.TimeUtils
+import org.json.JSONArray
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class Btcturk : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+    companion object {
+        private const val NAME = "BtcTurk"
+        private const val TTS_NAME = "Btc Turk"
+        private const val URL = "https://www.btcturk.com/api/ticker"
+        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+        init {
+            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
+                    Currency.TRY
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ETH] = arrayOf(
+                    VirtualCurrency.BTC,
+                    Currency.TRY
+            )
+        }
+    }
 
-public class Btcturk extends Market {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return URL
+    }
 
-	private final static String NAME = "BtcTurk";
-	private final static String TTS_NAME = "Btc Turk";
-	private final static String URL = "https://www.btcturk.com/api/ticker";
-	private final static HashMap<String, CharSequence[]> CURRENCY_PAIRS = new LinkedHashMap<String, CharSequence[]>();
-	static {
-		CURRENCY_PAIRS.put(VirtualCurrency.BTC, new String[]{
-				Currency.TRY
-			});
-		CURRENCY_PAIRS.put(VirtualCurrency.ETH, new String[]{
-				VirtualCurrency.BTC,
-				Currency.TRY
-		});
-	}
-	
-	public Btcturk() {
-		super(NAME, TTS_NAME, CURRENCY_PAIRS);
-	}
-	
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return URL;
-	}
-
-	@Override
-	protected void parseTicker(int requestId, String responseString, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		final JSONArray tickerJsonArray = new JSONArray(responseString);
-		final String pairId = checkerInfo.getCurrencyBase()+checkerInfo.getCurrencyCounter();
-		for (int i = 0; i < tickerJsonArray.length(); ++i) {
-			final JSONObject tickerJsonObject = tickerJsonArray.getJSONObject(i);
-			if (pairId.equals(tickerJsonObject.getString("pair"))) {
-				ticker.bid = tickerJsonObject.getDouble("bid");
-				ticker.ask = tickerJsonObject.getDouble("ask");
-				ticker.vol = tickerJsonObject.getDouble("volume");
-				ticker.high = tickerJsonObject.getDouble("high");
-				ticker.low = tickerJsonObject.getDouble("low");
-				ticker.last = tickerJsonObject.getDouble("last");
-				ticker.timestamp = (long) (tickerJsonObject.getDouble("timestamp") * TimeUtils.MILLIS_IN_SECOND);
-				break;
-			}
-		}
-	}
+    @Throws(Exception::class)
+    override fun parseTicker(requestId: Int, responseString: String, ticker: Ticker, checkerInfo: CheckerInfo) {
+        val tickerJsonArray = JSONArray(responseString)
+        val pairId = checkerInfo.currencyBase + checkerInfo.currencyCounter
+        for (i in 0 until tickerJsonArray.length()) {
+            val tickerJsonObject = tickerJsonArray.getJSONObject(i)
+            if (pairId == tickerJsonObject.getString("pair")) {
+                ticker.bid = tickerJsonObject.getDouble("bid")
+                ticker.ask = tickerJsonObject.getDouble("ask")
+                ticker.vol = tickerJsonObject.getDouble("volume")
+                ticker.high = tickerJsonObject.getDouble("high")
+                ticker.low = tickerJsonObject.getDouble("low")
+                ticker.last = tickerJsonObject.getDouble("last")
+                ticker.timestamp = (tickerJsonObject.getDouble("timestamp") * TimeUtils.MILLIS_IN_SECOND).toLong()
+                break
+            }
+        }
+    }
 }

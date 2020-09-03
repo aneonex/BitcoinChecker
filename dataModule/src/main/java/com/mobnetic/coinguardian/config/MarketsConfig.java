@@ -1,141 +1,140 @@
-package com.mobnetic.coinguardian.config;
+package com.mobnetic.coinguardian.config
 
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.market.*;
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.market.*
+import java.util.*
 
-import java.util.LinkedHashMap;
+object MarketsConfig {
+    @kotlin.jvm.JvmField
+    val MARKETS = LinkedHashMap<String?, Market?>()
+    private fun addMarket(market: Market) {
+        MARKETS[market.key] = market
+    }
 
-public class MarketsConfig {
-
-	public final static LinkedHashMap<String, Market> MARKETS = new LinkedHashMap<String, Market>();
-	private final static void addMarket(Market market) {
-		MarketsConfig.MARKETS.put(market.key, market);
-	}
-
-	static {
-		addMarket(new Bitstamp());
-		addMarket(new Mercado());
-		addMarket(new Kraken());
-		addMarket(new Bitfinex());
-		addMarket(new Okcoin());
-		addMarket(new Cryptsy());
-		addMarket(new Coinbase());
-		addMarket(new Vircurex());
-		addMarket(new Fxbtc());
-		addMarket(new Bter());
-		addMarket(new Justcoin());
-		addMarket(new Btcturk());
-		addMarket(new Coinse());
-		addMarket(new Campbx());
-		addMarket(new TheRock());
-		addMarket(new CexIO());
-		addMarket(new Virtex());
-		addMarket(new Huobi());
-		addMarket(new VaultOfSatoshi());
-		addMarket(new CoinMarketIO());
-		addMarket(new McxNOW());
-		addMarket(new CryptoTrade());
-		addMarket(new MintPal());
-		addMarket(new CoinJar());
-		addMarket(new Poloniex());
-		addMarket(new Winkdex());
-		addMarket(new BitX());
-		addMarket(new CCex());
-		addMarket(new Bitorado());
-		addMarket(new CryptoRush());
-		addMarket(new CoinDesk());
-		addMarket(new Koinim());
-		addMarket(new FybSE());
-		addMarket(new FybSG());
-		addMarket(new Prelude());
-		addMarket(new BitKonan());
-		addMarket(new BitTrex());
-		addMarket(new Comkort());
-		addMarket(new Bit2c());
-		addMarket(new CryptoAltex());
-		addMarket(new BtcMarkets());
-		addMarket(new Bleutrade());
-		addMarket(new ShareXcoin());
-		addMarket(new Unisend());
-		addMarket(new BitcoinVenezuela());
-		addMarket(new Korbit());
-		addMarket(new CoinTree());
-		addMarket(new Cryptonit());
-		addMarket(new LakeBTC());
-		addMarket(new BitMaszyna());
-		addMarket(new Zaydo());
-		addMarket(new AllCoin());
-		addMarket(new Ripio());
-		addMarket(new DolarBlueNet());
-		addMarket(new CoinSwap());
-		addMarket(new Paymium());
-		addMarket(new Bitso());
-		addMarket(new Cryptoine());
-		addMarket(new BitcoinToYou());
-		addMarket(new BitexLa());
-		addMarket(new ItBit());
-		addMarket(new BitcoinCoId());
-		addMarket(new HitBtc());
-		addMarket(new CleverCoin());
-		addMarket(new BitBay());
-		addMarket(new QuadrigaCX());
-		addMarket(new CoinMateIO());
-		addMarket(new Buttercoin());
-		addMarket(new CoinTraderNet());
-		addMarket(new LocalBitcoins());
-		addMarket(new Cryptopia());
-		addMarket(new Igot());
-		addMarket(new Mexbt());
-		addMarket(new Vaultoro());
-		addMarket(new BitxCom());
-		addMarket(new BtcBox());
-		addMarket(new BtcXIndia());
-		addMarket(new Uphold());
-		addMarket(new YoBit());
-		addMarket(new ShapeShift());
-		addMarket(new BitoEX());
-		addMarket(new OKCoinFutures());
-//		addMarket(new FoscEx());
-		addMarket(new CoinSecure());
-		addMarket(new Dashcurex());
-		addMarket(new Quoine());
-		addMarket(new Livecoin());
-		addMarket(new Gemini());
-		addMarket(new Coinapult());
-		addMarket(new Btc38());
-		addMarket(new ETHEXIndia());
-		addMarket(new GateCoin());
-		addMarket(new Liqui());
-		addMarket(new ChileBit());
-		addMarket(new SurBitcoin());
-		addMarket(new VBtc());
-		addMarket(new Urdubit());
-		addMarket(new NegocieCoins());
-		addMarket(new BitMEX());
-		addMarket(new BitFlyer());
-		addMarket(new BitFlyerFX());
-		addMarket(new Coinone());
-		addMarket(new Bithumb());
-		addMarket(new Coinsph());
-		addMarket(new Bl3p());
-		addMarket(new SurBtc());
-		addMarket(new CoinFloor());
-		addMarket(new Lykke());
-		addMarket(new Coinnest());
-		addMarket(new Braziliex());
-		addMarket(new Abucoins());
-		addMarket(new Zebpay());
-		addMarket(new Paribu());
-		addMarket(new SatoshiTango());
-		addMarket(new Koinex());
-//		addMarket(new Unocoin());
-		addMarket(new BlinkTrade());
-		addMarket(new Exmo());
-		addMarket(new Binance());
-		addMarket(new Kucoin());
-		addMarket(new BitcoinTrade());
-		addMarket(new OmniTrade());
-		addMarket(new Coinome());
-		addMarket(new Nocks());
-	}
+    init {
+        addMarket(Bitstamp())
+        addMarket(Mercado())
+        addMarket(Kraken())
+        addMarket(Bitfinex())
+        addMarket(Okcoin())
+        addMarket(Cryptsy())
+        addMarket(Coinbase())
+        addMarket(Vircurex())
+        addMarket(Fxbtc())
+        addMarket(Bter())
+        addMarket(Justcoin())
+        addMarket(Btcturk())
+        addMarket(Coinse())
+        addMarket(Campbx())
+        addMarket(TheRock())
+        addMarket(CexIO())
+        addMarket(Virtex())
+        addMarket(Huobi())
+        addMarket(VaultOfSatoshi())
+        addMarket(CoinMarketIO())
+        addMarket(McxNOW())
+        addMarket(CryptoTrade())
+        addMarket(MintPal())
+        addMarket(CoinJar())
+        addMarket(Poloniex())
+        addMarket(Winkdex())
+        addMarket(BitX())
+        addMarket(CCex())
+        addMarket(Bitorado())
+        addMarket(CryptoRush())
+        addMarket(CoinDesk())
+        addMarket(Koinim())
+        addMarket(FybSE())
+        addMarket(FybSG())
+        addMarket(Prelude())
+        addMarket(BitKonan())
+        addMarket(BitTrex())
+        addMarket(Comkort())
+        addMarket(Bit2c())
+        addMarket(CryptoAltex())
+        addMarket(BtcMarkets())
+        addMarket(Bleutrade())
+        addMarket(ShareXcoin())
+        addMarket(Unisend())
+        addMarket(BitcoinVenezuela())
+        addMarket(Korbit())
+        addMarket(CoinTree())
+        addMarket(Cryptonit())
+        addMarket(LakeBTC())
+        addMarket(BitMaszyna())
+        addMarket(Zaydo())
+        addMarket(AllCoin())
+        addMarket(Ripio())
+        addMarket(DolarBlueNet())
+        addMarket(CoinSwap())
+        addMarket(Paymium())
+        addMarket(Bitso())
+        addMarket(Cryptoine())
+        addMarket(BitcoinToYou())
+        addMarket(BitexLa())
+        addMarket(ItBit())
+        addMarket(BitcoinCoId())
+        addMarket(HitBtc())
+        addMarket(CleverCoin())
+        addMarket(BitBay())
+        addMarket(QuadrigaCX())
+        addMarket(CoinMateIO())
+        addMarket(Buttercoin())
+        addMarket(CoinTraderNet())
+        addMarket(LocalBitcoins())
+        addMarket(Cryptopia())
+        addMarket(Igot())
+        addMarket(Mexbt())
+        addMarket(Vaultoro())
+        addMarket(BitxCom())
+        addMarket(BtcBox())
+        addMarket(BtcXIndia())
+        addMarket(Uphold())
+        addMarket(YoBit())
+        addMarket(ShapeShift())
+        addMarket(BitoEX())
+        addMarket(OKCoinFutures())
+        //		addMarket(new FoscEx());
+        addMarket(CoinSecure())
+        addMarket(Dashcurex())
+        addMarket(Quoine())
+        addMarket(Livecoin())
+        addMarket(Gemini())
+        addMarket(Coinapult())
+        addMarket(Btc38())
+        addMarket(ETHEXIndia())
+        addMarket(GateCoin())
+        addMarket(Liqui())
+        addMarket(ChileBit())
+        addMarket(SurBitcoin())
+        addMarket(VBtc())
+        addMarket(Urdubit())
+        addMarket(NegocieCoins())
+        addMarket(BitMEX())
+        addMarket(BitFlyer())
+        addMarket(BitFlyerFX())
+        addMarket(Coinone())
+        addMarket(Bithumb())
+        addMarket(Coinsph())
+        addMarket(Bl3p())
+        addMarket(SurBtc())
+        addMarket(CoinFloor())
+        addMarket(Lykke())
+        addMarket(Coinnest())
+        addMarket(Braziliex())
+        addMarket(Abucoins())
+        addMarket(Zebpay())
+        addMarket(Paribu())
+        addMarket(SatoshiTango())
+        addMarket(Koinex())
+        //		addMarket(new Unocoin());
+        addMarket(BlinkTrade())
+        addMarket(Exmo())
+        addMarket(Binance())
+        addMarket(Kucoin())
+        addMarket(BitcoinTrade())
+        addMarket(OmniTrade())
+        addMarket(Coinome())
+        addMarket(Nocks())
+    }
 }

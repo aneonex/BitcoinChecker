@@ -1,64 +1,52 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.List;
-import java.util.Locale;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import org.json.JSONArray
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class Bter : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyBaseLowerCase, checkerInfo.currencyCounterLowerCase)
+    }
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        ticker.bid = jsonObject.getDouble("highestBid")
+        ticker.ask = jsonObject.getDouble("lowestAsk")
+        ticker.vol = jsonObject.getDouble("quoteVolume")
+        ticker.high = jsonObject.getDouble("high24hr")
+        ticker.low = jsonObject.getDouble("low24hr")
+        ticker.last = jsonObject.getDouble("last")
+    }
 
-public class Bter extends Market {
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL_CURRENCY_PAIRS
+    }
 
-	private final static String NAME = "Gate.io";
-	private final static String TTS_NAME = "Gate io";
-	private final static String URL = "http://data.gate.io/api2/1/ticker/%1$s_%2$s";
-	private final static String URL_CURRENCY_PAIRS = "http://data.gate.io/api2/1/pairs";
+    @Throws(Exception::class)
+    override fun parseCurrencyPairs(requestId: Int, responseString: String?, pairs: MutableList<CurrencyPairInfo?>) {
+        val jsonArray = JSONArray(responseString)
+        for (i in 0 until jsonArray.length()) {
+            val pairId = jsonArray.getString(i) ?: continue
+            val currencies = pairId.split("_".toRegex()).toTypedArray()
+            if (currencies.size != 2) continue
+            val currencyBase = currencies[0].toUpperCase(Locale.ENGLISH)
+            val currencyCounter = currencies[1].toUpperCase(Locale.ENGLISH)
+            pairs.add(CurrencyPairInfo(currencyBase, currencyCounter, pairId))
+        }
+    }
 
-	public Bter() {
-		super(NAME, TTS_NAME, null);
-	}
-
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return String.format(URL, checkerInfo.getCurrencyBaseLowerCase(), checkerInfo.getCurrencyCounterLowerCase());
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		ticker.bid = jsonObject.getDouble("highestBid");
-		ticker.ask = jsonObject.getDouble("lowestAsk");
-		ticker.vol = jsonObject.getDouble("quoteVolume");
-		ticker.high = jsonObject.getDouble("high24hr");
-		ticker.low = jsonObject.getDouble("low24hr");
-		ticker.last = jsonObject.getDouble("last");
-	}
-	
-	// ====================
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL_CURRENCY_PAIRS;
-	}
-	
-	@Override
-	protected void parseCurrencyPairs(int requestId, String responseString, List<CurrencyPairInfo> pairs) throws Exception {
-		JSONArray jsonArray = new JSONArray(responseString);
-		for(int i=0; i<jsonArray.length(); ++i) {
-			String pairId = jsonArray.getString(i);
-			if(pairId==null)
-				continue;
-			String[] currencies = pairId.split("_");
-			if(currencies.length!=2)
-				continue;
-			
-			String currencyBase = currencies[0].toUpperCase(Locale.ENGLISH);
-			String currencyCounter = currencies[1].toUpperCase(Locale.ENGLISH);
-			pairs.add(new CurrencyPairInfo(currencyBase, currencyCounter, pairId));
-		}
-	}
+    companion object {
+        private const val NAME = "Gate.io"
+        private const val TTS_NAME = "Gate io"
+        private const val URL = "http://data.gate.io/api2/1/ticker/%1\$s_%2\$s"
+        private const val URL_CURRENCY_PAIRS = "http://data.gate.io/api2/1/pairs"
+    }
 }

@@ -1,60 +1,51 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.List;
-import java.util.Locale;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.model.currency.VirtualCurrency
+import org.json.JSONObject
+import java.util.*
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class Igot : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return URL
+    }
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.model.currency.VirtualCurrency;
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        val pairJsonObject = jsonObject.getJSONObject(checkerInfo.currencyPairId)
+        ticker.high = pairJsonObject.getDouble("highest_today")
+        ticker.low = pairJsonObject.getDouble("lowest_today")
+        ticker.last = pairJsonObject.getDouble("current_rate")
+    }
 
-public class Igot extends Market {
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL_CURRENCY_PAIRS
+    }
 
-	private final static String NAME = "igot";
-	private final static String TTS_NAME = "igot";
-	private final static String URL = "https://www.igot.com/api/v1/stats/buy";
-	private final static String URL_CURRENCY_PAIRS = URL;
-	
-	public Igot() {
-		super(NAME, TTS_NAME, null);
-	}
+    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        val pairsJsonArray = jsonObject.names()
+        for (i in 0 until pairsJsonArray.length()) {
+            val currencyCounter = pairsJsonArray.getString(i)
+            if (currencyCounter != null) {
+                pairs.add(CurrencyPairInfo(
+                        VirtualCurrency.BTC,
+                        currencyCounter.toUpperCase(Locale.ENGLISH),
+                        currencyCounter))
+            }
+        }
+    }
 
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return URL;
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		final JSONObject pairJsonObject = jsonObject.getJSONObject(checkerInfo.getCurrencyPairId());
-		ticker.high = pairJsonObject.getDouble("highest_today");
-		ticker.low = pairJsonObject.getDouble("lowest_today");
-		ticker.last = pairJsonObject.getDouble("current_rate");
-	}
-	
-	// ====================
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL_CURRENCY_PAIRS;
-	}
-	
-	@Override
-	protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-		final JSONArray pairsJsonArray = jsonObject.names();
-		for(int i=0; i<pairsJsonArray.length(); ++i) {
-			final String currencyCounter = pairsJsonArray.getString(i);
-			if(currencyCounter != null) {
-				pairs.add(new CurrencyPairInfo(
-						VirtualCurrency.BTC,
-						currencyCounter.toUpperCase(Locale.ENGLISH),
-						currencyCounter));
-			}
-		}
-	}
+    companion object {
+        private const val NAME = "igot"
+        private const val TTS_NAME = "igot"
+        private const val URL = "https://www.igot.com/api/v1/stats/buy"
+        private const val URL_CURRENCY_PAIRS = URL
+    }
 }

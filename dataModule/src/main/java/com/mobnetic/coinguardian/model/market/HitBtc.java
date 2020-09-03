@@ -1,63 +1,51 @@
-package com.mobnetic.coinguardian.model.market;
+package com.mobnetic.coinguardian.model.market
 
-import java.util.List;
+import com.mobnetic.coinguardian.model.CheckerInfo
+import com.mobnetic.coinguardian.model.CurrencyPairInfo
+import com.mobnetic.coinguardian.model.Market
+import com.mobnetic.coinguardian.model.Ticker
+import com.mobnetic.coinguardian.util.ParseUtils
+import org.json.JSONObject
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+class HitBtc : Market(NAME, TTS_NAME, null) {
+    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
+        return String.format(URL, checkerInfo.currencyPairId)
+    }
 
-import com.mobnetic.coinguardian.model.CheckerInfo;
-import com.mobnetic.coinguardian.model.CurrencyPairInfo;
-import com.mobnetic.coinguardian.model.Market;
-import com.mobnetic.coinguardian.model.Ticker;
-import com.mobnetic.coinguardian.util.ParseUtils;
+    @Throws(Exception::class)
+    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
+        ticker.bid = ParseUtils.getDoubleFromString(jsonObject, "bid")
+        ticker.ask = ParseUtils.getDoubleFromString(jsonObject, "ask")
+        ticker.vol = ParseUtils.getDoubleFromString(jsonObject, "volume")
+        ticker.high = ParseUtils.getDoubleFromString(jsonObject, "high")
+        ticker.low = ParseUtils.getDoubleFromString(jsonObject, "low")
+        ticker.last = ParseUtils.getDoubleFromString(jsonObject, "last")
+    }
 
-public class HitBtc extends Market {
+    // ====================
+    // Get currency pairs
+    // ====================
+    override fun getCurrencyPairsUrl(requestId: Int): String? {
+        return URL_CURRENCY_PAIRS
+    }
 
-	private final static String NAME = "HitBTC";
-	private final static String TTS_NAME = "Hit BTC";
-	private final static String URL = "https://api.hitbtc.com/api/1/public/%1$s/ticker";
-	private final static String URL_CURRENCY_PAIRS = "https://api.hitbtc.com/api/1/public/symbols";
-	
-	public HitBtc() {
-		super(NAME, TTS_NAME, null);
-	}
+    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+        val symbolsJsonArray = jsonObject.getJSONArray("symbols")
+        for (i in 0 until symbolsJsonArray.length()) {
+            val pairJsonObject = symbolsJsonArray.getJSONObject(i)
+            val currencyBase = pairJsonObject.getString("commodity")
+            val currencyCounter = pairJsonObject.getString("currency")
+            val currencyPairId = pairJsonObject.getString("symbol")
+            if (currencyBase == null || currencyCounter == null || currencyPairId == null) continue
+            pairs.add(CurrencyPairInfo(currencyBase, currencyCounter, currencyPairId))
+        }
+    }
 
-	@Override
-	public String getUrl(int requestId, CheckerInfo checkerInfo) {
-		return String.format(URL, checkerInfo.getCurrencyPairId());
-	}
-	
-	@Override
-	protected void parseTickerFromJsonObject(int requestId, JSONObject jsonObject, Ticker ticker, CheckerInfo checkerInfo) throws Exception {
-		ticker.bid = ParseUtils.getDoubleFromString(jsonObject, "bid");
-		ticker.ask = ParseUtils.getDoubleFromString(jsonObject, "ask");
-		ticker.vol = ParseUtils.getDoubleFromString(jsonObject, "volume");
-		ticker.high = ParseUtils.getDoubleFromString(jsonObject, "high");
-		ticker.low = ParseUtils.getDoubleFromString(jsonObject, "low");
-		ticker.last = ParseUtils.getDoubleFromString(jsonObject, "last");
-	}
-	
-	// ====================
-	// Get currency pairs
-	// ====================
-	@Override
-	public String getCurrencyPairsUrl(int requestId) {
-		return URL_CURRENCY_PAIRS;
-	}
-	
-	@Override
-	protected void parseCurrencyPairsFromJsonObject(int requestId, JSONObject jsonObject, List<CurrencyPairInfo> pairs) throws Exception {
-		final JSONArray symbolsJsonArray = jsonObject.getJSONArray("symbols");
-		for(int i=0; i<symbolsJsonArray.length(); ++i) {
-			final JSONObject pairJsonObject = symbolsJsonArray.getJSONObject(i);
-			
-			final String currencyBase = pairJsonObject.getString("commodity");
-			final String currencyCounter = pairJsonObject.getString("currency");
-			final String currencyPairId = pairJsonObject.getString("symbol");
-			if(currencyBase==null || currencyCounter==null || currencyPairId==null)
-				continue;
-			
-			pairs.add(new CurrencyPairInfo(currencyBase, currencyCounter, currencyPairId));
-		}
-	}
+    companion object {
+        private const val NAME = "HitBTC"
+        private const val TTS_NAME = "Hit BTC"
+        private const val URL = "https://api.hitbtc.com/api/1/public/%1\$s/ticker"
+        private const val URL_CURRENCY_PAIRS = "https://api.hitbtc.com/api/1/public/symbols"
+    }
 }
