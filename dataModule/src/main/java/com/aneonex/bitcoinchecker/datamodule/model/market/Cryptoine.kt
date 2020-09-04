@@ -35,7 +35,7 @@ class Cryptoine : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         val dataJsonObject = jsonObject.getJSONObject("data")
         val pairNames = dataJsonObject.names()
         for (i in 0 until pairNames.length()) {

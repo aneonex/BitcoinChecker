@@ -29,7 +29,7 @@ class ShareXcoin : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         val marketsJsonArray = jsonObject.getJSONArray("markets")
         for (i in 0 until marketsJsonArray.length()) {
             val marketJsonObject = marketsJsonArray.getJSONObject(i)

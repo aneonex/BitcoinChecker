@@ -7,7 +7,8 @@ import java.util.*
 
 object MarketsConfigUtils {
     private val UNKNOWN: Market = Unknown()
-    fun getMarketById(id: Int): Market? {
+
+    fun getMarketById(id: Int): Market {
         synchronized(MarketsConfig.MARKETS) {
             if (id >= 0 && id < MarketsConfig.MARKETS.size) {
                 return ArrayList(MarketsConfig.MARKETS.values)[id]
@@ -17,8 +18,8 @@ object MarketsConfigUtils {
     }
 
     @kotlin.jvm.JvmStatic
-    fun getMarketByKey(key: String?): Market? {
-        synchronized(MarketsConfig.MARKETS) { if (MarketsConfig.MARKETS.containsKey(key)) return MarketsConfig.MARKETS[key] }
+    fun getMarketByKey(key: String?): Market {
+        synchronized(MarketsConfig.MARKETS) { if (MarketsConfig.MARKETS.containsKey(key)) return MarketsConfig.MARKETS[key]!! }
         return UNKNOWN
     }
 

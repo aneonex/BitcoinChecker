@@ -30,7 +30,7 @@ class Binance : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairs(requestId: Int, responseString: String?, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairs(requestId: Int, responseString: String, pairs: MutableList<CurrencyPairInfo>) {
         val jsonObject = JSONObject(responseString)
         val jsonSymbols = jsonObject.getJSONArray("symbols")
         for (i in 0 until jsonSymbols.length()) {

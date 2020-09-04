@@ -5,7 +5,7 @@ import com.aneonex.bitcoinchecker.datamodule.model.CurrencySubunitsMap
 import java.util.*
 
 object CurrenciesSubunits {
-    val CURRENCIES_SUBUNITS = HashMap<String?, CurrencySubunitsMap?>()
+    val CURRENCIES_SUBUNITS = HashMap<String, CurrencySubunitsMap>()
 
     init {
         CURRENCIES_SUBUNITS[VirtualCurrency.BTC] = CurrencySubunitsMap(

@@ -34,7 +34,7 @@ class CryptoRush : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         val pairNames = jsonObject.names()
         for (i in 0 until pairNames.length()) {
             val pairId = pairNames.getString(i) ?: continue

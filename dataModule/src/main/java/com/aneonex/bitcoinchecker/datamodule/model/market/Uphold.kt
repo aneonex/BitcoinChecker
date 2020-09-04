@@ -29,7 +29,7 @@ class Uphold : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairs(requestId: Int, responseString: String?, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairs(requestId: Int, responseString: String, pairs: MutableList<CurrencyPairInfo>) {
         val pairsJsonArray = JSONArray(responseString)
         for (i in 0 until pairsJsonArray.length()) {
             val pairJsonObject = pairsJsonArray.getJSONObject(i)

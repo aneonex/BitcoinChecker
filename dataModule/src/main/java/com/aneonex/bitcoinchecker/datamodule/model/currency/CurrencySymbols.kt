@@ -3,7 +3,7 @@ package com.aneonex.bitcoinchecker.datamodule.model.currency
 import java.util.*
 
 object CurrencySymbols {
-    val CURRENCY_SYMBOLS = HashMap<String?, String?>()
+    val CURRENCY_SYMBOLS = HashMap<String, String>()
 
     init {
         CURRENCY_SYMBOLS[Currency.USD] = "$"

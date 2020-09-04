@@ -32,7 +32,7 @@ class Koinex : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         val currencyJSONObject = jsonObject.getJSONObject("stats")
         val currencyArray = currencyJSONObject.names()
         for (i in 0 until currencyArray.length()) {

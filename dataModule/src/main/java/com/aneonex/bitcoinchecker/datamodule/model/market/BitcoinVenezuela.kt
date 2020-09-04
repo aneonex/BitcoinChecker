@@ -25,14 +25,14 @@ class BitcoinVenezuela : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         parseCurrencyPairsFromCurrencyBase(VirtualCurrency.BTC, jsonObject, pairs)
         parseCurrencyPairsFromCurrencyBase(VirtualCurrency.LTC, jsonObject, pairs)
         parseCurrencyPairsFromCurrencyBase(VirtualCurrency.MSC, jsonObject, pairs)
     }
 
     @Throws(Exception::class)
-    private fun parseCurrencyPairsFromCurrencyBase(currencyBase: String, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    private fun parseCurrencyPairsFromCurrencyBase(currencyBase: String, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         if (!jsonObject.has(currencyBase)) return
         val currencyBaseJsonObject = jsonObject.getJSONObject(currencyBase)
         val counterCurrencyNames = currencyBaseJsonObject.names()

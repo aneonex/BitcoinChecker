@@ -36,7 +36,7 @@ class Cryptonit : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairs(requestId: Int, responseString: String?, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairs(requestId: Int, responseString: String, pairs: MutableList<CurrencyPairInfo>) {
         val pairsJsonArray = JSONArray(responseString)
         var currenciesJsonArray: JSONArray? = null
         for (i in 0 until pairsJsonArray.length()) {

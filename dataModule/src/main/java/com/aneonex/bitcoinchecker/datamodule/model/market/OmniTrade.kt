@@ -31,7 +31,7 @@ class OmniTrade : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairs(requestId: Int, responseString: String?, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairs(requestId: Int, responseString: String, pairs: MutableList<CurrencyPairInfo>) {
         val pairsArray = JSONArray(responseString)
         for (i in 0 until pairsArray.length()) {
             val pair = pairsArray.getJSONObject(i)

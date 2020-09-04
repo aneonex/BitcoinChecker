@@ -37,7 +37,7 @@ class Livecoin : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairs(requestId: Int, responseString: String?, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairs(requestId: Int, responseString: String, pairs: MutableList<CurrencyPairInfo>) {
         val tickerArray = JSONArray(responseString)
         for (i in 0 until tickerArray.length()) {
             val tickerRow = tickerArray.getJSONObject(i)

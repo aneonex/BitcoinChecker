@@ -56,7 +56,7 @@ class BitMEX : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairs(requestId: Int, responseString: String?, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairs(requestId: Int, responseString: String, pairs: MutableList<CurrencyPairInfo>) {
         val instruments = JSONArray(responseString)
         for (i in 0 until instruments.length()) {
             parseCurrencyPairsFromJsonObject(requestId, instruments.getJSONObject(i), pairs)
@@ -64,7 +64,7 @@ class BitMEX : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         var base = jsonObject.getString("rootSymbol")
         val id = jsonObject.getString("symbol")
         var quote = id.substring(id.indexOf(base) + base.length)

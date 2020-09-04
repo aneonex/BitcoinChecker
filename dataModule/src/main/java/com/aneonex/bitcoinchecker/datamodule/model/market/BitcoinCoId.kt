@@ -36,7 +36,7 @@ class BitcoinCoId : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         val tickersJsonObject = jsonObject.getJSONObject("tickers")
         val tickerNamesArray = tickersJsonObject.names()
         for (i in 0 until tickerNamesArray.length()) {

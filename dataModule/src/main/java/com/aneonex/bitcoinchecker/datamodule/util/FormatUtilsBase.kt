@@ -26,11 +26,11 @@ object FormatUtilsBase {
         return formatDouble(FORMAT_FIVE_SIGNIFICANT_AT_MOST, value)
     }
 
-    internal fun formatDoubleWithEightMax(value: Double): String {
+    fun formatDoubleWithEightMax(value: Double): String {
         return formatDouble(FORMAT_EIGHT_SIGNIFICANT_AT_MOST, value)
     }
 
-    internal fun formatDouble(decimalFormat: DecimalFormat, value: Double): String {
+    fun formatDouble(decimalFormat: DecimalFormat, value: Double): String {
         synchronized(decimalFormat) {
             try {
                 return decimalFormat.format(value)
@@ -48,7 +48,7 @@ object FormatUtilsBase {
         return formatPriceWithCurrency(price, subunitDst, true)
     }
 
-    internal fun formatPriceWithCurrency(price: Double, subunitDst: CurrencySubunit, showCurrencyDst: Boolean): String {
+    fun formatPriceWithCurrency(price: Double, subunitDst: CurrencySubunit, showCurrencyDst: Boolean): String {
         var priceString = formatPriceValueForSubunit(price, subunitDst, false, false)
         if (showCurrencyDst) {
             priceString = formatPriceWithCurrency(priceString, subunitDst.name)
@@ -57,11 +57,11 @@ object FormatUtilsBase {
     }
 
     @kotlin.jvm.JvmStatic
-    fun formatPriceWithCurrency(value: Double, currency: String?): String {
+    fun formatPriceWithCurrency(value: Double, currency: String): String {
         return formatPriceWithCurrency(formatDouble(value), currency)
     }
 
-    fun formatPriceWithCurrency(priceString: String, currency: String?): String {
+    fun formatPriceWithCurrency(priceString: String, currency: String): String {
         return priceString + " " + CurrencyUtils.getCurrencySymbol(currency)
     }
 

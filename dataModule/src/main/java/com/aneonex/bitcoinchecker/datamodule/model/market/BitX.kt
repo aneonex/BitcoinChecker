@@ -64,7 +64,7 @@ class BitX : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         val dataJsonArray = jsonObject.getJSONArray("tickers")
         for (i in 0 until dataJsonArray.length()) {
             val currencyPair = dataJsonArray.getJSONObject(i).getString("pair") ?: continue

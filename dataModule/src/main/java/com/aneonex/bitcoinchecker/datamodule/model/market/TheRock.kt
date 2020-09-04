@@ -77,7 +77,7 @@ class TheRock : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         val fundsJsonArray = jsonObject.getJSONArray("funds")
         for (i in 0 until fundsJsonArray.length()) {
             val pairJsonObject = fundsJsonArray.getJSONObject(i)

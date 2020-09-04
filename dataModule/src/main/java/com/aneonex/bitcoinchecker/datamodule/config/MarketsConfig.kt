@@ -6,7 +6,7 @@ import java.util.*
 
 object MarketsConfig {
     @kotlin.jvm.JvmField
-    val MARKETS = LinkedHashMap<String?, Market?>()
+    val MARKETS = LinkedHashMap<String, Market>()
     private fun addMarket(market: Market) {
         MARKETS[market.key] = market
     }

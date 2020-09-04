@@ -13,7 +13,7 @@ abstract class Market(name: String, ttsName: String, currencyPairs: CurrencyPair
 	val name: String
     val ttsName: String
     @kotlin.jvm.JvmField
-	var currencyPairs: HashMap<String, Array<CharSequence>>?
+	val currencyPairs: CurrencyPairsMap?
     open val cautionResId: Int
         get() = 0
 
@@ -46,12 +46,12 @@ abstract class Market(name: String, ttsName: String, currencyPairs: CurrencyPair
     // Parse Ticker Error
     // ====================
     @Throws(Exception::class)
-    fun parseErrorMain(requestId: Int, responseString: String?, checkerInfo: CheckerInfo): String? {
+    fun parseErrorMain(requestId: Int, responseString: String, checkerInfo: CheckerInfo): String? {
         return parseError(requestId, responseString, checkerInfo)
     }
 
     @Throws(Exception::class)
-    protected open fun parseError(requestId: Int, responseString: String?, checkerInfo: CheckerInfo): String? {
+    protected open fun parseError(requestId: Int, responseString: String, checkerInfo: CheckerInfo): String? {
         return parseErrorFromJsonObject(requestId, JSONObject(responseString), checkerInfo)
     }
 
@@ -71,7 +71,7 @@ abstract class Market(name: String, ttsName: String, currencyPairs: CurrencyPair
     }
 
     @Throws(Exception::class)
-    fun parseCurrencyPairsMain(requestId: Int, responseString: String?, pairs: MutableList<CurrencyPairInfo?>) {
+    fun parseCurrencyPairsMain(requestId: Int, responseString: String, pairs: MutableList<CurrencyPairInfo>) {
         parseCurrencyPairs(requestId, responseString, pairs)
         for (i in pairs.indices.reversed()) {
             val currencyPairInfo = pairs[i]
@@ -80,12 +80,12 @@ abstract class Market(name: String, ttsName: String, currencyPairs: CurrencyPair
     }
 
     @Throws(Exception::class)
-    protected open fun parseCurrencyPairs(requestId: Int, responseString: String?, pairs: MutableList<CurrencyPairInfo?>) {
+    protected open fun parseCurrencyPairs(requestId: Int, responseString: String, pairs: MutableList<CurrencyPairInfo>) {
         parseCurrencyPairsFromJsonObject(requestId, JSONObject(responseString), pairs)
     }
 
     @Throws(Exception::class)
-    protected open fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    protected open fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         // do parsing
     }
 

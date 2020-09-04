@@ -28,7 +28,7 @@ class Huobi : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         if ("ok".equals(jsonObject.getString("status"), ignoreCase = true)) {
             val data = jsonObject.getJSONArray("data")
             for (i in 0 until data.length()) {

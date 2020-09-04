@@ -193,7 +193,7 @@ class Cryptsy : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseError(requestId: Int, responseString: String?, checkerInfo: CheckerInfo): String? {
+    override fun parseError(requestId: Int, responseString: String, checkerInfo: CheckerInfo): String? {
         return if (checkerInfo.currencyPairId == null) {
             "Perform sync and re-add this Checker"
         } else super.parseError(requestId, responseString, checkerInfo)
@@ -207,7 +207,7 @@ class Cryptsy : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         val dataJsonArray = jsonObject.getJSONArray("data")
         for (i in 0 until dataJsonArray.length()) {
             val marketObject = dataJsonArray.getJSONObject(i)

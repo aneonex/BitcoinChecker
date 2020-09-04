@@ -1,11 +1,13 @@
 package com.aneonex.bitcoinchecker.datamodule.util
 
 import com.aneonex.bitcoinchecker.datamodule.model.CurrencyPairsListWithDate
+import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
 import java.util.*
+import kotlin.collections.ArrayList
 
 class CurrencyPairsMapHelper(currencyPairsListWithDate: CurrencyPairsListWithDate?) {
     val date: Long
-    val currencyPairs: HashMap<String?, Array<CharSequence?>>
+    val currencyPairs: CurrencyPairsMap
     private val currencyPairsIds: HashMap<String, String?>
     var pairsCount = 0
     fun getCurrencyPairId(currencyBase: String?, currencyCounter: String?): String? {
@@ -17,7 +19,7 @@ class CurrencyPairsMapHelper(currencyPairsListWithDate: CurrencyPairsListWithDat
     }
 
     init {
-        currencyPairs = LinkedHashMap()
+        currencyPairs = CurrencyPairsMap()
         currencyPairsIds = HashMap()
 
         if (currencyPairsListWithDate == null) {
@@ -25,31 +27,40 @@ class CurrencyPairsMapHelper(currencyPairsListWithDate: CurrencyPairsListWithDat
         }
         else {
             date = currencyPairsListWithDate.date
-            val sortedPairs = currencyPairsListWithDate.pairs
-            pairsCount = sortedPairs!!.size
-            val currencyGroupSizes = HashMap<String?, Int>()
-            for (currencyPairInfo in sortedPairs) {
-                var currentCurrencyGroupSize = currencyGroupSizes[currencyPairInfo.currencyBase]
-                if (currentCurrencyGroupSize == null) {
-                    currentCurrencyGroupSize = 1
-                } else {
-                    ++currentCurrencyGroupSize
+
+            if(currencyPairsListWithDate.pairs != null) {
+                val sortedPairs = currencyPairsListWithDate.pairs!!
+
+                pairsCount = sortedPairs.size
+
+                val currencyGroupSizes = HashMap<String, Int>()
+                for (currencyPairInfo in sortedPairs) {
+                    var currentCurrencyGroupSize = currencyGroupSizes[currencyPairInfo.currencyBase]
+                    if (currentCurrencyGroupSize == null) {
+                        currentCurrencyGroupSize = 1
+                    } else {
+                        ++currentCurrencyGroupSize
+                    }
+                    currencyGroupSizes[currencyPairInfo.currencyBase] = currentCurrencyGroupSize
                 }
-                currencyGroupSizes[currencyPairInfo.currencyBase] = currentCurrencyGroupSize
-            }
-            var currentGroupPositionToInsert = 0
-            for (currencyPairInfo in sortedPairs) {
-                var currencyGroup = currencyPairs[currencyPairInfo.currencyBase]
-                if (currencyGroup == null) {
-                    currencyGroup = arrayOfNulls(currencyGroupSizes[currencyPairInfo.currencyBase]!!)
-                    currencyPairs[currencyPairInfo.currencyBase] = currencyGroup
-                    currentGroupPositionToInsert = 0
-                } else {
-                    ++currentGroupPositionToInsert
-                }
-                currencyGroup[currentGroupPositionToInsert] = currencyPairInfo.currencyCounter
-                if (currencyPairInfo.currencyPairId != null) {
-                    currencyPairsIds[createCurrencyPairKey(currencyPairInfo.currencyBase, currencyPairInfo.currencyCounter)] = currencyPairInfo.currencyPairId
+
+                val x = listOf<String>();
+
+                var currentGroupPositionToInsert = 0
+                for (currencyPairInfo in sortedPairs) {
+                    var currencyGroup = currencyPairs[currencyPairInfo.currencyBase]
+                    if (currencyGroup == null) {
+                        currencyGroup = arrayOf()  //arrayOfNulls(currencyGroupSizes[currencyPairInfo.currencyBase]!!)
+                        currencyPairs[currencyPairInfo.currencyBase] = currencyGroup
+                        currentGroupPositionToInsert = 0
+                    } else {
+                        ++currentGroupPositionToInsert
+                    }
+                    currencyGroup[currentGroupPositionToInsert] = currencyPairInfo.currencyCounter
+                    if (currencyPairInfo.currencyPairId != null) {
+                        val pairKey = createCurrencyPairKey(currencyPairInfo.currencyBase, currencyPairInfo.currencyCounter)
+                        currencyPairsIds[pairKey] = currencyPairInfo.currencyPairId
+                    }
                 }
             }
         }

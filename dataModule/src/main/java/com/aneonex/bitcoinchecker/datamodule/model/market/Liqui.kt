@@ -37,7 +37,7 @@ class Liqui : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         val pairsJsonObject = jsonObject.getJSONObject("pairs")
         val pairsNames = pairsJsonObject.names()
         for (i in 0 until pairsNames.length()) {

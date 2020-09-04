@@ -93,9 +93,9 @@ class Bitfinex : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
         var pairId = checkerInfo.currencyPairId
         if (pairId == null) {
-            pairId = String.format("%1\$s%2\$s",
-                    checkerInfo.currencyBaseLowerCase,
-                    checkerInfo.currencyCounterLowerCase)
+            pairId = String.format("t%1\$s%2\$s",
+                    checkerInfo.currencyBase.toUpperCase(),
+                    checkerInfo.currencyCounter.toUpperCase())
         }
         return String.format(URL, pairId)
     }
@@ -119,7 +119,7 @@ class Bitfinex : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairs(requestId: Int, responseString: String?, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairs(requestId: Int, responseString: String, pairs: MutableList<CurrencyPairInfo>) {
         val pairsArray = JSONArray(responseString)
         for (i in 0 until pairsArray.length()) {
             val pairArray = pairsArray.getJSONArray(i)

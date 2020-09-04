@@ -37,7 +37,7 @@ class LakeBTC : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         val pairsJsonArray = jsonObject.names()
         for (i in 0 until pairsJsonArray.length()) {
             val pairId = pairsJsonArray.getString(i)

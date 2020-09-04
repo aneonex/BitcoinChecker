@@ -58,7 +58,7 @@ class Prelude : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo?>) {
+    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         val pairingsArray = jsonObject.getJSONArray("pairings")
         val currencyCounter = jsonObject.getString("from")
         for (i in 0 until pairingsArray.length()) {
