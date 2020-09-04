@@ -5,13 +5,14 @@ import android.text.format.DateFormat
 import android.text.format.DateUtils
 import com.aneonex.bitcoinchecker.datamodule.model.CurrencySubunit
 import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.util.*
 
 object FormatUtilsBase {
     // ====================
     // Double formatting
     // ====================
-    private val FORMAT_TWO_DECIMAL = DecimalFormat("0.00")
+    private val FORMAT_TWO_DECIMAL = DecimalFormat("#,###.00")
     private val FORMAT_FIVE_SIGNIFICANT_AT_MOST = DecimalFormat("@#####")
     private val FORMAT_EIGHT_SIGNIFICANT_AT_MOST = DecimalFormat("@#######")
 

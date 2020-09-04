@@ -2,8 +2,6 @@ package com.aneonex.bitcoinchecker.datamodule.util
 
 import com.aneonex.bitcoinchecker.datamodule.model.CurrencyPairsListWithDate
 import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
-import java.util.*
-import kotlin.collections.ArrayList
 
 class CurrencyPairsMapHelper(currencyPairsListWithDate: CurrencyPairsListWithDate?) {
     val date: Long
@@ -33,6 +31,7 @@ class CurrencyPairsMapHelper(currencyPairsListWithDate: CurrencyPairsListWithDat
 
                 pairsCount = sortedPairs.size
 
+                // Calculate size for every currency group
                 val currencyGroupSizes = HashMap<String, Int>()
                 for (currencyPairInfo in sortedPairs) {
                     var currentCurrencyGroupSize = currencyGroupSizes[currencyPairInfo.currencyBase]
@@ -44,13 +43,12 @@ class CurrencyPairsMapHelper(currencyPairsListWithDate: CurrencyPairsListWithDat
                     currencyGroupSizes[currencyPairInfo.currencyBase] = currentCurrencyGroupSize
                 }
 
-                val x = listOf<String>();
-
                 var currentGroupPositionToInsert = 0
                 for (currencyPairInfo in sortedPairs) {
                     var currencyGroup = currencyPairs[currencyPairInfo.currencyBase]
                     if (currencyGroup == null) {
-                        currencyGroup = arrayOf()  //arrayOfNulls(currencyGroupSizes[currencyPairInfo.currencyBase]!!)
+                        // Initialize array with pre-calculated size
+                        currencyGroup = Array(currencyGroupSizes[currencyPairInfo.currencyBase] ?: 0) { i ->  String() }
                         currencyPairs[currencyPairInfo.currencyBase] = currencyGroup
                         currentGroupPositionToInsert = 0
                     } else {
