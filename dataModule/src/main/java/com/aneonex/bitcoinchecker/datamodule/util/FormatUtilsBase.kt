@@ -5,7 +5,6 @@ import android.text.format.DateFormat
 import android.text.format.DateUtils
 import com.aneonex.bitcoinchecker.datamodule.model.CurrencySubunit
 import java.text.DecimalFormat
-import java.text.NumberFormat
 import java.util.*
 
 object FormatUtilsBase {
@@ -27,11 +26,11 @@ object FormatUtilsBase {
         return formatDouble(FORMAT_FIVE_SIGNIFICANT_AT_MOST, value)
     }
 
-    fun formatDoubleWithEightMax(value: Double): String {
+    private fun formatDoubleWithEightMax(value: Double): String {
         return formatDouble(FORMAT_EIGHT_SIGNIFICANT_AT_MOST, value)
     }
 
-    fun formatDouble(decimalFormat: DecimalFormat, value: Double): String {
+    private fun formatDouble(decimalFormat: DecimalFormat, value: Double): String {
         synchronized(decimalFormat) {
             try {
                 return decimalFormat.format(value)
@@ -50,7 +49,7 @@ object FormatUtilsBase {
     }
 
     fun formatPriceWithCurrency(price: Double, subunitDst: CurrencySubunit, showCurrencyDst: Boolean): String {
-        var priceString = formatPriceValueForSubunit(price, subunitDst, false, false)
+        var priceString = formatPriceValueForSubunit(price, subunitDst, forceInteger = false, skipNoSignificantDecimal = false)
         if (showCurrencyDst) {
             priceString = formatPriceWithCurrency(priceString, subunitDst.name)
         }
@@ -62,7 +61,7 @@ object FormatUtilsBase {
         return formatPriceWithCurrency(formatDouble(value), currency)
     }
 
-    fun formatPriceWithCurrency(priceString: String, currency: String): String {
+    private fun formatPriceWithCurrency(priceString: String, currency: String): String {
         return priceString + " " + CurrencyUtils.getCurrencySymbol(currency)
     }
 

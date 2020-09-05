@@ -4,7 +4,6 @@ import com.aneonex.bitcoinchecker.datamodule.model.CheckerInfo
 import com.aneonex.bitcoinchecker.datamodule.model.CurrencyPairInfo
 import com.aneonex.bitcoinchecker.datamodule.model.Market
 import com.aneonex.bitcoinchecker.datamodule.model.Ticker
-import com.aneonex.bitcoinchecker.datamodule.model.currency.VirtualCurrency
 import org.json.JSONObject
 
 class Binance : Market(NAME, TTS_NAME, null) {
@@ -54,11 +53,5 @@ class Binance : Market(NAME, TTS_NAME, null) {
         private const val TTS_NAME = NAME
         private const val URL = "https://api.binance.com/api/v3/ticker/24hr?symbol=%1\$s"
         private const val URL_CURRENCY_PAIRS = "https://api.binance.com/api/v3/exchangeInfo"
-        private val COUNTER_CURRENCIES = arrayOf(
-                VirtualCurrency.BNB,
-                VirtualCurrency.BTC,
-                VirtualCurrency.ETH,
-                VirtualCurrency.USDT
-        )
     }
 }

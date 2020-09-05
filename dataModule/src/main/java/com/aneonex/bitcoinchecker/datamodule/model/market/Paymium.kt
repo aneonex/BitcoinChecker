@@ -7,7 +7,6 @@ import com.aneonex.bitcoinchecker.datamodule.model.currency.Currency
 import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
 import com.aneonex.bitcoinchecker.datamodule.model.currency.VirtualCurrency
 import org.json.JSONObject
-import java.util.*
 
 class Paymium : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     companion object {
@@ -42,7 +41,7 @@ class Paymium : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
         val stringBuilder = StringBuilder()
         val errorsArray = jsonObject.getJSONArray("errors")
         for (i in 0 until errorsArray.length()) {
-            if (stringBuilder.length != 0) {
+            if (stringBuilder.isNotEmpty()) {
                 stringBuilder.append("\n")
             }
             stringBuilder.append(errorsArray.getString(i))

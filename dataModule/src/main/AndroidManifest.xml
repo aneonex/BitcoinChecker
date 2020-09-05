@@ -3,8 +3,4 @@
     android:versionCode="1"
     android:versionName="2.0" >
 
-    <!--uses-sdk
-        android:minSdkVersion="9"
-        android:targetSdkVersion="18" /-->
-
 </manifest>

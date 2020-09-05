@@ -1,11 +1,11 @@
 package com.aneonex.bitcoinchecker.datamodule.model.currency
 
 object VirtualCurrency {
-    const val _10_5 = "10-5"
-    const val _21 = "21"
-    const val _42 = "42"
-    const val _66 = "66"
-    const val _888 = "888"
+//    const val _10_5 = "10-5"
+//    const val _21 = "21"
+//    const val _42 = "42"
+//    const val _66 = "66"
+//    const val _888 = "888"
     const val ADT = "ADT"
     const val AE = "AE"
     const val ALB = "ALB"
@@ -236,7 +236,7 @@ object VirtualCurrency {
     const val ORG = "ORG"
     const val ORO = "ORO"
     const val OSC = "OSC"
-    const val `P$` = "P$"
+//    const val `P$` = "P$"
     const val PAND = "PAND"
     const val PANDA = "PANDA"
     const val PCC = "PCC"

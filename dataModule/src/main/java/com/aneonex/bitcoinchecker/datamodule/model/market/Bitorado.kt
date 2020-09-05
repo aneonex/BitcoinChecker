@@ -14,11 +14,11 @@ class Bitorado : Market(NAME, TTS_NAME, null) {
     @Throws(Exception::class)
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
         val resultObject = jsonObject.getJSONObject("result")
-        ticker.bid = resultObject.optDouble("buy", Ticker.Companion.NO_DATA.toDouble())
-        ticker.ask = resultObject.optDouble("sell", Ticker.Companion.NO_DATA.toDouble())
-        ticker.vol = resultObject.optDouble("vol", Ticker.Companion.NO_DATA.toDouble())
-        ticker.high = resultObject.optDouble("high", Ticker.Companion.NO_DATA.toDouble())
-        ticker.low = resultObject.optDouble("low", Ticker.Companion.NO_DATA.toDouble())
+        ticker.bid = resultObject.optDouble("buy", Ticker.NO_DATA.toDouble())
+        ticker.ask = resultObject.optDouble("sell", Ticker.NO_DATA.toDouble())
+        ticker.vol = resultObject.optDouble("vol", Ticker.NO_DATA.toDouble())
+        ticker.high = resultObject.optDouble("high", Ticker.NO_DATA.toDouble())
+        ticker.low = resultObject.optDouble("low", Ticker.NO_DATA.toDouble())
         ticker.last = resultObject.optDouble("last", 0.0)
     }
 

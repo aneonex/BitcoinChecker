@@ -24,10 +24,8 @@ object MarketsConfigUtils {
     }
 
     fun getMarketIdByKey(key: String): Int {
-        var i = 0
-        for (market in MarketsConfig.MARKETS.values) {
-            if (market!!.key == key) return i
-            ++i
+        for ((i, market) in MarketsConfig.MARKETS.values.withIndex()) {
+            if (market.key == key) return i
         }
         return 0
     }

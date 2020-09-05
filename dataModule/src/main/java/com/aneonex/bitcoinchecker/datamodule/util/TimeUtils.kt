@@ -1,7 +1,7 @@
 package com.aneonex.bitcoinchecker.datamodule.util
 
 object TimeUtils {
-    const val NANOS_IN_MILLIS: Long = 1000
+//    const val NANOS_IN_MILLIS: Long = 1000
     const val MILLIS_IN_SECOND: Long = 1000
     const val MILLIS_IN_MINUTE = 60 * MILLIS_IN_SECOND
     const val MILLIS_IN_HOUR = 60 * MILLIS_IN_MINUTE

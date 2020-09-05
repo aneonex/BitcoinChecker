@@ -91,7 +91,7 @@ class Bithumb : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     private fun getFirstPriceFromOrder(jsonObject: JSONObject, key: String): Double {
         val array = jsonObject.getJSONArray(key)
         if (array.length() == 0) {
-            return Ticker.Companion.NO_DATA.toDouble()
+            return Ticker.NO_DATA.toDouble()
         }
         val first = array.getJSONObject(0)
         return first.getDouble("price")

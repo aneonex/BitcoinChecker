@@ -15,11 +15,8 @@ class LakeBTC : Market(NAME, TTS_NAME, null) {
     @Throws(Exception::class)
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
         val pairId: String?
-        pairId = if (checkerInfo.currencyPairId == null) {
-            checkerInfo.currencyBaseLowerCase + checkerInfo.currencyCounterLowerCase
-        } else {
-            checkerInfo.currencyPairId
-        }
+        pairId = checkerInfo.currencyPairId
+                ?: checkerInfo.currencyBaseLowerCase + checkerInfo.currencyCounterLowerCase
         val pairJsonObject = jsonObject.getJSONObject(pairId)
         ticker.bid = pairJsonObject.getDouble("bid")
         ticker.ask = pairJsonObject.getDouble("ask")

@@ -29,7 +29,7 @@ class Comkort : Market(NAME, TTS_NAME, null) {
         val ordersJsonArray = marketJsonObject.getJSONArray(arrayName)
         return if (ordersJsonArray.length() > 0) {
             ordersJsonArray.getJSONObject(0).getDouble("price")
-        } else Ticker.Companion.NO_DATA.toDouble()
+        } else Ticker.NO_DATA.toDouble()
     }
 
     // ====================

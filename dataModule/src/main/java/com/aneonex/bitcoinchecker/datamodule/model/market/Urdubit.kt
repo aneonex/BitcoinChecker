@@ -7,7 +7,6 @@ import com.aneonex.bitcoinchecker.datamodule.model.currency.Currency
 import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
 import com.aneonex.bitcoinchecker.datamodule.model.currency.VirtualCurrency
 import org.json.JSONObject
-import java.util.*
 
 /**
  * Created by naveed on 17/01/2017.

@@ -5,8 +5,8 @@ import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
 
 class CurrencyPairsMapHelper(currencyPairsListWithDate: CurrencyPairsListWithDate?) {
     val date: Long
-    val currencyPairs: CurrencyPairsMap
-    private val currencyPairsIds: HashMap<String, String?>
+    val currencyPairs: CurrencyPairsMap = CurrencyPairsMap()
+    private val currencyPairsIds: HashMap<String, String?> = HashMap()
     var pairsCount = 0
     fun getCurrencyPairId(currencyBase: String?, currencyCounter: String?): String? {
         return currencyPairsIds[createCurrencyPairKey(currencyBase, currencyCounter)]
@@ -17,8 +17,6 @@ class CurrencyPairsMapHelper(currencyPairsListWithDate: CurrencyPairsListWithDat
     }
 
     init {
-        currencyPairs = CurrencyPairsMap()
-        currencyPairsIds = HashMap()
 
         if (currencyPairsListWithDate == null) {
             date = 0
@@ -48,7 +46,7 @@ class CurrencyPairsMapHelper(currencyPairsListWithDate: CurrencyPairsListWithDat
                     var currencyGroup = currencyPairs[currencyPairInfo.currencyBase]
                     if (currencyGroup == null) {
                         // Initialize array with pre-calculated size
-                        currencyGroup = Array(currencyGroupSizes[currencyPairInfo.currencyBase] ?: 0) { i ->  String() }
+                        currencyGroup = Array(currencyGroupSizes[currencyPairInfo.currencyBase] ?: 0) { String() }
                         currencyPairs[currencyPairInfo.currencyBase] = currencyGroup
                         currentGroupPositionToInsert = 0
                     } else {

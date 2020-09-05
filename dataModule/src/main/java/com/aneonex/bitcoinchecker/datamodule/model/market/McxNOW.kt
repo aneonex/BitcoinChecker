@@ -47,7 +47,7 @@ class McxNOW : Market(NAME, TTS_NAME, null) {
                 }
             }
         }
-        return Ticker.Companion.NO_DATA.toDouble()
+        return Ticker.NO_DATA.toDouble()
     }
 
     // ====================

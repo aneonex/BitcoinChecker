@@ -94,8 +94,8 @@ class Bitfinex : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
         var pairId = checkerInfo.currencyPairId
         if (pairId == null) {
             pairId = String.format("t%1\$s%2\$s",
-                    checkerInfo.currencyBase.toUpperCase(),
-                    checkerInfo.currencyCounter.toUpperCase())
+                    checkerInfo.currencyBase.toUpperCase(Locale.ROOT),
+                    checkerInfo.currencyCounter.toUpperCase(Locale.ROOT))
         }
         return String.format(URL, pairId)
     }

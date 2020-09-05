@@ -7,7 +7,6 @@ import com.aneonex.bitcoinchecker.datamodule.model.currency.Currency
 import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
 import com.aneonex.bitcoinchecker.datamodule.model.currency.VirtualCurrency
 import org.json.JSONObject
-import java.util.*
 
 class Coinone : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     companion object {
@@ -70,7 +69,7 @@ class Coinone : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     private fun getFirstPriceFromOrder(jsonObject: JSONObject, key: String): Double {
         val array = jsonObject.getJSONArray(key)
         if (array.length() == 0) {
-            return Ticker.Companion.NO_DATA.toDouble()
+            return Ticker.NO_DATA.toDouble()
         }
         val first = array.getJSONObject(0)
         return first.getDouble("price")

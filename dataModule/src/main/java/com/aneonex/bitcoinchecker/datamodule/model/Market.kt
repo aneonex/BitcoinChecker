@@ -4,16 +4,19 @@ import android.text.TextUtils
 import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
 import com.aneonex.bitcoinchecker.datamodule.util.TimeUtils
 import org.json.JSONObject
-import java.util.*
 
 abstract class Market(name: String, ttsName: String, currencyPairs: CurrencyPairsMap?) {
     @kotlin.jvm.JvmField
-	val key: String
+	val key: String = this.javaClass.simpleName
+
     @kotlin.jvm.JvmField
-	val name: String
-    val ttsName: String
+	val name: String = name
+
+    val ttsName: String = ttsName
+
     @kotlin.jvm.JvmField
 	val currencyPairs: CurrencyPairsMap?
+
     open val cautionResId: Int
         get() = 0
 
@@ -75,7 +78,7 @@ abstract class Market(name: String, ttsName: String, currencyPairs: CurrencyPair
         parseCurrencyPairs(requestId, responseString, pairs)
         for (i in pairs.indices.reversed()) {
             val currencyPairInfo = pairs[i]
-            if (currencyPairInfo == null || TextUtils.isEmpty(currencyPairInfo.currencyBase) || TextUtils.isEmpty(currencyPairInfo.currencyCounter)) pairs.removeAt(i)
+            if (TextUtils.isEmpty(currencyPairInfo.currencyBase) || TextUtils.isEmpty(currencyPairInfo.currencyCounter)) pairs.removeAt(i)
         }
     }
 
@@ -90,9 +93,6 @@ abstract class Market(name: String, ttsName: String, currencyPairs: CurrencyPair
     }
 
     init {
-        key = this.javaClass.simpleName
-        this.name = name
-        this.ttsName = ttsName
         this.currencyPairs = currencyPairs
     }
 }

@@ -6,7 +6,6 @@ import com.aneonex.bitcoinchecker.datamodule.model.Ticker
 import com.aneonex.bitcoinchecker.datamodule.model.currency.Currency
 import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
 import org.json.JSONObject
-import java.util.*
 
 class DolarBlueNet : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     companion object {

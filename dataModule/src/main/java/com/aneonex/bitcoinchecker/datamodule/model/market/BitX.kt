@@ -30,11 +30,8 @@ class BitX : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
 
     override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
         val pairString: String?
-        pairString = if (checkerInfo.currencyPairId == null) {
-            String.format("%1\$s%2\$s", fixCurrency(checkerInfo.currencyBase), fixCurrency(checkerInfo.currencyCounter))
-        } else {
-            checkerInfo.currencyPairId
-        }
+        pairString = checkerInfo.currencyPairId
+                ?: String.format("%1\$s%2\$s", fixCurrency(checkerInfo.currencyBase), fixCurrency(checkerInfo.currencyCounter))
         return String.format(URL, pairString)
     }
 

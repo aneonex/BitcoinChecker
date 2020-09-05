@@ -1,11 +1,10 @@
 package com.aneonex.bitcoinchecker.datamodule.model.market
 
+import com.aneonex.bitcoinchecker.datamodule.R
 import com.aneonex.bitcoinchecker.datamodule.model.CheckerInfo
 import com.aneonex.bitcoinchecker.datamodule.model.Market
 import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
 import com.aneonex.bitcoinchecker.datamodule.model.currency.VirtualCurrency
-import com.aneonex.bitcoinchecker.datamodule.R
-import java.util.*
 
 class Unknown : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     companion object {

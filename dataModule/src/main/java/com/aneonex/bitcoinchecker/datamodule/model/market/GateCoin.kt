@@ -47,7 +47,7 @@ class GateCoin : Market(NAME, TTS_NAME, null) {
             val pairId = pairNames.getJSONObject(i).getString("currencyPair") ?: continue
             //split by index - use char positions (start, end+1) as index
             val baseCurrency = pairId.substring(0, 3) //base currency
-            var counterCurrency = pairId.substring(3, 6) //counter currency
+            val counterCurrency = pairId.substring(3, 6) //counter currency
 
             if(baseCurrency.isEmpty() || counterCurrency.isEmpty()) continue
 

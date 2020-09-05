@@ -8,7 +8,6 @@ import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
 import com.aneonex.bitcoinchecker.datamodule.model.currency.VirtualCurrency
 import com.aneonex.bitcoinchecker.datamodule.util.TimeUtils
 import org.json.JSONObject
-import java.util.*
 
 class Coinapult : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     companion object {

@@ -7,7 +7,6 @@ import com.aneonex.bitcoinchecker.datamodule.model.currency.Currency
 import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
 import com.aneonex.bitcoinchecker.datamodule.model.currency.VirtualCurrency
 import org.json.JSONObject
-import java.util.*
 
 class Ripio : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     companion object {

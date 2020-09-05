@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package com.aneonex.bitcoinchecker.datamodule.model.market
 
 import com.aneonex.bitcoinchecker.datamodule.model.CheckerInfo

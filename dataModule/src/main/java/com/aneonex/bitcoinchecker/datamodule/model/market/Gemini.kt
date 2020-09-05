@@ -7,7 +7,6 @@ import com.aneonex.bitcoinchecker.datamodule.model.currency.Currency
 import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
 import com.aneonex.bitcoinchecker.datamodule.model.currency.VirtualCurrency
 import org.json.JSONObject
-import java.util.*
 
 class Gemini : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     companion object {
@@ -47,11 +46,11 @@ class Gemini : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
         if (asksArray != null && asksArray.length() > 0) {
             ticker.ask = asksArray.getJSONObject(0).getDouble("price")
         }
-        if (ticker.bid != Ticker.Companion.NO_DATA.toDouble() && ticker.ask != Ticker.Companion.NO_DATA.toDouble()) {
+        if (ticker.bid != Ticker.NO_DATA.toDouble() && ticker.ask != Ticker.NO_DATA.toDouble()) {
             ticker.last = (ticker.bid + ticker.ask) / 2.0
-        } else if (ticker.bid != Ticker.Companion.NO_DATA.toDouble()) {
+        } else if (ticker.bid != Ticker.NO_DATA.toDouble()) {
             ticker.last = ticker.bid
-        } else if (ticker.ask != Ticker.Companion.NO_DATA.toDouble()) {
+        } else if (ticker.ask != Ticker.NO_DATA.toDouble()) {
             ticker.last = ticker.ask
         } else {
             ticker.last = 0.0
