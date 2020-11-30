@@ -12,7 +12,7 @@ import org.json.JSONObject
 
 class CapeCrypto : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     companion object {
-        private const val NAME = "CapeCrypto"
+        private const val NAME = "Cape Crypto"
         private const val TTS_NAME = NAME
         // private const val URL_TICKER = "https://trade.capecrypto.com/api/v2/peatio/public/markets/btczar/tickers"
         private const val URL_TICKER = "https://trade.capecrypto.com/api/v2/peatio/public/markets/%1\$s%2\$s/tickers"
