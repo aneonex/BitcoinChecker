@@ -12,6 +12,7 @@ class BtcMarkets : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     companion object {
         private const val NAME = "BtcMarkets.net"
         private const val TTS_NAME = "BTC Markets net"
+        //TODO Use https://api.btcmarkets.net/v3/markets to get list of active markets instead of this hardcoded list
         private const val URL = "https://api.btcmarkets.net/market/%1\$s/%2\$s/tick"
         private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
 
@@ -24,7 +25,6 @@ class BtcMarkets : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
                     Currency.AUD
             )
             CURRENCY_PAIRS[VirtualCurrency.ETC] = arrayOf(
-                    VirtualCurrency.BTC,
                     Currency.AUD
             )
             CURRENCY_PAIRS[VirtualCurrency.ETH] = arrayOf(
@@ -36,7 +36,42 @@ class BtcMarkets : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
                     Currency.AUD
             )
             CURRENCY_PAIRS[VirtualCurrency.BCH] = arrayOf(
-                    VirtualCurrency.BTC,
+                    Currency.AUD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.COMP] = arrayOf(
+                    Currency.AUD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ALGO] = arrayOf(
+                    Currency.AUD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.MCAU] = arrayOf(
+                    Currency.AUD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.USDT] = arrayOf(
+                    Currency.AUD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.POWR] = arrayOf(
+                    Currency.AUD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.OMG] = arrayOf(
+                    Currency.AUD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.BSV] = arrayOf(
+                    Currency.AUD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.GNT] = arrayOf(
+                    Currency.AUD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.BAT] = arrayOf(
+                    Currency.AUD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.XLM] = arrayOf(
+                    Currency.AUD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.ENJ] = arrayOf(
+                    Currency.AUD
+            )
+            CURRENCY_PAIRS[VirtualCurrency.LINK] = arrayOf(
                     Currency.AUD
             )
         }
