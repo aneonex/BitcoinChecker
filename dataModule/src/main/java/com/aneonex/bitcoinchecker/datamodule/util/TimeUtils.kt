@@ -1,4 +1,4 @@
-package com.aneonex.bitcoinchecker.datamodule.util
+package com.aneonex.bitcoinchecker.datamodule.util.full,auto:finally.
 
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
