@@ -1,10 +1,10 @@
 # Bitcoin Checker
 
-<img src="docs/app_screenshot.png" width="200" alt="The app screenshot">
-<a href="https://play.google.com/store/apps/details?id=com.aneonex.bitcoinchecker">
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/200px-Google_Play_Store_badge_EN.svg.png" width="200" style="vertical-align: top; margin-left: 20px" alt="Get it on Google Play">
-</a>
-
+<p float="left" align="top">
+<img src="docs/app_screenshot.png" width="140" alt="The app screenshot">
+&nbsp;&nbsp;
+  <a href='https://play.google.com/store/apps/details?id=com.aneonex.bitcoinchecker'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width="200" align="top"/></a>
+</p>
 
 > Notice: This project continues the development of the [previous inactive project Bitcoin Checker](https://github.com/mobnetic/BitcoinChecker).
 
@@ -25,7 +25,10 @@ Bitcoin Checker app available on Google Play: https://play.google.com/store/apps
 
 ## Donate ⭐
 If you like Bitcoin Checker, you can donate for the development and support of the application:
-- BTC: 1ADwViiQWaiw5ghkcNnSRA5KDZhdhgGvR1
-- ETH: 0x39F4C57F0136FB7F660c93E9d22c99E451627967
+
+|  | donation address |
+| --- | --- |
+| BTC | 1ADwViiQWaiw5ghkcNnSRA5KDZhdhgGvR1 |
+| ETH | 0x39F4C57F0136FB7F660c93E9d22c99E451627967 |
 
 Thank you!
