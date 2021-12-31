@@ -1,6 +1,3 @@
-[![Get it on Google Play](https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/200px-Google_Play_Store_badge_EN.svg.png)](https://play.google.com/store/apps/details?id=com.aneonex.bitcoinchecker)
-
-
 > Notice: This page is slightly outdated and needs updating (java->kotlin).
 
 # Contibuting to Bitcoin Checker
