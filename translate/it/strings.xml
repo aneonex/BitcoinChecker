@@ -9,8 +9,8 @@
     <string name="check_error_parse">Errore di analisi</string>
     <string name="check_error_server">Impossibile connettersi al server</string>
     <string name="check_error_timeout">Tempo scaduto</string>
-	<string name="check_error_database">Errore di Database</string>
-	<string name="check_error_no_internet">Nessuna connessione internet</string>
+    <string name="check_error_database">Errore di Database</string>
+    <string name="check_error_no_internet">Nessuna connessione internet</string>
     <string name="check_error_auth">Autenticazione richiesta</string>
     <string name="check_error_unknown">Errore sconosciuto</string>
     <string name="checker_add_alarm_category_title">Allarme</string>
@@ -38,8 +38,8 @@
     <string name="checker_add_alarm_value_title">Condizione valore</string>
     <string name="checker_add_alarm_vibrate_title">Vibrazione</string>
 
-	<string name="checker_add_checker_not_found">Allarme non trovato</string>
-	<string name="checker_add_check_currency_dst_dialog_sync">Aggiorna</string>
+    <string name="checker_add_checker_not_found">Allarme non trovato</string>
+    <string name="checker_add_check_currency_dst_dialog_sync">Aggiorna</string>
     <string name="checker_add_check_currency_dst_dialog_title">Quotazione valuta</string>
     <string name="checker_add_check_currency_dst_subunit_subtitle">Seleziona valuta</string>
     <string name="checker_add_check_currency_dst_subunit_title">Mostra formato prezzo</string>
@@ -60,14 +60,14 @@
     <string name="checker_add_check_tts_summary">Annuncia nuovo prezzo dopo il controllo</string>
     <string name="checker_add_check_tts_title">Avvisa tramite messaggio vocale</string>
 
-	<string name="checker_add_dynamic_currency_pairs_dialog_hint">Sincronizza quando vuoi per scaricare le ultime valute dall\'exchange.</string>
+    <string name="checker_add_dynamic_currency_pairs_dialog_hint">Sincronizza quando vuoi per scaricare le ultime valute dall\'exchange.</string>
     <string name="checker_add_dynamic_currency_pairs_dialog_last_sync">Ultimo aggiornamento: %1$s</string>
     <string name="checker_add_dynamic_currency_pairs_dialog_last_sync_never">mai</string>
     <string name="checker_add_dynamic_currency_pairs_dialog_pairs">Valute: %1$s</string>
     <string name="checker_add_dynamic_currency_pairs_dialog_title">Aggiorna valute</string>
     <string name="checker_add_dynamic_currency_pairs_sync_button">Sincronizza ora</string>
 
-	<string name="checker_add_enable">Attiva</string>
+    <string name="checker_add_enable">Attiva</string>
     <string name="checker_add_exchange_tutorial2_text">Tutte le informazioni sono scaricate <b>direttamente</b> dal server dell\'exchanger. Se qualcosa ha smesso di funzionare - probabilmente <b>non è colpa dell\'app</b>.\n\nMolto probabilmente il server dell\'exchange server presenta dei problemi o ha modificato le sue API quindi l\'app non riesce a leggere i prezzi. Per favore non scriverlo nei commenti del Play Store o via email, ma avvisaci <b>su GitHub</b>, dove tutti possono rispondere e contribuire a sistemare l\'errore.\n\nGrazie!</string>
     <string name="checker_add_exchange_tutorial2_title">Informazioni</string>
     <string name="checker_add_exchange_tutorial_text"><b>Coinbase</b> è solo un exchange di
@@ -226,13 +226,13 @@ Se comprendi gli scopi di quest\'app allora \"Imposta allarme\" per continuare."
     <string name="settings_tts_screen_off_only_title">Solo col display spento</string>
     <string name="settings_tts_speak_conditions_category_title">Pronuncia il condizioni</string>
 
-	<string name="settings_language_title">La lingua</string>
-	<string name="settings_language_confirmation">La lingua dell\'interfaccia utente verrà
+    <string name="settings_language_title">La lingua</string>
+    <string name="settings_language_confirmation">La lingua dell\'interfaccia utente verrà
         modificata immediatamente.\n\nNOTA.\nPer aggiornare <b>notifiche e widget</b>, è
         necessario scaricare e riavviare manualmente l\'applicazione.</string>
-	<string name="settings_language_name_help">Come aiutare a tradurre…</string>
+    <string name="settings_language_name_help">Come aiutare a tradurre…</string>
 
-	<string name="settings_battery_optimization_category_title">Sleep mode</string>
+    <string name="settings_battery_optimization_category_title">Sleep mode</string>
 
     <string name="settings_battery_optimization_status_off_title">Ottimizzazione batteria spenta</string>
     <string name="settings_battery_optimization_status_on_title">Ottimizzazione batteria accesa</string>
@@ -246,7 +246,7 @@ Se comprendi gli scopi di quest\'app allora \"Imposta allarme\" per continuare."
     <string name="suggest_new_exchange_activity_text">If you\'d like to see any new exchange in Bitcoin Checker app please <b>don\'t suggest them on Play Store or via email</b>. Bitcoin Checker\'s open source repository <b>on GitHub this is the official place</b> for reporting any issues and posting suggestions.\n\nIt\'s very important because: \n\n- Anyone can see if there is already a related topic created by someone else. \n\n- Anyone can respond to other people\'s problems. \n\n- Anyone can contribute with a fix or add support for new exchanges by creating a Pull Request. \n\n\nRemember that I making Bitcoin Checker in free time and provide it completely for free only to make other people happy - so the things that motivates me the most are great reviews from users. \nIf you thing I am doing a great job please do not forget to give a great rating on Google Play Store.</string>
     <string name="suggest_new_exchange_activity_title">Suggest new exchange</string>
 
-	<string name="time_ago">%1$s fa</string>
+    <string name="time_ago">%1$s fa</string>
     <string name="time_d">g</string>
     <string name="time_days">giorni</string>
     <string name="time_h">h</string>
@@ -263,8 +263,8 @@ Se comprendi gli scopi di quest\'app allora \"Imposta allarme\" per continuare."
     <string name="tts_format_exchange">%1$s su %2$s</string>
 
     <string name="widget_init_hint">Attendi….</string>
-	<string name="widget_list_item_price_indicator">Indicatore variazione prezzo</string>
-	<string name="widget_list_empty_text">Nessun allarme impostato.\nClicca qui per attivarne qualcuno!</string>
+    <string name="widget_list_item_price_indicator">Indicatore variazione prezzo</string>
+    <string name="widget_list_empty_text">Nessun allarme impostato.\nClicca qui per attivarne qualcuno!</string>
     <string name="widget_settings_alpha_percent_0">Completamente trasparente</string>
     <string name="widget_settings_alpha_percent_100">Completamente visibile</string>
     <string name="widget_settings_alpha_percent_title">Opacità background</string>
