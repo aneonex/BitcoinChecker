@@ -50,7 +50,7 @@
     <string name="checker_add_check_currency_src_dialog_title">Base currency</string>
     <string name="checker_add_check_currency_src_subunit_title">Check price for</string>
 
-	<string name="checker_add_check_frequency_title">Update interval</string>
+    <string name="checker_add_check_frequency_title">Update interval</string>
     <string name="checker_add_check_frequency_battery_warning">Attention! Interval less than 1
         minute can increase battery drain.</string>
     <string name="checker_add_check_frequency_use_global_checkbox">Use global update interval</string>
@@ -141,7 +141,7 @@ If you understand the goal of this app press \"Add Checker\" to continue."</stri
     <string name="notification_alert_text_lower_than">Lower than %1$s</string>
     <string name="notification_alert_text_percent_change">%1$s, from %2$s (%3$s)</string>
 
-	<string name="notification_alert_tts_text_down">DOWN</string>
+    <string name="notification_alert_tts_text_down">DOWN</string>
     <string name="notification_alert_tts_text_greater_lower">Price alert! %1$s</string>
     <string name="notification_alert_tts_text_percent_value_change">%1$s from %2$s to %3$s</string>
     <string name="notification_alert_tts_text_up">UP</string>
@@ -164,7 +164,7 @@ If you understand the goal of this app press \"Add Checker\" to continue."</stri
 
     <string name="settings_about_category_title">About</string>
 
-	<string name="settings_about_github_title">Visit Bitcoin Checker on GitHub</string>
+    <string name="settings_about_github_title">Visit Bitcoin Checker on GitHub</string>
     <string name="settings_about_rate_summary">or share your opinion</string>
     <string name="settings_about_rate_title">Rate us on Google Play</string>
     <string name="settings_about_report_issue_summary">"If you think something doesn't work correctly, would like to see new exchanges or just want to report anything else."</string>
@@ -178,9 +178,9 @@ If you understand the goal of this app press \"Add Checker\" to continue."</stri
 
     <string name="settings_activity_title">Settings</string>
 
-	<string name="settings_check_global_frequency_title">Global update interval</string>
+    <string name="settings_check_global_frequency_title">Global update interval</string>
     
-	<string name="settings_check_notification_category_title">Price notifications</string>
+    <string name="settings_check_notification_category_title">Price notifications</string>
 
     <string name="settings_activity_pause">Pause</string>
 
@@ -248,7 +248,7 @@ If you understand the goal of this app press \"Add Checker\" to continue."</stri
     <string name="suggest_new_exchange_activity_text">If you\'d like to see any new exchange in Bitcoin Checker app please <b>don\'t suggest them on Play Store or via email</b>. Bitcoin Checker\'s open source repository <b>on GitHub this is the official place</b> for reporting any issues and posting suggestions.\n\nIt\'s very important because: \n\n- Anyone can see if there is already a related topic created by someone else. \n\n- Anyone can respond to other people\'s problems. \n\n- Anyone can contribute with a fix or add support for new exchanges by creating a Pull Request. \n\n\nRemember that I making Bitcoin Checker in free time and provide it completely for free only to make other people happy - so the things that motivates me the most are great reviews from users. \nIf you thing I am doing a great job please do not forget to give a great rating on Google Play Store.</string>
     <string name="suggest_new_exchange_activity_title">Suggest new exchange</string>
 
-	<string name="time_ago">%1$s ago</string>
+    <string name="time_ago">%1$s ago</string>
     <string name="time_d">d</string>
     <string name="time_days">days</string>
     <string name="time_h">h</string>
