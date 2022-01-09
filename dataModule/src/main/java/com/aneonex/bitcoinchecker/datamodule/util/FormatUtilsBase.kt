@@ -8,22 +8,33 @@ import java.text.DecimalFormat
 import java.util.*
 
 object FormatUtilsBase {
-    // ====================
-    // Double formatting
-    // ====================
-    private val FORMAT_NO_DECIMAL = DecimalFormat("#,###")
-    private val FORMAT_TWO_DECIMAL = DecimalFormat("#,###.00")
-    private val FORMAT_FOUR_SIGNIFICANT_AT_MOST = DecimalFormat("@###")
-    private val FORMAT_EIGHT_SIGNIFICANT_AT_MOST = DecimalFormat("@#######")
+
+    // Call when application changes locale
+    fun updateLocale() {
+        // Recreate formatter
+        decimalFormatStore = DecimalFormatStore()
+    }
+
+    // ========================================
+    // Double formatting (using default locale)
+    // ========================================
+    private class DecimalFormatStore {
+        val formatNoDecimal = DecimalFormat("#,###")
+        val formatTwoDecimal = DecimalFormat("#,###.00")
+        val formatFourSignificantAtMost = DecimalFormat("@###")
+        val formatEightSignificantAtMost = DecimalFormat("@#######")
+    }
+
+    private var decimalFormatStore = DecimalFormatStore()
 
     // ====================
     // Format methods
     // ====================
     fun formatDouble(value: Double/*, isPrice: Boolean*/): String {
         val decimalFormat: DecimalFormat = when {
-            value < 10 -> FORMAT_FOUR_SIGNIFICANT_AT_MOST
-            value < 10000 -> FORMAT_TWO_DECIMAL
-            else -> FORMAT_NO_DECIMAL
+            value < 10 -> decimalFormatStore.formatFourSignificantAtMost
+            value < 10000 -> decimalFormatStore.formatTwoDecimal
+            else -> decimalFormatStore.formatNoDecimal
         }
 
         return formatDouble(decimalFormat, value)
@@ -31,12 +42,12 @@ object FormatUtilsBase {
 
     @Suppress("unused")
     fun formatDoubleWithEightMax(value: Double): String {
-        return formatDouble(FORMAT_EIGHT_SIGNIFICANT_AT_MOST, value)
+        return formatDouble(decimalFormatStore.formatEightSignificantAtMost, value)
     }
 
     @Suppress("unused")
     fun formatDoubleWithFourMax(value: Double): String {
-        return formatDouble(FORMAT_FOUR_SIGNIFICANT_AT_MOST, value)
+        return formatDouble(decimalFormatStore.formatFourSignificantAtMost, value)
     }
 
     private fun formatDouble(decimalFormat: DecimalFormat, value: Double): String {

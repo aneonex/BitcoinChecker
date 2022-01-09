@@ -48,6 +48,7 @@
     <string name="checker_add_check_currency_no_sync_yet_hint">Questo exchange scarica le valute direttamente dal server. Non hai mai fatto una sincronizzazione, quindi le valute potrebbero non essere aggiornate.</string>
     <string name="checker_add_check_currency_src_dialog_title">Base valute</string>
     <string name="checker_add_check_currency_src_subunit_title">Controlla prezzo per</string>
+
     <string name="checker_add_check_frequency_title">Aggiorna ogni</string>
     <string name="checker_add_check_frequency_battery_warning">Attenzione! Intervalli inferiori ad 1 minuto possono ridurre drasticamente la durata della batteria.</string>
     <string name="checker_add_check_frequency_use_global_checkbox">Usa intervallo di aggiornamento</string>
@@ -167,7 +168,7 @@ Se comprendi gli scopi di quest\'app allora \"Imposta allarme\" per continuare."
     <string name="settings_about_rate_title">Votaci su Google Play</string>
     <string name="settings_about_report_issue_summary">"Se pensi che qualcosa non funzioni correttamente, vorresti vedere nuovi exchange o vuoi solo segnalare qualcos\'altro."</string>
     <string name="settings_about_report_issue_title">Segnala problemi o idee su GitHub</string>
-    
+
     <string name="settings_about_version_contact_dialog_button_email">Invia Email</string>
     <string name="settings_about_version_contact_dialog_button_github">Vai su GitHub</string>
     <string name="settings_about_version_contact_dialog_text">Se vuoi segnalare qualche problema o inviare suggerimenti vai su GitHub.\n\nSe preferisci contattarci in altri modi invia una mail.</string>
@@ -226,10 +227,7 @@ Se comprendi gli scopi di quest\'app allora \"Imposta allarme\" per continuare."
     <string name="settings_tts_screen_off_only_title">Solo col display spento</string>
     <string name="settings_tts_speak_conditions_category_title">Pronuncia il condizioni</string>
 
-    <string name="settings_language_title">La lingua</string>
-    <string name="settings_language_confirmation">La lingua dell\'interfaccia utente verrà
-        modificata immediatamente.\n\nNOTA.\nPer aggiornare <b>notifiche e widget</b>, è
-        necessario scaricare e riavviare manualmente l\'applicazione.</string>
+    <string name="settings_language_title">Lingua</string>
     <string name="settings_language_name_help">Come aiutare a tradurre…</string>
 
     <string name="settings_battery_optimization_category_title">Sleep mode</string>

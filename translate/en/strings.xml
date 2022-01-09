@@ -228,10 +228,6 @@ If you understand the goal of this app press \"Add Checker\" to continue."</stri
     <string name="settings_tts_speak_conditions_category_title">Speak conditions</string>
 
     <string name="settings_language_title">Language</string>
-    <string name="settings_language_confirmation">The UI language will be changed
-        immediately.\n\nNOTE.\nTo update <b>notifications and widgets</b>, you need to manually
-        unload and restart the application.</string>
-
     <string name="settings_language_name_help">How to help translate…</string>
 
     <string name="settings_battery_optimization_category_title">Sleep mode behavior</string>

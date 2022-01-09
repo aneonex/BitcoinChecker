@@ -229,9 +229,6 @@ Se você entende a meta deste app pressione \"Adicionar Checker\" para continuar
     <string name="settings_tts_speak_conditions_category_title">Condições de fala</string>
 
     <string name="settings_language_title">Idioma</string>
-    <string name="settings_language_confirmation">O idioma da interface do usuário será alterado
-        imediatamente.\n\nNOTA.\nPara atualizar <b>notificações e widgets</b>, você precisa
-        descarregar manualmente e reiniciar o aplicativo.</string>
     <string name="settings_language_name_help">Como ajudar a traduzir…</string>
 
     <string name="settings_battery_optimization_category_title">Comportamento em não perturbe</string>
