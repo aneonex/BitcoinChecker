@@ -1,0 +1,3 @@
+Bitcoin Checker é um app <b>LIVRE</b>" para rastrear os preços mais recentes de seus pares de moedas favoritas (suportando mais de 100 câmbios) em vários tipos de customização. Text-To-Speech anúncios de voz,Widgets na Tela inicial e tela de bloqueio ou múltiplos alarmes).
+
+Modulo de dados (contendo câmbios e pares de moedas)é is Open Source( Código livre) e avaliado no GitHub: https://github.com/aneonex/BitcoinChecker/
