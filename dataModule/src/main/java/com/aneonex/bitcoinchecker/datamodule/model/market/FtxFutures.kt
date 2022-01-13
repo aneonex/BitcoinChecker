@@ -7,22 +7,51 @@ import com.aneonex.bitcoinchecker.datamodule.model.Ticker
 import com.aneonex.bitcoinchecker.datamodule.model.market.generic.SimpleMarket
 import com.aneonex.bitcoinchecker.datamodule.util.forEachJSONObject
 import org.json.JSONObject
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class FtxFutures : SimpleMarket(
     "FTX Futures",
     "https://ftx.com/api/futures",
     "https://ftx.com/api/futures/%1\$s"
 ) {
+    override fun getPairId(checkerInfo: CheckerInfo): String {
+        return getPairId(checkerInfo.currencyPairId!!, checkerInfo.contractType, checkerInfo.currencyBase)
+    }
+
     override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
+        val quartDatePart = formatDeliveryDateSuffix(FuturesContractType.getDeliveryDate(FuturesContractType.QUARTERLY)!!)
+        val biQuartDatePart = formatDeliveryDateSuffix(FuturesContractType.getDeliveryDate(FuturesContractType.BIQUARTERLY)!!)
+
         jsonObject.getJSONArray("result").forEachJSONObject {  market ->
-            if(market.getString("type") != "perpetual")
-                return@forEachJSONObject
+            val pairId = market.getString("name")
+
+            val contactType = when(market.getString("type")) {
+                "perpetual" -> FuturesContractType.PERPETUAL
+                "future" -> when(market.getString("group")) {
+                    "quarterly" -> when {
+                        pairId.endsWith(quartDatePart) -> FuturesContractType.QUARTERLY
+                        pairId.endsWith(biQuartDatePart) -> FuturesContractType.BIQUARTERLY
+                        else -> return@forEachJSONObject
+                    }
+                    else -> return@forEachJSONObject
+                }
+                else -> return@forEachJSONObject
+            }
+
+            val baseAsset = market.getString("underlying")
+           val formattedPairId = when(contactType) {
+               FuturesContractType.QUARTERLY -> "$baseAsset:Q1"
+               FuturesContractType.BIQUARTERLY -> "$baseAsset:Q2"
+               else -> pairId
+           }
 
             pairs.add( CurrencyPairInfo(
-                market.getString("underlying"),
+                baseAsset,
                 "USD",
-                market.getString("name"),
-                FuturesContractType.PERPETUAL
+                formattedPairId,
+                contactType
             ))
         }
     }
@@ -38,5 +67,22 @@ class FtxFutures : SimpleMarket(
                 ticker.vol = ticker.volQuote / ticker.last // Calculated base volume
             }
         }
+    }
+
+    companion object {
+        private val FUTURES_DATE_FORMAT = DateTimeFormatter.ofPattern("MMdd", Locale.ROOT)
+
+        private fun formatDeliveryDateSuffix(date: LocalDate): String = FUTURES_DATE_FORMAT.format(date)
+
+        private fun getPairId(pairId: String, contactType: FuturesContractType, baseAsset: String): String {
+            return when(contactType) {
+                FuturesContractType.QUARTERLY,
+                FuturesContractType.BIQUARTERLY -> getPairId(baseAsset, FuturesContractType.getDeliveryDate(contactType)!!)
+                else -> pairId
+            }
+        }
+
+        private fun getPairId(baseAsset: String, deliveryDate: LocalDate): String =
+            "${baseAsset.uppercase()}-${formatDeliveryDateSuffix(deliveryDate)}"
     }
 }
