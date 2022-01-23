@@ -9,8 +9,8 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 class OkexFutures : Market(
-    "OKEx Futures",
-    "Okex Futures",
+    NAME,
+    NAME,
     null
 ) {
 
@@ -69,6 +69,8 @@ class OkexFutures : Market(
     }
 
     companion object {
+        private const val NAME = "OKX Futures"
+
         private const val URL_PAIRS_PERPETUAL = "https://www.okex.com/api/swap/v3/instruments"
         private const val URL_PAIRS_FUTURES = "https://www.okex.com/api/futures/v3/instruments"
 
