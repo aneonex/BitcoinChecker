@@ -197,7 +197,10 @@ object MarketsConfig {
         FtxUs(),
         BinanceUs(),
         Mexc(),
+
+        Stex(),
+        SafeTrade(),
     )
 
-    val MARKETS: Map<String, Market> = registeredMarkets.map{it.key to it}.toMap()
+    val MARKETS: Map<String, Market> = registeredMarkets.associateBy { it.key }
 }
