@@ -6,10 +6,10 @@
   <a href='https://play.google.com/store/apps/details?id=com.aneonex.bitcoinchecker'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width="200" align="top"/></a>
 </p>
 
-> Notice: This project continues the development of the [previous inactive project Bitcoin Checker](https://github.com/mobnetic/BitcoinChecker).
+> Notice: Since 2020, this project continues the development of the [previous inactive project Bitcoin Checker](https://github.com/mobnetic/BitcoinChecker).
 
 ## About
-__Bitcoin Checker__ is a FREE app to track the most recent prices of your favourite currency pairs (on over 80 supported exchanges) in many customizable ways (such as rich notifications, TTS voice announcements, Home and Lockscreen widget or multiple alarms).
+__Bitcoin Checker__ is a FREE app to track the most recent prices of your favourite currency pairs (on over 100 supported exchanges) in many customizable ways (such as rich notifications, TTS voice announcements, Home and Lockscreen widget or multiple alarms).
 
 This Github project contains open [DataModule](dataModule) (containing exchanges and currency pairs) for Bitcoin Checker app. It is  _OPEN_ for our users to make this application _even better_! This means that _anyone_ can now:
 * Add support for a new exchange
