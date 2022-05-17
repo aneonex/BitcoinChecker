@@ -4,6 +4,8 @@ plugins {
 }
 
 android {
+    namespace 'com.aneonex.bitcoinchecker.datamodule'
+
     compileSdkVersion compile_sdk_version
     buildToolsVersion build_tools_version
 

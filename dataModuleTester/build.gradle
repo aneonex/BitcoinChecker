@@ -4,6 +4,8 @@ plugins {
 }
 
 android {
+    namespace 'com.aneonex.bitcoinchecker.tester'
+
     compileSdkVersion compile_sdk_version
     buildToolsVersion build_tools_version
 
@@ -44,12 +46,12 @@ android {
 
 dependencies {
     implementation project(':dataModule')
-    implementation 'com.google.code.gson:gson:2.8.8'
+    implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.android.volley:volley:1.2.1'
 
     // AndroidX
     implementation "androidx.core:core-ktx:$core_ktx_version"
 
-    implementation "androidx.appcompat:appcompat:1.4.0"
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation "androidx.appcompat:appcompat:1.4.1"
+    implementation 'com.google.android.material:material:1.6.0'
 }

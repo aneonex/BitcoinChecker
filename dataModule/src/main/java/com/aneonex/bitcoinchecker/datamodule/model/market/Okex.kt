@@ -33,11 +33,8 @@ class Okex : SimpleMarket(
             }
     }
 
-    override fun getPairId(checkerInfo: CheckerInfo): String? {
-        return checkerInfo.currencyPairId?.let {
-            "${checkerInfo.currencyBase}-${checkerInfo.currencyCounter}"
-        }
-    }
+    override fun getPairId(checkerInfo: CheckerInfo): String =
+        checkerInfo.currencyPairId ?: "${checkerInfo.currencyBase}-${checkerInfo.currencyCounter}"
 
     @Throws(Exception::class)
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
