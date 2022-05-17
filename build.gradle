@@ -5,7 +5,7 @@ buildscript {
         min_sdk_version = 26
         build_tools_version = '30.0.3'
 
-        kotlin_version = '1.6.10'
+        kotlin_version = '1.6.21'
         core_ktx_version = '1.7.0'
     }
 
@@ -15,7 +15,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.4'
+        classpath 'com.android.tools.build:gradle:7.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
