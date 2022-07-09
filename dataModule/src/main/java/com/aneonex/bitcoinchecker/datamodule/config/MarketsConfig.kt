@@ -200,6 +200,9 @@ object MarketsConfig {
 
         Stex(),
         SafeTrade(),
+
+        Kuna(),
+        XTCom(),
     )
 
     val MARKETS: Map<String, Market> = registeredMarkets.associateBy { it.key }
