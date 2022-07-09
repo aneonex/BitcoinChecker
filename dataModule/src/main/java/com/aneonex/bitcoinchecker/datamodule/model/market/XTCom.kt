@@ -19,8 +19,8 @@ class XTCom : SimpleMarket(
             if(currencies.size == 2) {
                 pairs.add(
                     CurrencyPairInfo(
-                        currencies[0].uppercase(Locale.ROOT),
-                        currencies[1].uppercase(Locale.ROOT),
+                        currencies[0].uppercase(),
+                        currencies[1].uppercase(),
                         pair,
                     )
                 )
