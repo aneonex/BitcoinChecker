@@ -203,6 +203,8 @@ object MarketsConfig {
 
         Kuna(),
         XTCom(),
+
+        Bitget(),
     )
 
     val MARKETS: Map<String, Market> = registeredMarkets.associateBy { it.key }
