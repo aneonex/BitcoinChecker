@@ -8,7 +8,7 @@ import com.aneonex.bitcoinchecker.tester.volley.generic.GenericCheckerVolleyRequ
 class CheckerVolleyNextRequest(url: String?, postRequestInfo: PostRequestInfo?, checkerInfo: CheckerInfo, future: RequestFuture<String>)
     : GenericCheckerVolleyRequest<String?>(url, postRequestInfo, checkerInfo, future, future) {
     @Throws(Exception::class)
-    override fun parseNetworkResponse(headers: Map<String?, String?>?, responseString: String?): String? {
+    override fun parseNetworkResponse(headers: Map<String?, String?>?, responseString: String): String {
         return responseString
     }
 }

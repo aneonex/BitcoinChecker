@@ -5,6 +5,7 @@ import com.aneonex.bitcoinchecker.datamodule.model.CurrencyPairInfo
 import com.aneonex.bitcoinchecker.datamodule.model.Market
 import com.aneonex.bitcoinchecker.datamodule.model.Ticker
 import com.aneonex.bitcoinchecker.datamodule.util.forEachName
+import com.aneonex.bitcoinchecker.datamodule.util.optDoubleNoData
 import org.json.JSONObject
 
 class CoinJar : Market(NAME, TTS_NAME, null) {
@@ -17,8 +18,8 @@ class CoinJar : Market(NAME, TTS_NAME, null) {
         jsonObject
             .getJSONObject("exchange_rates")
             .getJSONObject(checkerInfo.currencyPairId!!).also {
-                ticker.bid = it.optDouble("bid", ticker.bid)
-                ticker.ask = it.optDouble("ask", ticker.ask)
+                ticker.bid = it.optDoubleNoData("bid")
+                ticker.ask = it.optDoubleNoData("ask")
                 ticker.last = it.getDouble("midpoint")
             }
     }
