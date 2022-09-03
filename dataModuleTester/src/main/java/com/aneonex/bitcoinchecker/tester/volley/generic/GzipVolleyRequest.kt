@@ -95,7 +95,7 @@ abstract class GzipVolleyRequest<T>(url: String?, private val postRequestInfo: P
     }
 
     @Throws(Exception::class)
-    protected abstract fun parseNetworkResponse(headers: Map<String?, String?>?, responseString: String?): T?
+    protected abstract fun parseNetworkResponse(headers: Map<String?, String?>?, responseString: String): T?
 
     override fun parseNetworkResponse(response: NetworkResponse): Response<T> {
 //        var response: NetworkResponse? = response

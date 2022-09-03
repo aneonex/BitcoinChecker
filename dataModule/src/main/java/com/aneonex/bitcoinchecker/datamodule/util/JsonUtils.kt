@@ -1,5 +1,6 @@
 package com.aneonex.bitcoinchecker.datamodule.util
 
+import com.aneonex.bitcoinchecker.datamodule.model.Ticker
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -30,3 +31,5 @@ fun JSONObject.forEachName(function: (name: String, item: JSONObject) -> Unit) {
         function(name, item)
     }
 }
+
+fun JSONObject.optDoubleNoData(name: String): Double = this.optDouble(name, Ticker.NO_DATA.toDouble())

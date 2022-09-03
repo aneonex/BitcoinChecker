@@ -6,7 +6,7 @@ import com.aneonex.bitcoinchecker.tester.volley.generic.GzipVolleyRequest
 
 class DynamicCurrencyPairsVolleyNextRequest(url: String?, postRequestInfo: PostRequestInfo?, future: RequestFuture<String>) : GzipVolleyRequest<String?>(url, postRequestInfo, future, future) {
     @Throws(Exception::class)
-    override fun parseNetworkResponse(headers: Map<String?, String?>?, responseString: String?): String? {
+    override fun parseNetworkResponse(headers: Map<String?, String?>?, responseString: String): String {
         return responseString
     }
 }

@@ -2,6 +2,7 @@ package com.aneonex.bitcoinchecker.datamodule.model.market
 
 import com.aneonex.bitcoinchecker.datamodule.model.*
 import com.aneonex.bitcoinchecker.datamodule.util.forEachJSONObject
+import com.aneonex.bitcoinchecker.datamodule.util.optDoubleNoData
 import org.json.JSONArray
 import org.json.JSONObject
 import java.time.format.DateTimeFormatter
@@ -33,7 +34,7 @@ class BinanceFutures : Market(NAME, TTS_NAME, null) {
                 ticker.timestamp = getLong("closeTime")
 
                 // Optional
-                ticker.volQuote = optDouble("quoteVolume", ticker.volQuote)
+                ticker.volQuote = optDoubleNoData("quoteVolume")
             }
         }
     }

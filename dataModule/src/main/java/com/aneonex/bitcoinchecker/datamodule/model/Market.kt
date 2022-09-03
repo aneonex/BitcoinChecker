@@ -8,7 +8,7 @@ import org.json.JSONObject
 abstract class Market(
     val name: String,
     val ttsName: String,
-    val currencyPairs: CurrencyPairsMap?
+    val currencyPairs: CurrencyPairsMap? = null
 ) {
 
 	val key: String = this.javaClass.simpleName

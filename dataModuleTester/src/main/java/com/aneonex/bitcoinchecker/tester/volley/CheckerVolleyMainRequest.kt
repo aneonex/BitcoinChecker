@@ -15,11 +15,12 @@ class CheckerVolleyMainRequest(market: Market, checkerInfo: CheckerInfo, listene
 
     private val market: Market
     @Throws(Exception::class)
-    override fun parseNetworkResponse(headers: Map<String?, String?>?, responseString: String?): TickerWrapper {
+    override fun parseNetworkResponse(headers: Map<String?, String?>?, responseString: String): TickerWrapper {
         val tickerWrapper = TickerWrapper()
         var tickerParseException: Exception? = null
         try {
-            tickerWrapper.ticker = market.parseTickerMain(0, responseString!!, TickerImpl(), checkerInfo)
+            tickerWrapper.ticker = market.parseTickerMain(0,
+                responseString, TickerImpl(), checkerInfo)
         } catch (e: Exception) {
             e.printStackTrace()
             tickerParseException = e
@@ -27,7 +28,7 @@ class CheckerVolleyMainRequest(market: Market, checkerInfo: CheckerInfo, listene
         }
         if (tickerWrapper.ticker == null || tickerWrapper.ticker!!.last <= Ticker.NO_DATA) {
             val errorMsg: String? = try {
-                market.parseErrorMain(0, responseString!!, checkerInfo)
+                market.parseErrorMain(0, responseString, checkerInfo)
             } catch (e: Exception) {
                 tickerParseException?.message
             }

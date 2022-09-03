@@ -24,12 +24,12 @@ class DynamicCurrencyPairsVolleyMainRequest(
         errorListener) {
 
     @Throws(Exception::class)
-    override fun parseNetworkResponse(headers: Map<String?, String?>?, responseString: String?): CurrencyPairsMapHelper {
+    override fun parseNetworkResponse(headers: Map<String?, String?>?, responseString: String): CurrencyPairsMapHelper {
         if (isCanceled)
             return CurrencyPairsMapHelper(CurrencyPairsListWithDate())
 
         val pairs: MutableList<CurrencyPairInfo> = ArrayList()
-        market.parseCurrencyPairsMain(0, responseString!!, pairs)
+        market.parseCurrencyPairsMain(0, responseString, pairs)
 
         val numOfRequests = market.currencyPairsNumOfRequests
         if (numOfRequests > 1) {

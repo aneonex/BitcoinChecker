@@ -6,6 +6,7 @@ import com.aneonex.bitcoinchecker.datamodule.model.CurrencyPairInfo
 import com.aneonex.bitcoinchecker.datamodule.model.Ticker
 import com.aneonex.bitcoinchecker.datamodule.model.market.generic.SimpleMarket
 import com.aneonex.bitcoinchecker.datamodule.util.forEachJSONObject
+import com.aneonex.bitcoinchecker.datamodule.util.optDoubleNoData
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -54,8 +55,8 @@ class Bitrue : SimpleMarket(
                 // ticker.vol = it.getDouble("volume") // Returns same as quoteVolume (exchange bug?)
                 ticker.volQuote = it.getDouble("quoteVolume")
 
-                ticker.bid = it.optDouble("bidPrice", ticker.bid)
-                ticker.ask = it.optDouble("askPrice", ticker.ask)
+                ticker.bid = it.optDoubleNoData("bidPrice")
+                ticker.ask = it.optDoubleNoData("askPrice")
             }
     }
 }

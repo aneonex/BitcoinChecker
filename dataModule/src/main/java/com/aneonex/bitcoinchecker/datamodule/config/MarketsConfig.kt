@@ -205,6 +205,8 @@ object MarketsConfig {
         XTCom(),
 
         Bitget(),
+
+        Deribit(),
     )
 
     val MARKETS: Map<String, Market> = registeredMarkets.associateBy { it.key }
