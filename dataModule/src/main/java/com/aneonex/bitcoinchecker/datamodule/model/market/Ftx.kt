@@ -46,4 +46,12 @@ open class FtxBase(name: String, domain: String) : SimpleMarket(
             ticker.vol = ticker.volQuote / ticker.last // Calculated base volume
         }
     }
+
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo?
+    ): String? {
+        return jsonObject.getString("error")
+    }
 }

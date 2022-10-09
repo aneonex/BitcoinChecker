@@ -69,6 +69,14 @@ class FtxFutures : SimpleMarket(
         }
     }
 
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo?
+    ): String? {
+        return jsonObject.getString("error")
+    }
+
     companion object {
         private val FUTURES_DATE_FORMAT = DateTimeFormatter.ofPattern("MMdd", Locale.ROOT)
 
