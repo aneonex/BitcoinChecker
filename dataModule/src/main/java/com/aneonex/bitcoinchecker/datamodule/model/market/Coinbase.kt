@@ -87,10 +87,15 @@ class Coinbase : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     @Throws(Exception::class)
     override fun parseCurrencyPairs(requestId: Int, responseString: String, pairs: MutableList<CurrencyPairInfo>) {
         JSONArray(responseString).forEachJSONObject { pairJsonObject ->
-            pairs.add(CurrencyPairInfo(
-                    pairJsonObject.getString("base_currency"),
-                    pairJsonObject.getString("quote_currency"),
-                    pairJsonObject.getString("id")))
+            if(pairJsonObject.optString("status") != "delisted") {
+                pairs.add(
+                    CurrencyPairInfo(
+                        pairJsonObject.getString("base_currency"),
+                        pairJsonObject.getString("quote_currency"),
+                        pairJsonObject.getString("id")
+                    )
+                )
+            }
         }
     }
 }
