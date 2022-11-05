@@ -4,38 +4,30 @@ import com.aneonex.bitcoinchecker.datamodule.model.CheckerInfo
 import com.aneonex.bitcoinchecker.datamodule.model.Market
 import com.aneonex.bitcoinchecker.datamodule.model.Ticker
 import com.aneonex.bitcoinchecker.datamodule.model.currency.Currency
-import com.aneonex.bitcoinchecker.datamodule.model.currency.VirtualCurrency
 import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
 import org.json.JSONObject
 
-class Bit2c : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+class Bit2c : Market(NAME, TTS_NAME, getCurrencies()) {
     companion object {
         private const val NAME = "Bit2c"
         private const val TTS_NAME = "Bit 2c"
-        private const val URL = "https://www.bit2c.co.il/Exchanges/%1\$s%2\$s/Ticker.json"
-        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
+        private const val URL = "https://bit2c.co.il/Exchanges/%1\$s%2\$s/Ticker.json"
 
         //GET https://bit2c.co.il/Exchanges/[BtcNis/EthNis/BchNis/LtcNis/EtcNis/BtgNis]/Ticker.json
-        init {
-            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
-                    Currency.NIS
-            )
-            CURRENCY_PAIRS[VirtualCurrency.ETH] = arrayOf(
-                    Currency.NIS
-            )
-            CURRENCY_PAIRS[VirtualCurrency.BCH] = arrayOf(
-                    Currency.NIS
-            )
-            CURRENCY_PAIRS[VirtualCurrency.LTC] = arrayOf(
-                    Currency.NIS
-            )
-            CURRENCY_PAIRS[VirtualCurrency.ETC] = arrayOf(
-                    Currency.NIS
-            )
-            CURRENCY_PAIRS[VirtualCurrency.BTG] = arrayOf(
-                    Currency.NIS
-            )
-        }
+        private fun getCurrencies(): CurrencyPairsMap =
+            arrayOf(
+                "BTC",
+                "ETH",
+                "BCHABC",
+                "LTC",
+                "ETC",
+                "BTG",
+                "USDC",
+                "BCHSV",
+                "GRIN",
+            ).let {
+                it.associateWithTo(CurrencyPairsMap()) { arrayOf(Currency.NIS) }
+            }
     }
 
     override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
@@ -44,8 +36,9 @@ class Bit2c : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
 
     @Throws(Exception::class)
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
-        ticker.bid = jsonObject.getDouble("h")
-        ticker.ask = jsonObject.getDouble("l")
+        ticker.bid = jsonObject.optDouble("h", ticker.bid)
+        ticker.ask = jsonObject.optDouble("l", ticker.ask)
+
         ticker.vol = jsonObject.getDouble("a")
         ticker.last = jsonObject.getDouble("ll")
     }

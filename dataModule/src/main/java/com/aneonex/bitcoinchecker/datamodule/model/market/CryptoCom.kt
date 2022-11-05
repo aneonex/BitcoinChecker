@@ -23,7 +23,7 @@ class CryptoCom : SimpleMarket(
 
             pairs.add(CurrencyPairInfo(
                 market.getString("base_currency"),
-                market.getString("quote_currency"),
+                market.getString("quote_currency").let { if(it == "USD_Stable_Coin") "USD" else it },
                 market.getString("instrument_name")
             ))
         }
@@ -32,7 +32,8 @@ class CryptoCom : SimpleMarket(
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
         jsonObject
             .getJSONObject("result")
-            .getJSONObject("data")
+            .getJSONArray("data")
+            .getJSONObject(0)
             .let {
                 ticker.vol = it.getDouble("v")
                 if(ticker.vol <= 0)

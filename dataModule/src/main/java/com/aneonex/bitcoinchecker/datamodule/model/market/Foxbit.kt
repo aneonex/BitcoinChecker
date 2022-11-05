@@ -67,7 +67,7 @@ class Foxbit : SimpleMarket(
                 ticker.bid = it.getDouble("buyPrice")
                 ticker.ask = it.getDouble("sellPrice")
 
-                ticker.timestamp = TimeUtils.convertISODateToTimestamp(it.getString("createdDate") + "Z")
+                ticker.timestamp = TimeUtils.convertISODateToTimestamp(it.getString("createdDate"))
             }
     }
 }

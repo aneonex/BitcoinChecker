@@ -1,40 +1,61 @@
 package com.aneonex.bitcoinchecker.datamodule.model.market
 
 import com.aneonex.bitcoinchecker.datamodule.model.CheckerInfo
-import com.aneonex.bitcoinchecker.datamodule.model.Market
+import com.aneonex.bitcoinchecker.datamodule.model.CurrencyPairInfo
 import com.aneonex.bitcoinchecker.datamodule.model.Ticker
-import com.aneonex.bitcoinchecker.datamodule.model.currency.Currency
-import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
-import com.aneonex.bitcoinchecker.datamodule.model.currency.VirtualCurrency
-import com.aneonex.bitcoinchecker.datamodule.util.ParseUtils
+import com.aneonex.bitcoinchecker.datamodule.model.market.generic.SimpleMarket
+import com.aneonex.bitcoinchecker.datamodule.util.forEachName
 import org.json.JSONObject
 
-class Paribu : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+class Paribu : SimpleMarket(
+    "Paribu",
+    URL,
+    URL, // TODO: There is no API for a separate market yet
+) {
     companion object {
-        const val NAME = "Paribu"
-        const val TTS_NAME = NAME
-        const val URL = "https://www.paribu.com/ticker"
-        val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
-
-        init {
-            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
-                    Currency.TRY
-            )
-        }
+        private const val URL = "https://v3.paribu.com/app/ticker"
     }
 
     override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
         return URL
     }
 
-    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        pairs: MutableList<CurrencyPairInfo>
+    ) {
+        jsonObject
+            .getJSONObject("data")
+            .forEachName { market, _ ->
+                val assets = market.uppercase().split('-')
+                if(assets.size == 2){
+                    pairs.add(CurrencyPairInfo(
+                        assets[0],
+                        assets[1],
+                        null
+                    ))
+                }
+            }
+    }
+
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
-        val dataJsonObject = jsonObject.getJSONObject("BTC_TL")
-        ticker.bid = ParseUtils.getDoubleFromString(dataJsonObject, "highestBid")
-        ticker.ask = ParseUtils.getDoubleFromString(dataJsonObject, "lowestAsk")
-        ticker.vol = ParseUtils.getDoubleFromString(dataJsonObject, "volume")
-        ticker.high = ParseUtils.getDoubleFromString(dataJsonObject, "high24hr")
-        ticker.low = ParseUtils.getDoubleFromString(dataJsonObject, "low24hr")
-        ticker.last = ParseUtils.getDoubleFromString(dataJsonObject, "last")
+        val market = with(checkerInfo){"$currencyBase-$currencyCounter"}
+        val dataJsonObject = jsonObject
+            .getJSONObject("data")
+            .let { data ->
+                data.optJSONObject(market) ?: data.getJSONObject(market.lowercase())
+            }
+
+        dataJsonObject.also {
+            ticker.bid = it.getDouble("bid")
+            ticker.ask = it.getDouble("ask")
+
+            ticker.high = it.getDouble("high")
+            ticker.low = it.getDouble("low")
+
+            ticker.vol = it.getDouble("volume")
+            ticker.last = it.getDouble("close")
+        }
     }
 }

@@ -23,13 +23,16 @@ class Phemex : SimpleMarket(
             .getJSONArray("products")
             .forEachJSONObject { market ->
                 if (market.getString("type") == "Spot") {
-                    pairs.add(
-                        CurrencyPairInfo(
-                            market.getString("baseCurrency"),
-                            market.getString("quoteCurrency"),
-                            market.getString("symbol")
+                    val symbol = market.getString("symbol")
+                    if(!symbol.startsWith("s10")) {
+                        pairs.add(
+                            CurrencyPairInfo(
+                                market.getString("baseCurrency"),
+                                market.getString("quoteCurrency"),
+                                symbol
+                            )
                         )
-                    )
+                    }
                 }
             }
     }

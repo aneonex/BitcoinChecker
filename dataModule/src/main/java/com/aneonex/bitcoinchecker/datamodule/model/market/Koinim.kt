@@ -5,40 +5,43 @@ import com.aneonex.bitcoinchecker.datamodule.model.Market
 import com.aneonex.bitcoinchecker.datamodule.model.Ticker
 import com.aneonex.bitcoinchecker.datamodule.model.currency.Currency
 import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
-import com.aneonex.bitcoinchecker.datamodule.model.currency.VirtualCurrency
 import org.json.JSONObject
 
-class Koinim : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+class Koinim : Market(NAME, TTS_NAME, getCurrencyPairs()) {
     companion object {
-        const val NAME = "Koinim"
-        const val TTS_NAME = NAME
-        const val URL_BTC = "https://koinim.com/ticker/"
-        const val URL_LTC = "https://koinim.com/ticker/ltc/"
-        val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
+        private const val NAME = "Koinim"
+        private const val TTS_NAME = NAME
+        private const val URL = "https://koinim.com/api/v1/ticker/%1\$s/"
 
-        init {
-            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
-                    Currency.TRY
+        private fun getCurrencyPairs(): CurrencyPairsMap {
+            val baseCurrencies = arrayOf(
+                "BTC",
+                "LTC",
+                "BCH",
+                "ETH",
+                "DOGE",
+                "DASH",
             )
-            CURRENCY_PAIRS[VirtualCurrency.LTC] = arrayOf(
-                    Currency.TRY
-            )
+
+            val quoteCurrencies = arrayOf(Currency.TRY)
+            return baseCurrencies.associateWithTo(CurrencyPairsMap()) { quoteCurrencies }
         }
     }
 
     override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
-        return if (VirtualCurrency.LTC == checkerInfo.currencyBase) {
-            URL_LTC
-        } else URL_BTC
+        return with(checkerInfo) { String.format(URL, "${currencyBase}_$currencyCounter") }
     }
 
     @Throws(Exception::class)
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
-        ticker.bid = jsonObject.getDouble("buy")
-        ticker.ask = jsonObject.getDouble("sell")
+        ticker.bid = jsonObject.getDouble("bid")
+        ticker.ask = jsonObject.getDouble("ask")
+
         ticker.vol = jsonObject.getDouble("volume")
-        ticker.high = jsonObject.getDouble("high")
-        ticker.low = jsonObject.getDouble("low")
+
+        ticker.high = jsonObject.optDouble("high", ticker.high)
+        ticker.low = jsonObject.optDouble("low", ticker.low)
+
         ticker.last = jsonObject.getDouble("last_order")
     }
 }

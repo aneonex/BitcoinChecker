@@ -3,27 +3,23 @@ package com.aneonex.bitcoinchecker.datamodule.model.market
 import com.aneonex.bitcoinchecker.datamodule.model.CheckerInfo
 import com.aneonex.bitcoinchecker.datamodule.model.Market
 import com.aneonex.bitcoinchecker.datamodule.model.Ticker
-import com.aneonex.bitcoinchecker.datamodule.model.currency.Currency
 import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
-import com.aneonex.bitcoinchecker.datamodule.model.currency.VirtualCurrency
 import org.json.JSONObject
 
-class Paymium : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
+class Paymium : Market(NAME, TTS_NAME, getCurrencies()) {
     companion object {
         private const val NAME = "Paymium"
         private const val TTS_NAME = NAME
-        private const val URL = "https://paymium.com/api/v1/data/eur/ticker"
-        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
+        private const val URL = "https://paymium.com/api/v1/data/%1\$s/ticker"
 
-        init {
-            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
-                    Currency.EUR
-            )
-        }
+        private fun getCurrencies() : CurrencyPairsMap =
+            arrayOf(
+                "BTC",
+            ).associateWithTo(CurrencyPairsMap()) { arrayOf("EUR") }
     }
 
     override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
-        return URL
+        return String.format(URL, checkerInfo.currencyCounter)
     }
 
     @Throws(Exception::class)

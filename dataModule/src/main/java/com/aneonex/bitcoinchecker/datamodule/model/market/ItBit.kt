@@ -1,49 +1,58 @@
 package com.aneonex.bitcoinchecker.datamodule.model.market
 
 import com.aneonex.bitcoinchecker.datamodule.model.CheckerInfo
-import com.aneonex.bitcoinchecker.datamodule.model.Market
+import com.aneonex.bitcoinchecker.datamodule.model.CurrencyPairInfo
 import com.aneonex.bitcoinchecker.datamodule.model.Ticker
-import com.aneonex.bitcoinchecker.datamodule.model.currency.Currency
-import com.aneonex.bitcoinchecker.datamodule.model.currency.CurrencyPairsMap
 import com.aneonex.bitcoinchecker.datamodule.model.currency.VirtualCurrency
+import com.aneonex.bitcoinchecker.datamodule.model.market.generic.SimpleMarket
+import com.aneonex.bitcoinchecker.datamodule.util.forEachJSONObject
 import org.json.JSONObject
 
-class ItBit : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
-    companion object {
-        private const val NAME = "itBit"
-        private const val TTS_NAME = "It Bit"
-        private const val URL = "https://api.itbit.com/v1/markets/%1\$s%2\$s/ticker"
-        private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
-
-        init {
-            CURRENCY_PAIRS[VirtualCurrency.BTC] = arrayOf(
-                    Currency.USD,
-                    Currency.SGD,
-                    Currency.EUR
-            )
-        }
-    }
-
+class ItBit : SimpleMarket(
+    "itBit (by Paxos)",
+    "https://api.paxos.com/v2/markets",
+    "https://api.paxos.com/v2/markets/%1\$s/ticker",
+    "It Bit"
+) {
     private fun fixCurrency(currency: String?): String? {
         return if (VirtualCurrency.BTC == currency) VirtualCurrency.XBT else currency
     }
 
-    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
-        return String.format(URL, fixCurrency(checkerInfo.currencyBase), checkerInfo.currencyCounter)
+    override fun getPairId(checkerInfo: CheckerInfo): String {
+        return checkerInfo.currencyPairId ?: "${fixCurrency(checkerInfo.currencyBase)}{checkerInfo.currencyCounter}"
     }
 
-    @Throws(Exception::class)
+    override fun parseCurrencyPairsFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        pairs: MutableList<CurrencyPairInfo>
+    ) {
+        jsonObject
+            .getJSONArray("markets")
+            .forEachJSONObject {
+                pairs.add(CurrencyPairInfo(
+                    it.getString("base_asset"),
+                    it.getString("quote_asset"),
+                    it.getString("market")
+                ))
+            }
+    }
+
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
-        ticker.bid = jsonObject.getDouble("bid")
-        ticker.ask = jsonObject.getDouble("ask")
-        ticker.vol = jsonObject.getDouble("volume24h")
-        ticker.high = jsonObject.getDouble("high24h")
-        ticker.low = jsonObject.getDouble("low24h")
-        ticker.last = jsonObject.getDouble("lastPrice")
+
+        ticker.bid = jsonObject.getJSONObject("best_bid").getDouble("price")
+        ticker.ask = jsonObject.getJSONObject("best_ask").getDouble("price")
+
+        jsonObject.getJSONObject("last_day").also {
+            ticker.vol = it.getDouble("volume")
+            ticker.high = it.getDouble("high")
+            ticker.low = it.getDouble("low")
+        }
+
+        ticker.last = jsonObject.getJSONObject("last_execution").getDouble("price")
     }
 
-    @Throws(Exception::class)
     override fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject, checkerInfo: CheckerInfo?): String? {
-        return jsonObject.getString("message") // not working?
+        return jsonObject.getJSONObject("error").getString("message")
     }
 }

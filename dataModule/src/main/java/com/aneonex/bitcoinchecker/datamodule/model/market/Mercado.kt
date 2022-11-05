@@ -19,33 +19,80 @@ class Mercado : Market(NAME, TTS_NAME, getCurrencyPairs()) {
         private fun getCurrencyPairs(): CurrencyPairsMap {
             // API Doc: https://www.mercadobitcoin.com.br/api-doc/
             val baseCurrencies = arrayOf(
-                    "ASRFT",
-                    "ATMFT",
-                    VirtualCurrency.BCH,
-                    VirtualCurrency.BTC,
-                    "CAIFT",
-                    "CHZ",
-                    VirtualCurrency.ETH,
-                    "GALFT",
-                    "IMOB01",
-                    "JUVFT",
-                    VirtualCurrency.LINK,
-                    VirtualCurrency.LTC,
-                    "MBCONS01",
-                    "MBCONS02",
-                    "MBFP01",
-                    "MBVASCO01",
+                "AAVE",
+                "ABFY",
+                "ACH",
+                "ADA",
+                "ADS",
+                "AGIX",
+                "ALGO",
+                "ALLFT",
+                "ALPHA",
+                "AMP",
+                "ANT",
+                "APE",
+                "ATOM",
+                "AUDIO",
+                "AVAX",
+                "AXS",
 
-                    "MBPRK01",
-                    "MBPRK02",
-                    "MBPRK03",
-                    "MBPRK04",
+                "ASRFT",
+                "ATMFT",
 
-                    "PAXG",
-                    "PSGFT",
-                    VirtualCurrency.USDC,
-                    "WBX",
-                    VirtualCurrency.XRP,
+                "BAL",
+                "BAND",
+                "BAT",
+
+                VirtualCurrency.BCH,
+                VirtualCurrency.BTC,
+                "CAIFT",
+                "CHZ",
+                "COMP",
+                "COTI",
+                "CRV",
+                "CVC",
+                "CVX",
+                "DAI",
+                "DIA",
+                "DOGE",
+                "DOT",
+
+                VirtualCurrency.ETH,
+                "FIL",
+                "GALA",
+                "GALFT",
+                "ICP",
+                "ILV",
+                "JUVFT",
+                "KEEP",
+                VirtualCurrency.LINK,
+                VirtualCurrency.LTC,
+                "MANA",
+                "MATIC",
+                "MKR",
+                "OCEAN",
+                "OGN",
+                "OMG",
+
+                "PAXG",
+                "PSGFT",
+                "SOL",
+                "SPELL",
+                "STORJ",
+                "STX",
+                "SUSHI",
+                "SYN",
+                "UNI",
+                VirtualCurrency.USDC,
+                "USDP",
+                "WBTC",
+                "WBX",
+                "WLUNA",
+                "XLM",
+                VirtualCurrency.XRP,
+                "XTZ",
+                "YFY",
+                "ZRX",
             )
 
             val quoteCurrencies = arrayOf(Currency.BRL)
@@ -58,14 +105,20 @@ class Mercado : Market(NAME, TTS_NAME, getCurrencyPairs()) {
     }
 
     @Throws(Exception::class)
-    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
-        val tickerJsonObject = jsonObject.getJSONObject("ticker")
-        ticker.bid = tickerJsonObject.getDouble("buy")
-        ticker.ask = tickerJsonObject.getDouble("sell")
-        ticker.vol = tickerJsonObject.getDouble("vol")
-        ticker.high = tickerJsonObject.getDouble("high")
-        ticker.low = tickerJsonObject.getDouble("low")
-        ticker.last = tickerJsonObject.getDouble("last")
-        ticker.timestamp = tickerJsonObject.getLong("date") * TimeUtils.MILLIS_IN_SECOND
+    override fun parseTickerFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        ticker: Ticker,
+        checkerInfo: CheckerInfo
+    ) {
+        jsonObject.getJSONObject("ticker").also {
+            ticker.bid = it.getDouble("buy")
+            ticker.ask = it.getDouble("sell")
+            ticker.vol = it.getDouble("vol")
+            ticker.high = it.getDouble("high")
+            ticker.low = it.getDouble("low")
+            ticker.last = it.getDouble("last")
+            ticker.timestamp = it.getLong("date") * TimeUtils.MILLIS_IN_SECOND
+        }
     }
 }

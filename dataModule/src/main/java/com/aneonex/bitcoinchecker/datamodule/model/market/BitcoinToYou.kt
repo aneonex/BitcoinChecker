@@ -31,7 +31,7 @@ class BitcoinToYou : SimpleMarket(
         fun getDisplaySymbol(symbolString: String): String {
             @Suppress("SpellCheckingInspection")
             return when(symbolString){
-                "CBRL" -> "BRL"
+                //"CBRL" -> "BRL"
                 "BRLC" -> "BRL"
                 else -> symbolString
             }
@@ -41,7 +41,7 @@ class BitcoinToYou : SimpleMarket(
         data.forEachJSONObject {
             val symbol = it.getString("symbol")
             val assets = symbol.split('_')
-            if(assets.size == 2) {
+            if (assets.size == 2) {
                 pairs.add(
                     CurrencyPairInfo(
                         getDisplaySymbol(assets[0]),
@@ -56,6 +56,10 @@ class BitcoinToYou : SimpleMarket(
     @Throws(Exception::class)
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
         jsonObject.getJSONObject("summary").also { data ->
+            ticker.last = data.optDouble("last", 0.0)
+            if(ticker.last <= 0)
+                throw MarketParseException("No data")
+
             ticker.vol = data.getDouble("amount")
             if(ticker.vol <= 0)
                 throw MarketParseException("No trading volume")
@@ -63,7 +67,6 @@ class BitcoinToYou : SimpleMarket(
             ticker.volQuote = data.getDouble("quote_volume")
             ticker.high = data.getDouble("high")
             ticker.low = data.getDouble("low")
-            ticker.last = data.getDouble("last")
         }
     }
 

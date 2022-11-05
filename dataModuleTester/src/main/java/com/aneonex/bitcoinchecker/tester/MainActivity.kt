@@ -4,15 +4,20 @@ import android.content.Context
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.SpinnerAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.android.volley.NetworkResponse
 import com.android.volley.RequestQueue
 import com.android.volley.VolleyError
 import com.aneonex.bitcoinchecker.datamodule.config.MarketsConfig
-import com.aneonex.bitcoinchecker.datamodule.model.*
+import com.aneonex.bitcoinchecker.datamodule.model.CheckerInfo
+import com.aneonex.bitcoinchecker.datamodule.model.FuturesContractType
+import com.aneonex.bitcoinchecker.datamodule.model.Market
+import com.aneonex.bitcoinchecker.datamodule.model.Ticker
 import com.aneonex.bitcoinchecker.datamodule.util.CurrencyPairsMapHelper
 import com.aneonex.bitcoinchecker.datamodule.util.FormatUtilsBase
 import com.aneonex.bitcoinchecker.datamodule.util.MarketsConfigUtils.getMarketByKey
@@ -26,7 +31,6 @@ import com.aneonex.bitcoinchecker.tester.volley.CheckerVolleyMainRequest
 import com.aneonex.bitcoinchecker.tester.volley.CheckerVolleyMainRequest.TickerWrapper
 import com.aneonex.bitcoinchecker.tester.volley.generic.ResponseErrorListener
 import com.aneonex.bitcoinchecker.tester.volley.generic.ResponseListener
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding:  MainActivityBinding
@@ -91,7 +95,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.getResultButton.setOnClickListener { newResult }
-        // binding.testAllButton.setOnClickListener { testAllExchanges() }
+
+//        binding.testAllButton.setOnClickListener { testAllExchanges() }
+//        binding.testAllButton.isVisible = true
     }
 
     // ====================
@@ -269,27 +275,26 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "Test all", Toast.LENGTH_SHORT).show()
 
         for (market in MarketsConfig.MARKETS.values) {
-            Log.d(tag, "*** Checking: ${market.name} (${market.key}) ***")
+            Log.d("TEST", "*** Checking: ${market.name} (${market.key}) ***")
 
-            if(market.currencyPairs.isNullOrEmpty()){
-                Log.d(tag, "No pairs, queue updating...")
+            val marketPairs = createCurrencyPairsMapHelper(this, market)
+
+            if(marketPairs.isEmpty()){
+                Log.d("TEST", "No pairs, queue updating...")
                 requestQueue.add(createRequestDynamicCurrencyPairs(this, market))
 
                 continue
             }
 
-            val map = market.currencyPairs!!
-            val currencyBase = map.keys.first()
-            val currencyCounter = map[currencyBase]!!.first()
+            val currencyBase = marketPairs.baseAssets.first()
+            val currencyCounter = marketPairs.getQuoteAssets(currencyBase).first()
 
-            Log.d(tag, "First pair: $currencyBase/$currencyCounter")
+            Log.d("TEST", "First pair: $currencyBase/$currencyCounter")
 
-            val currencyPairsMapHelper = CurrencyPairsMapHelper(MarketCurrencyPairsStore.getPairsForMarket(this, market.key))
-            val pairId = currencyPairsMapHelper.getCurrencyPairId(currencyBase, currencyCounter)
-
-            val contractType = if (market is FuturesMarket)
-                market.contractTypes[0]
-                else Futures.CONTRACT_TYPE_WEEKLY
+            val contractType = marketPairs
+                .getAvailableFuturesContractsTypes(currencyBase, currencyCounter)
+                .firstOrNull() ?: FuturesContractType.NONE
+            val pairId = marketPairs.getCurrencyPairId(currencyBase, currencyCounter, contractType)
 
             val checkerInfo = CheckerInfo(currencyBase, currencyCounter, pairId, contractType)
             val request = CheckerVolleyMainRequest(market, checkerInfo,
@@ -325,7 +330,7 @@ class MainActivity : AppCompatActivity() {
         if(error?.cause != null)
             sb.append("\nDetails: ${error.cause}")
 
-        Log.d(tag, sb.toString())
+        Log.d("TEST", sb.toString())
     }
 
     private fun createRequestDynamicCurrencyPairs(context: Context, market: Market): DynamicCurrencyPairsVolleyMainRequest {
@@ -340,7 +345,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
- */
+*/
 
     companion object {
         private fun createCurrencyPairsMapHelper(context: Context, market: Market): CurrencyPairsMapHelper {
