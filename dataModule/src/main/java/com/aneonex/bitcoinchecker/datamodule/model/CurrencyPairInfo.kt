@@ -30,7 +30,6 @@ open class CurrencyPairInfo(
             return if(resultName == null) "" else ":$resultName"
         }
 
-        return currencyPairId ?:
-        "$currencyBase:$currencyCounter" + tryGetContactName()
+        return currencyPairId ?: ("$currencyBase:$currencyCounter" + tryGetContactName())
     }
 }
