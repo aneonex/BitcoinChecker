@@ -11,13 +11,14 @@ import com.aneonex.bitcoinchecker.datamodule.util.forEachJSONObject
 import org.json.JSONArray
 import org.json.JSONObject
 
+// API Reference: https://docs.cloud.coinbase.com/exchange/reference/
 class Coinbase : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     companion object {
         private const val NAME = "Coinbase"
         private const val TTS_NAME = NAME
-        private const val URL_TICKER = "https://api.pro.coinbase.com/products/%1\$s/ticker"
-        private const val URL_STATS = "https://api.pro.coinbase.com/products/%1\$s/stats"
-        private const val URL_CURRENCY_PAIRS = "https://api.pro.coinbase.com/products"
+        private const val URL_TICKER = "https://api.exchange.coinbase.com/products/%1\$s/ticker"
+        private const val URL_STATS = "https://api.exchange.coinbase.com/products/%1\$s/stats"
+        private const val URL_CURRENCY_PAIRS = "https://api.exchange.coinbase.com/products"
 
         private val CURRENCY_PAIRS: CurrencyPairsMap = CurrencyPairsMap()
     }
