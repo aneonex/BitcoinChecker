@@ -29,10 +29,10 @@ android {
     kotlinOptions {
         jvmTarget = '11'
     }
-
-    lintOptions {
+    lint {
         abortOnError true
-        checkReleaseBuilds true
         checkDependencies true
+        checkReleaseBuilds true
     }
+
 }

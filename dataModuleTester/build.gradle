@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -10,7 +12,8 @@ android {
     buildToolsVersion build_tools_version
 
     buildFeatures {
-        viewBinding true
+        dataBinding = true
+        compose = true
     }
 
     defaultConfig {
@@ -20,6 +23,12 @@ android {
 
         versionCode 1
         versionName "1.0"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -34,24 +43,59 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = "$compose_compiler_version"
+    }
+
     kotlinOptions {
         jvmTarget = '11'
     }
 
-    lintOptions {
+    lint {
         abortOnError true
         disable 'MissingTranslation'
+        enable 'LogNotTimber'
     }
 }
 
 dependencies {
     implementation project(':dataModule')
-    implementation 'com.google.code.gson:gson:2.9.0'
-    implementation 'com.android.volley:volley:1.2.1'
 
-    // AndroidX
     implementation "androidx.core:core-ktx:$core_ktx_version"
-
     implementation "androidx.appcompat:appcompat:1.5.1"
-    implementation 'com.google.android.material:material:1.7.0'
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version")
+
+    // DI: Hilt dependencies
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+    // Jetpack Compose
+    def composeBom = platform("androidx.compose:compose-bom:$compose_bom_version")
+    implementation composeBom
+    androidTestImplementation composeBom
+
+    implementation "androidx.compose.material3:material3"
+
+    // Compose Android Studio preview support
+    implementation "androidx.compose.ui:ui-tooling-preview"
+    implementation "androidx.compose.ui:ui-util"
+    debugImplementation "androidx.compose.ui:ui-tooling"
+
+    // Compose dependencies
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
+    implementation "androidx.navigation:navigation-compose:2.5.3"
+//    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
+
+    implementation "androidx.room:room-ktx:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+
+    implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
+    implementation("com.squareup.okhttp3:logging-interceptor:$okhttp_version")
+
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+
+    // Logging
+    implementation 'com.jakewharton.timber:timber:5.0.1'
 }
