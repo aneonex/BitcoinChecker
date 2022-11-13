@@ -12,7 +12,6 @@ android {
     buildToolsVersion build_tools_version
 
     buildFeatures {
-        dataBinding = true
         compose = true
     }
 
