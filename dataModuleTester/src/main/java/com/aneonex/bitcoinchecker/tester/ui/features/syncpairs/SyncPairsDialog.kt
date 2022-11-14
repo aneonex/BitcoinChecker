@@ -7,7 +7,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,7 +19,7 @@ import com.aneonex.bitcoinchecker.tester.ui.features.markettest.dto.MarketPairsU
 @Composable
 fun SyncPairsDialog(
     currencyPairsInfo: MyMarketPairsInfo,
-    resultState: State<MarketPairsUpdateState>,
+    resultState: MarketPairsUpdateState,
     onDismiss: () -> Unit,
     onSyncClick: () -> Unit
 ) {
@@ -43,7 +42,7 @@ fun SyncPairsDialog(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = !resultState.value.isInProgress,
+                    enabled = !resultState.isInProgress,
                     onClick = {
                         onSyncClick()
                     }) {
@@ -59,7 +58,7 @@ fun SyncPairsDialog(
                     text = stringResource(id = R.string.checker_add_dynamic_currency_pairs_dialog_last_sync, lastSyncDateText)
                 )
                 Text("Currency pairs: ${currencyPairsInfo.size}")
-                resultState.value.error?.also {
+                resultState.error?.also {
                     Text(stringResource(R.string.check_error_generic_prefix, it))
                 }
             }

@@ -111,7 +111,7 @@ private fun MarketScreenMain(
     val contactTypes by viewState.contractTypes.collectAsState()
 
     val marketTicker by viewState.marketTicker.collectAsState()
-    val marketPairsUpdateState = viewState.marketPairsUpdateState.collectAsState()
+    val marketPairsUpdateState by viewState.marketPairsUpdateState.collectAsState()
 
     val showSyncPairsDialog = remember { mutableStateOf(false) }
 

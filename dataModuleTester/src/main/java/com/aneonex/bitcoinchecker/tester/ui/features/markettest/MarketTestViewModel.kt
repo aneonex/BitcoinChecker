@@ -124,13 +124,22 @@ class MarketTestViewModel @Inject constructor(
 
             // Handle HTTP log messages
             launch {
+                val lineMaxLength = 400
                 val messageCountLimit = 10
+
                 val messageList = mutableListOf<String>()
                 httpLogger.messageFlow.collect {
                     if(messageList.size == messageCountLimit){
                         messageList.removeAt(0)
                     }
-                    messageList.add(it)
+
+                    fun formatLogLine(line: String): String{
+                        if(line.length <= lineMaxLength)
+                            return line
+                        return line.take(lineMaxLength) + "..."
+                    }
+
+                    messageList.add(formatLogLine(it))
                     _httpLogText.value = messageList.joinToString("\n")
                 }
             }
@@ -218,12 +227,12 @@ class MarketTestViewModel @Inject constructor(
         _syncPairsJob?.cancel()
         _syncPairsJob = null
 
-        _currentMarket.value?.also {
+        _currentMarket.value?.also { market ->
             _marketPairsUpdateState.value = MarketPairsUpdateState(true)
             _syncPairsJob = viewModelScope.launch {
-                Timber.d("Start market sync: ${it.key}")
+                Timber.d("Start market sync: ${market.key}")
                 try {
-                    myMarketRepository.updateMarketCurrencyPairs(it)
+                    myMarketRepository.updateMarketCurrencyPairs(market)
                     _marketPairsUpdateTrigger.emit(Unit)
                     _marketPairsUpdateState.value = MarketPairsUpdateState()
                 } catch (ex: MarketError) {
@@ -231,7 +240,7 @@ class MarketTestViewModel @Inject constructor(
                 }
             }.also {
                 it.invokeOnCompletion { exception: Throwable? ->
-                     Timber.d(exception, "Market sync completed: %s", it.key)
+                     Timber.d(exception, "Market sync completed: %s", market.key)
                 }
             }
         }
