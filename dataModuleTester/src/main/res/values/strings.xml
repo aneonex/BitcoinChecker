@@ -1,29 +1,36 @@
 <resources>
-
     <string name="app_name">BitcoinCheckerDataModuleTester</string>
 
-    <string name="checker_add_check_currency_empty_warning_title">No currency pairs</string>
+    <string name="check_error_generic_prefix">Error: %1$s</string>
+
+	<string name="checker_add_check_currency_empty_warning_title">No currency pairs</string>
     <string name="checker_add_check_currency_empty_warning_summary">Click here to download latest currency pairs from selected exchange.</string>
     <string name="checker_add_dynamic_currency_pairs_dialog_title">Update currency pairs</string>
-    <string name="checker_add_dynamic_currency_pairs_dialog_refresh">Refresh</string>
+    <string name="checker_add_dynamic_currency_pairs_dialog_synchronize">Synchronize now!</string>
     <string name="checker_add_dynamic_currency_pairs_dialog_last_sync">Last sync: %1$s</string>
     <string name="checker_add_dynamic_currency_pairs_dialog_last_sync_never">never</string>
     <string name="checker_add_dynamic_currency_pairs_dialog_pairs">Currency pairs: %1$d</string>
-    
-    <string name="ticker_last">Price: %1$s</string>
-    <string name="ticker_high">High: %1$s</string>
-    <string name="ticker_low">Low: %1$s</string>
-    <string name="ticker_bid">Bid: %1$s</string>
-    <string name="ticker_ask">Ask: %1$s</string>
-    <string name="ticker_vol_base">Volume (base): %1$s</string>
-    <string name="ticker_vol_quote">Volume (quote): %1$s</string>
-    <string name="ticker_timestamp">Time: %1$s</string>
-    
-    <string name="ticker_raw_url">Url: %1$s</string>
-    <string name="ticker_raw_response_code">Response code: %1$s</string>
-    <string name="ticker_raw_request_headers">----- Request headers -----</string>
-    <string name="ticker_raw_response_headers">----- Response headers -----</string>
-    <string name="ticker_raw_response">----- Raw response -----</string>
-    <string name="ticker_raw_stacktrace">----- Stacktrace -----</string>
-        
+
+    <string name="market_screen_sync">Sync</string>
+    <string name="market_screen_base">Base</string>
+    <string name="market_screen_quote">Quote</string>
+    <string name="market_screen_market">Market</string>
+    <string name="market_screen_contract_type">Contract Type</string>
+    <string name="market_screen_get_price">Get Price</string>
+
+    <string name="ticker_last">Price</string>
+    <string name="ticker_high">High</string>
+    <string name="ticker_low">Low</string>
+    <string name="ticker_bid">Bid</string>
+    <string name="ticker_ask">Ask</string>
+    <string name="ticker_vol_base">Volume (base)</string>
+    <string name="ticker_vol_quote">Volume (quote)</string>
+    <string name="ticker_timestamp">Time</string>
+
+    <string name="generic_none">None</string>
+
+    <string name="try_again">Try Again</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="timeout_error_message">Looks like the server is taking to long to respond, this can be caused by either poor connectivity or an error with our servers. Please try again in a while</string>
+    <string name="something_went_wrong">Something went wrong</string>
 </resources>
