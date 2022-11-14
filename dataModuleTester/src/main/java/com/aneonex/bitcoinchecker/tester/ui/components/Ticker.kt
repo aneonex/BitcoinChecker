@@ -39,18 +39,18 @@ fun Ticker(
             R.string.ticker_timestamp,
             FormatUtilsBase.formatSameDayTimeOrDate(LocalContext.current, timestamp))
 
-        PriceItem(R.string.ticker_last, last, currencyBase)
+        PriceItem(R.string.ticker_last, last, currencyQuote)
 
         if(high > Ticker.NO_DATA) {
             Spacer(modifier = Modifier.size(spaceSize))
-            PriceItem(R.string.ticker_high, high, currencyBase)
-            PriceItem(R.string.ticker_low, low, currencyBase)
+            PriceItem(R.string.ticker_high, high, currencyQuote)
+            PriceItem(R.string.ticker_low, low, currencyQuote)
         }
 
         if(ask > Ticker.NO_DATA) {
             Spacer(modifier = Modifier.size(spaceSize))
-            PriceItem(R.string.ticker_ask, ask, currencyBase)
-            PriceItem(R.string.ticker_bid, bid, currencyBase)
+            PriceItem(R.string.ticker_ask, ask, currencyQuote)
+            PriceItem(R.string.ticker_bid, bid, currencyQuote)
         }
 
         Spacer(modifier = Modifier.size(spaceSize))
