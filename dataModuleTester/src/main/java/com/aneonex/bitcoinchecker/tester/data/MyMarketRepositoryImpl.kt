@@ -28,6 +28,10 @@ class MyMarketRepositoryImpl @Inject constructor(
             .map{ it.mapToMyMarket() }
     }
 
+    override fun isMarketSupportsUpdatePairs(market: MyMarket): Boolean =
+        !getSourceMarketByKey(market).getCurrencyPairsUrl(0).isNullOrEmpty()
+
+
     override suspend fun getMarketCurrencyPairsInfo(market: MyMarket): MyMarketPairsInfo {
         return marketLocalDataSource.getMarketData(market.key) ?:
             MyMarketPairsInfo(

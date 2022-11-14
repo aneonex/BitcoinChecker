@@ -100,6 +100,7 @@ private fun MarketScreenMain(
         Timber.d("XXX", "***** 3) REMAP MARKET INDEX ******")
     }
 
+    val canUpdatePairs by viewState.canUpdatePairs.collectAsState()
     val currentMarketPairsInfo by viewState.currentMarketPairsInfo.collectAsState()
 
     val currentBaseAsset by viewState.currentBaseAsset.collectAsState()
@@ -203,7 +204,8 @@ private fun MarketScreenMain(
                     Button(
                         onClick = {
                             showSyncPairsDialog.value = true
-                        }
+                        },
+                        enabled = canUpdatePairs
                     ) {
                         Text(text = stringResource(id = R.string.market_screen_sync))
                     }
@@ -298,6 +300,7 @@ private fun MarketScreenMainPreview() {
         MarketTestScreenViewState(
             listOf(),
             MutableStateFlow<MyMarket?>(null),
+            MutableStateFlow(true),
 
             MutableStateFlow<MyMarketPairsInfo?>(null),
             MutableStateFlow(MarketPairsUpdateState()),

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 class MarketTestScreenViewState(
     val markets: List<MyMarket>,
     val currentMarket: StateFlow<MyMarket?>,
+    val canUpdatePairs: StateFlow<Boolean>,
 
     val currentMarketPairsInfo: StateFlow<MyMarketPairsInfo?>,
     val marketPairsUpdateState: StateFlow<MarketPairsUpdateState>,

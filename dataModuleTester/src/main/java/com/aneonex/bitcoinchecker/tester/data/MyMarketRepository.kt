@@ -8,6 +8,7 @@ import com.aneonex.bitcoinchecker.tester.domain.model.MyMarketPairsInfo
 interface MyMarketRepository {
     suspend fun getMarketList(): List<MyMarket>
     suspend fun getMarketCurrencyPairsInfo(market: MyMarket): MyMarketPairsInfo
+    fun isMarketSupportsUpdatePairs(market: MyMarket): Boolean
 
 //    suspend fun getBaseCurrencies(market: MyMarket): List<String>
 //    suspend fun getQuoteCurrencies(market: MyMarket, baseCurrency: String): List<String>

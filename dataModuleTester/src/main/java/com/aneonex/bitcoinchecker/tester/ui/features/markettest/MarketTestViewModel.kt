@@ -43,6 +43,13 @@ class MarketTestViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    private var _currentMarketCanUpdatePairs: StateFlow<Boolean> = _currentMarket
+        .map { market ->
+            if (market == null) false
+            else myMarketRepository.isMarketSupportsUpdatePairs(market)
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
     private var _syncPairsJob: Job? = null
 
     private var _baseAssets: StateFlow<List<String>> = _currentMarketPairsInfo
@@ -168,6 +175,7 @@ class MarketTestViewModel @Inject constructor(
                 MarketTestScreenViewState(
                     markets = marketList,
                     currentMarket = _currentMarket.asStateFlow(),
+                    canUpdatePairs = _currentMarketCanUpdatePairs,
 
                     currentMarketPairsInfo = _currentMarketPairsInfo,
                     marketPairsUpdateState = _marketPairsUpdateState.asStateFlow(),
