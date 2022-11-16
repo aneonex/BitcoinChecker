@@ -50,4 +50,12 @@ open class BinanceBase(name: String, domain: String) : SimpleMarket(
             )
         }
     }
+
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo?
+    ): String? {
+        return jsonObject.getString("msg")
+    }
 }
