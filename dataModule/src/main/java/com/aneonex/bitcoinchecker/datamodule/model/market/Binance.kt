@@ -2,7 +2,6 @@ package com.aneonex.bitcoinchecker.datamodule.model.market
 
 import com.aneonex.bitcoinchecker.datamodule.model.CheckerInfo
 import com.aneonex.bitcoinchecker.datamodule.model.CurrencyPairInfo
-import com.aneonex.bitcoinchecker.datamodule.model.Market
 import com.aneonex.bitcoinchecker.datamodule.model.Ticker
 import com.aneonex.bitcoinchecker.datamodule.model.market.generic.SimpleMarket
 import com.aneonex.bitcoinchecker.datamodule.util.forEachJSONObject
