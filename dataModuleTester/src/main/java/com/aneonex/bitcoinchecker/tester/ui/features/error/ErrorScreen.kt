@@ -4,22 +4,22 @@ import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aneonex.bitcoinchecker.tester.R
-import com.aneonex.bitcoinchecker.tester.ui.theme.*
+import com.aneonex.bitcoinchecker.tester.ui.theme.MyAppTheme
 import java.io.IOException
 import java.net.SocketTimeoutException
 
@@ -65,9 +65,8 @@ fun ErrorScreen(
 
             Text(
                 text = errorScreenViewState.getErrorMessage(LocalContext.current),
-                style = Typography.bodyLarge,
-                color = Gray700,
-                modifier = Modifier.padding(top = 16.dp)
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(top = 16.dp).alpha(0.7f)
             )
             Button(
                 onClick = onTryAgainButtonClick,

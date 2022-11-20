@@ -1,9 +1,13 @@
 package com.aneonex.bitcoinchecker.tester.ui.features.markettest
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +32,7 @@ import com.aneonex.bitcoinchecker.tester.ui.features.error.ErrorScreenViewState
 import com.aneonex.bitcoinchecker.tester.ui.features.loading.LoadingScreen
 import com.aneonex.bitcoinchecker.tester.ui.features.markettest.dto.MarketPairsUpdateState
 import com.aneonex.bitcoinchecker.tester.ui.features.syncpairs.SyncPairsDialog
-import com.aneonex.bitcoinchecker.tester.ui.theme.Typography
+import com.aneonex.bitcoinchecker.tester.ui.theme.MyAppTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
@@ -132,8 +136,12 @@ private fun MarketScreenMain(
 
     val scrollState = rememberScrollState()
 
-    Surface {
-        Box(modifier = Modifier
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.inverseOnSurface,
+        contentColor = MaterialTheme.colorScheme.onSurface
+    ) {
+        Column(modifier = Modifier
             .padding(basePadding)
             .verticalScroll(scrollState)) {
             Column(
@@ -238,7 +246,7 @@ private fun MarketScreenMain(
                         }) {
                         Text(
                             text = stringResource(id = R.string.market_screen_get_price),
-                            style = Typography.labelLarge,
+                            style = MaterialTheme.typography.labelLarge,
                         )
                     }
                 }
@@ -288,7 +296,7 @@ private fun MarketScreenPreview() {
 }
 */
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 private fun MarketScreenMainPreview() {
     val ticker = TickerImpl()
@@ -296,33 +304,46 @@ private fun MarketScreenMainPreview() {
 
     val checkerInfo = CheckerInfo("BTC", "USD", null, FuturesContractType.NONE)
 
-    MarketScreenMain(
-        MarketTestScreenViewState(
-            listOf(),
-            MutableStateFlow<MyMarket?>(null),
-            MutableStateFlow(true),
+    MyAppTheme {
+        MarketScreenMain(
+            MarketTestScreenViewState(
+                listOf(),
+                MutableStateFlow<MyMarket?>(null),
+                MutableStateFlow(true),
 
-            MutableStateFlow<MyMarketPairsInfo?>(null),
-            MutableStateFlow(MarketPairsUpdateState()),
+                MutableStateFlow<MyMarketPairsInfo?>(null),
+                MutableStateFlow(MarketPairsUpdateState()),
 
-            MutableStateFlow("BTC"),
-            MutableStateFlow("USD"),
-            MutableStateFlow(FuturesContractType.PERPETUAL),
+                MutableStateFlow("BTC"),
+                MutableStateFlow("USD"),
+                MutableStateFlow(FuturesContractType.PERPETUAL),
 
-            MutableStateFlow(listOf("BTC", "ETH")),
-            MutableStateFlow(listOf("EUR", "USD")),
-            MutableStateFlow(listOf(FuturesContractType.MONTHLY, FuturesContractType.PERPETUAL)),
+                MutableStateFlow(listOf("BTC", "ETH")),
+                MutableStateFlow(listOf("EUR", "USD")),
+                MutableStateFlow(
+                    listOf(
+                        FuturesContractType.MONTHLY,
+                        FuturesContractType.PERPETUAL
+                    )
+                ),
 
-            MutableStateFlow(MarketTickerResult(ticker, checkerInfo))
-        ),
-        MutableStateFlow("My test message\nNew line 123"),
+                MutableStateFlow(MarketTickerResult(ticker, checkerInfo))
+            ),
+            MutableStateFlow("My test message\nNew line 123"),
 
-        onMarketChanged = {},
-        onBaseAssetChanged = {},
-        onQuoteAssetChanged = {},
-        onContractTypeChanged = {},
-        onTestMarketButtonClick = {},
-        onSyncCurrencyPairsClick = {},
-        onSyncCurrencyPairsDialogClosed = {}
-    )
+            onMarketChanged = {},
+            onBaseAssetChanged = {},
+            onQuoteAssetChanged = {},
+            onContractTypeChanged = {},
+            onTestMarketButtonClick = {},
+            onSyncCurrencyPairsClick = {},
+            onSyncCurrencyPairsDialogClosed = {}
+        )
+    }
+}
+
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun MarketScreenMainPreviewNight() {
+    MarketScreenMainPreview()
 }

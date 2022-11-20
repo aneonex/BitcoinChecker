@@ -33,7 +33,7 @@ fun LogBox(logText: String) {
                 .background(MaterialTheme.colorScheme.tertiaryContainer)
                 .padding(4.dp),
             readOnly = true,
-            textStyle = MaterialTheme.typography.bodySmall,
+            textStyle = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onTertiaryContainer),
             singleLine = false,
         )
     }
