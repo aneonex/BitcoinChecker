@@ -297,6 +297,7 @@ private fun MarketScreenPreview() {
 */
 
 @Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun MarketScreenMainPreview() {
     val ticker = TickerImpl()
@@ -340,10 +341,4 @@ private fun MarketScreenMainPreview() {
             onSyncCurrencyPairsDialogClosed = {}
         )
     }
-}
-
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun MarketScreenMainPreviewNight() {
-    MarketScreenMainPreview()
 }
