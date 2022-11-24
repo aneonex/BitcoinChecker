@@ -20,27 +20,40 @@ class Bittrex : SimpleMarket(
     ) {
         JSONArray(responseString)
             .forEachJSONObject {
-                pairs.add(
-                    CurrencyPairInfo(
-                        it.getString("baseCurrencySymbol"),
-                        it.getString("quoteCurrencySymbol"),
-                        null // it.getString("symbol")
+                if(it.getString("status") == "ONLINE") {
+                    pairs.add(
+                        CurrencyPairInfo(
+                            it.getString("baseCurrencySymbol"),
+                            it.getString("quoteCurrencySymbol"),
+                            it.getString("symbol")
+                        )
                     )
-                )
+                }
             }
     }
 
     override fun getPairId(checkerInfo: CheckerInfo): String {
-        return with(checkerInfo){
-            "$currencyBase-$currencyCounter"
-        }
+        return super.getPairId(checkerInfo) ?: with(checkerInfo){ "$currencyBase-$currencyCounter" }
     }
 
-    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
-        jsonObject.let {
+    override fun parseTickerFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        ticker: Ticker,
+        checkerInfo: CheckerInfo
+    ) {
+        jsonObject.also {
             ticker.bid = it.getDouble("bidRate")
             ticker.ask = it.getDouble("askRate")
             ticker.last = it.getDouble("lastTradeRate")
         }
+    }
+
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo?
+    ): String? {
+        return jsonObject.getString("code")
     }
 }
