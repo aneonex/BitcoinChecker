@@ -2,50 +2,68 @@ package com.aneonex.bitcoinchecker.datamodule.model.market
 
 import com.aneonex.bitcoinchecker.datamodule.model.CheckerInfo
 import com.aneonex.bitcoinchecker.datamodule.model.CurrencyPairInfo
-import com.aneonex.bitcoinchecker.datamodule.model.Market
 import com.aneonex.bitcoinchecker.datamodule.model.Ticker
+import com.aneonex.bitcoinchecker.datamodule.model.market.generic.SimpleMarket
+import com.aneonex.bitcoinchecker.datamodule.util.forEachName
 import org.json.JSONObject
 
-class CoinEx : Market(NAME, TTS_NAME, null) {
-    companion object {
-        private const val NAME = "CoinEx"
-        private const val TTS_NAME = "Coin ex"
-        private const val URL = "https://api.coinex.com/v1/market/ticker?market=%1\$s"
-        private const val URL_CURRENCY_PAIRS = "https://api.coinex.com/v1/market/info"
+class CoinEx : SimpleMarket(
+    "CoinEx",
+    "https://api.coinex.com/v1/market/info",
+    "https://api.coinex.com/v1/market/ticker?market=%1\$s",
+    "Coin ex"
+) {
+
+    override fun parseCurrencyPairsFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        pairs: MutableList<CurrencyPairInfo>
+    ) {
+        jsonObject
+            .getJSONObject("data")
+            .forEachName { _, market ->
+                pairs.add(
+                    CurrencyPairInfo(
+                        market.getString("trading_name"),
+                        market.getString("pricing_name"),
+                        market.getString("name"),
+                    )
+                )
+            }
     }
 
-    override fun getCurrencyPairsUrl(requestId: Int): String {
-        return URL_CURRENCY_PAIRS
+    override fun parseTickerFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        ticker: Ticker,
+        checkerInfo: CheckerInfo
+    ) {
+        jsonObject
+            .getJSONObject("data")
+            .also {
+                ticker.timestamp = it.getLong("date")
+            }
+            .getJSONObject("ticker")
+            .also {
+                ticker.bid = it.getDouble("buy")
+                ticker.ask = it.getDouble("sell")
+
+                ticker.high = it.getDouble("high")
+                ticker.low = it.getDouble("low")
+
+                ticker.last = it.getDouble("last")
+                ticker.vol = it.getDouble("vol")
+            }
     }
 
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
-        val marketsJson = jsonObject.getJSONObject("data")
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo?
+    ): String {
+        val code = jsonObject.getInt("code")
+        val message = jsonObject.getString("message")
 
-        marketsJson.keys().forEach {
-            val market = marketsJson.getJSONObject(it)
-            pairs.add( CurrencyPairInfo(
-                    market.getString("trading_name"),
-                    market.getString("pricing_name"),
-                    market.getString("name"),
-            ))
-        }
-    }
-
-    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
-        return String.format(URL, checkerInfo.currencyPairId)
-    }
-
-    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
-        val dataJson = jsonObject.getJSONObject("data")
-        ticker.timestamp = dataJson.getLong("date")
-
-        dataJson.getJSONObject("ticker").apply {
-            ticker.bid = getDouble("buy")
-            ticker.ask = getDouble("sell")
-            ticker.high = getDouble("high")
-            ticker.low = getDouble("low")
-            ticker.last = getDouble("last")
-            ticker.vol = getDouble("vol")
-        }
+        return "$message (code: $code)"
     }
 }
