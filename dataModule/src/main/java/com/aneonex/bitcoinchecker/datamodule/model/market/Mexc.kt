@@ -60,4 +60,12 @@ class Mexc : SimpleMarket(
                 ticker.ask = it.getDouble("ask")
             }
     }
+
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo?
+    ): String? {
+        return jsonObject.getString("msg")
+    }
 }
