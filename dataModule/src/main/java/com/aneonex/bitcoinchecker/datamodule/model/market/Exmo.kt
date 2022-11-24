@@ -2,48 +2,63 @@ package com.aneonex.bitcoinchecker.datamodule.model.market
 
 import com.aneonex.bitcoinchecker.datamodule.model.CheckerInfo
 import com.aneonex.bitcoinchecker.datamodule.model.CurrencyPairInfo
-import com.aneonex.bitcoinchecker.datamodule.model.Market
 import com.aneonex.bitcoinchecker.datamodule.model.Ticker
-import com.aneonex.bitcoinchecker.datamodule.util.forEachString
+import com.aneonex.bitcoinchecker.datamodule.model.market.generic.SimpleMarket
+import com.aneonex.bitcoinchecker.datamodule.util.forEachName
 import org.json.JSONObject
 
-class Exmo : Market(NAME, TTS_NAME, null) {
-    companion object {
-        private const val NAME = "Exmo"
-        private const val TTS_NAME = NAME
-        private const val URL = "https://api.exmo.com/v1/ticker/"
-        private const val URL_CURRENCY_PAIRS = "https://api.exmo.com/v1/pair_settings/"
-    }
+class Exmo : SimpleMarket(
+    "Exmo",
+    "https://api.exmo.com/v1.1/pair_settings/",
+    "https://api.exmo.com/v1.1/ticker/", // Does not support symbol
+) {
+    override fun parseTickerFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        ticker: Ticker,
+        checkerInfo: CheckerInfo
+    ) {
+        jsonObject
+            .getJSONObject(checkerInfo.currencyPairId!!)
+            .also {
+                ticker.bid = it.getDouble("buy_price")
+                ticker.ask = it.getDouble("sell_price")
 
-    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
-        return URL
-    }
+                ticker.vol = it.getDouble("vol")
+                ticker.volQuote = it.getDouble("vol_curr")
 
-    @Throws(Exception::class)
-    override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
-        val pairJsonObject = jsonObject.getJSONObject(checkerInfo.currencyBase + "_" + checkerInfo.currencyCounter)
-        ticker.bid = pairJsonObject.getDouble("buy_price")
-        ticker.ask = pairJsonObject.getDouble("sell_price")
-        ticker.vol = pairJsonObject.getDouble("vol")
-        ticker.high = pairJsonObject.getDouble("high")
-        ticker.low = pairJsonObject.getDouble("low")
-        ticker.last = pairJsonObject.getDouble("last_trade")
-    }
+                ticker.high = it.getDouble("high")
+                ticker.low = it.getDouble("low")
 
-    // ====================
-    // Get currency pairs
-    // ====================
-    override fun getCurrencyPairsUrl(requestId: Int): String {
-        return URL_CURRENCY_PAIRS
-    }
-
-    @Throws(Exception::class)
-    override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
-        jsonObject.names()!!.forEachString { pairId ->
-            val currencies = pairId.split("_".toRegex()).toTypedArray()
-            if (currencies.size == 2) {
-                pairs.add(CurrencyPairInfo(currencies[0], currencies[1], pairId))
+                ticker.last = it.getDouble("last_trade")
             }
-        }
+    }
+
+    override fun parseCurrencyPairsFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        pairs: MutableList<CurrencyPairInfo>
+    ) {
+        jsonObject
+            .forEachName { pairId, _ ->
+                val currencies = pairId.split("_")
+                if (currencies.size == 2) {
+                    pairs.add(
+                        CurrencyPairInfo(
+                            currencies[0],
+                            currencies[1],
+                            pairId
+                        )
+                    )
+                }
+            }
+    }
+
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo?
+    ): String? {
+        return jsonObject.getString("error")
     }
 }
