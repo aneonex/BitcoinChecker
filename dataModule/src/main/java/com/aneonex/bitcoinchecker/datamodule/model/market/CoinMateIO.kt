@@ -11,7 +11,8 @@ class CoinMateIO : SimpleMarket(
     "CoinMate.io",
     "https://coinmate.io/api/tradingPairs",
     "https://coinmate.io/api/ticker?currencyPair=%1\$s",
-    "Coin Mate"
+    "Coin Mate",
+    errorPropertyName = "errorMessage"
 ) {
     override fun getPairId(checkerInfo: CheckerInfo): String =
         checkerInfo.currencyPairId ?: "${checkerInfo.currencyBase}_${checkerInfo.currencyCounter}"
@@ -44,10 +45,5 @@ class CoinMateIO : SimpleMarket(
 
             ticker.timestamp = it.getLong("timestamp")
         }
-    }
-
-    @Throws(Exception::class)
-    override fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject, checkerInfo: CheckerInfo?): String? {
-        return jsonObject.getString("errorMessage")
     }
 }

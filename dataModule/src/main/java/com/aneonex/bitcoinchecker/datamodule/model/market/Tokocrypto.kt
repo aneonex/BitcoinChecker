@@ -13,8 +13,9 @@ class Tokocrypto : SimpleMarket(
         "Tokocrypto",
         "https://www.tokocrypto.com/open/v1/common/symbols",
         "https://api.binance.me/api/v3/klines?symbol=%1\$s&interval=1d&limit=1",
-        "Toko crypto"
-        ) {
+        "Toko crypto",
+        errorPropertyName = "msg"
+) {
 
     override fun parseCurrencyPairsFromJsonObject(
         requestId: Int,
@@ -25,7 +26,7 @@ class Tokocrypto : SimpleMarket(
             .getJSONObject("data")
             .getJSONArray("list")
             .forEachJSONObject { market ->
-                if(market.getInt("type") == 1) {
+                if (market.getInt("type") == 1) {
                     pairs.add(
                         CurrencyPairInfo(
                             market.getString("baseAsset"),
@@ -60,13 +61,5 @@ class Tokocrypto : SimpleMarket(
                 ticker.vol = it.getDouble(5)
                 ticker.volQuote = it.getDouble(7)
             }
-    }
-
-    override fun parseErrorFromJsonObject(
-        requestId: Int,
-        jsonObject: JSONObject,
-        checkerInfo: CheckerInfo?
-    ): String? {
-        return jsonObject.getString("msg")
     }
 }

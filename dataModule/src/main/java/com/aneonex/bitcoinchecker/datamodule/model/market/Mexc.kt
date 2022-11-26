@@ -11,7 +11,8 @@ class Mexc : SimpleMarket(
     "MEXC Global",
     "https://www.mexc.com/open/api/v2/market/symbols",
     "https://www.mexc.com/open/api/v2/market/ticker?symbol=%1\$s",
-    "Mexc"
+    "Mexc",
+    errorPropertyName = "msg"
 ) {
 
     override fun parseCurrencyPairsFromJsonObject(
@@ -59,13 +60,5 @@ class Mexc : SimpleMarket(
                 ticker.bid = it.getDouble("bid")
                 ticker.ask = it.getDouble("ask")
             }
-    }
-
-    override fun parseErrorFromJsonObject(
-        requestId: Int,
-        jsonObject: JSONObject,
-        checkerInfo: CheckerInfo?
-    ): String? {
-        return jsonObject.getString("msg")
     }
 }

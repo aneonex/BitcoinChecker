@@ -85,11 +85,10 @@ class CapeCrypto : Market(NAME, TTS_NAME) {
         }
     }
 
-    @Throws(Exception::class)
     override fun parseErrorFromJsonObject(
         requestId: Int,
         jsonObject: JSONObject,
-        checkerInfo: CheckerInfo?
+        checkerInfo: CheckerInfo
     ): String? {
         return jsonObject.getJSONArray("errors").getString(0)
     }

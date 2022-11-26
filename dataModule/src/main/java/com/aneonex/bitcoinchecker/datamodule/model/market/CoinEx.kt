@@ -59,7 +59,7 @@ class CoinEx : SimpleMarket(
     override fun parseErrorFromJsonObject(
         requestId: Int,
         jsonObject: JSONObject,
-        checkerInfo: CheckerInfo?
+        checkerInfo: CheckerInfo
     ): String {
         val code = jsonObject.getInt("code")
         val message = jsonObject.getString("message")

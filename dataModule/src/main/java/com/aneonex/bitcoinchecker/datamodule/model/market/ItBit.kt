@@ -52,7 +52,13 @@ class ItBit : SimpleMarket(
         ticker.last = jsonObject.getJSONObject("last_execution").getDouble("price")
     }
 
-    override fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject, checkerInfo: CheckerInfo?): String? {
-        return jsonObject.getJSONObject("error").getString("message")
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo
+    ): String? {
+        return jsonObject
+            .getJSONObject("error")
+            .getString("message")
     }
 }

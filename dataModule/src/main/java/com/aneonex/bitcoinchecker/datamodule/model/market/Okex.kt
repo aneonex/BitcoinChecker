@@ -10,7 +10,8 @@ import org.json.JSONObject
 class Okex : SimpleMarket(
     "OKX",
     "https://www.okx.com/api/v5/market/tickers?instType=SPOT",
-    "https://www.okx.com/api/v5/market/ticker?instId=%1\$s"
+    "https://www.okx.com/api/v5/market/ticker?instId=%1\$s",
+    errorPropertyName = "msg"
 ) {
 
     override fun parseCurrencyPairsFromJsonObject(

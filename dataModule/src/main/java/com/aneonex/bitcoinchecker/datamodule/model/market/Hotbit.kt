@@ -26,8 +26,14 @@ class Hotbit : SimpleMarket(
         return "${checkerInfo.currencyBase}/${checkerInfo.currencyCounter}"
     }
 
-    override fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject, checkerInfo: CheckerInfo?): String? {
-        return jsonObject.getJSONObject("error").getString("message")
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo
+    ): String? {
+        return jsonObject
+            .getJSONObject("error")
+            .getString("message")
     }
 
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {

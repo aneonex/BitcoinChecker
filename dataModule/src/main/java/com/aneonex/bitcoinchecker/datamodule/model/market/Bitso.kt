@@ -59,7 +59,11 @@ class Bitso : Market(NAME, TTS_NAME, null) {
     }
 
     @Throws(Exception::class)
-    override fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject, checkerInfo: CheckerInfo?): String? {
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo
+    ): String? {
         return jsonObject.getJSONObject("error").getString("message")
     }
 }

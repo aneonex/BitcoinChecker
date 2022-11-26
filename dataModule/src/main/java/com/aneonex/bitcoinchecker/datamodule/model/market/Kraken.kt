@@ -64,9 +64,11 @@ class Kraken : SimpleMarket(
     override fun parseErrorFromJsonObject(
         requestId: Int,
         jsonObject: JSONObject,
-        checkerInfo: CheckerInfo?
+        checkerInfo: CheckerInfo
     ): String? {
-        return jsonObject.getJSONArray("error").getString(0)
+        return jsonObject
+            .getJSONArray("error")
+            .getString(0)
     }
 
     companion object {

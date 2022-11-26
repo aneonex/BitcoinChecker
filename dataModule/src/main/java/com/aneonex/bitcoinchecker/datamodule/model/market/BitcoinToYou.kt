@@ -73,7 +73,7 @@ class BitcoinToYou : SimpleMarket(
     override fun parseErrorFromJsonObject(
         requestId: Int,
         jsonObject: JSONObject,
-        checkerInfo: CheckerInfo?
+        checkerInfo: CheckerInfo
     ): String? {
         return jsonObject.getJSONObject("data").getString("message")
     }

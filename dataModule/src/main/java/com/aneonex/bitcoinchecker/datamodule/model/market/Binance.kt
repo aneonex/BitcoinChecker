@@ -13,7 +13,8 @@ class BinanceUs: BinanceBase("Binance.US", "us")
 open class BinanceBase(name: String, domain: String) : SimpleMarket(
     name,
     "https://api.binance.$domain/api/v3/exchangeInfo",
-    "https://api.binance.$domain/api/v3/ticker/24hr?symbol=%1\$s"
+    "https://api.binance.$domain/api/v3/ticker/24hr?symbol=%1\$s",
+    errorPropertyName = "msg"
 ) {
     @Throws(Exception::class)
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
@@ -48,13 +49,5 @@ open class BinanceBase(name: String, domain: String) : SimpleMarket(
                 )
             )
         }
-    }
-
-    override fun parseErrorFromJsonObject(
-        requestId: Int,
-        jsonObject: JSONObject,
-        checkerInfo: CheckerInfo?
-    ): String? {
-        return jsonObject.getString("msg")
     }
 }

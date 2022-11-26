@@ -14,7 +14,8 @@ import java.util.*
 class FtxFutures : SimpleMarket(
     "FTX Futures",
     "https://ftx.com/api/futures",
-    "https://ftx.com/api/futures/%1\$s"
+    "https://ftx.com/api/futures/%1\$s",
+    errorPropertyName = "error"
 ) {
     override fun getPairId(checkerInfo: CheckerInfo): String {
         return getPairId(checkerInfo.currencyPairId!!, checkerInfo.contractType, checkerInfo.currencyBase)
@@ -40,7 +41,7 @@ class FtxFutures : SimpleMarket(
                 else -> return@forEachJSONObject
             }
 
-            val baseAsset = market.getString("underlying")
+           val baseAsset = market.getString("underlying")
            val formattedPairId = when(contactType) {
                FuturesContractType.QUARTERLY -> "$baseAsset:Q1"
                FuturesContractType.BIQUARTERLY -> "$baseAsset:Q2"
@@ -67,14 +68,6 @@ class FtxFutures : SimpleMarket(
                 ticker.vol = ticker.volQuote / ticker.last // Calculated base volume
             }
         }
-    }
-
-    override fun parseErrorFromJsonObject(
-        requestId: Int,
-        jsonObject: JSONObject,
-        checkerInfo: CheckerInfo?
-    ): String? {
-        return jsonObject.getString("error")
     }
 
     companion object {

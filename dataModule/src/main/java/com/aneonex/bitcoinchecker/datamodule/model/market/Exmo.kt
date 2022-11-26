@@ -11,6 +11,7 @@ class Exmo : SimpleMarket(
     "Exmo",
     "https://api.exmo.com/v1.1/pair_settings/",
     "https://api.exmo.com/v1.1/ticker/", // Does not support symbol
+    errorPropertyName = "error"
 ) {
     override fun parseTickerFromJsonObject(
         requestId: Int,
@@ -52,13 +53,5 @@ class Exmo : SimpleMarket(
                     )
                 }
             }
-    }
-
-    override fun parseErrorFromJsonObject(
-        requestId: Int,
-        jsonObject: JSONObject,
-        checkerInfo: CheckerInfo?
-    ): String? {
-        return jsonObject.getString("error")
     }
 }

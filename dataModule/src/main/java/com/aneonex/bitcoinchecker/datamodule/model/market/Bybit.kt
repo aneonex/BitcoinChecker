@@ -10,7 +10,8 @@ import org.json.JSONObject
 class Bybit : SimpleMarket(
     "Bybit",
     "https://api.bybit.com/spot/v3/public/symbols",
-    "https://api.bybit.com/spot/v3/public/quote/ticker/24hr?symbol=%1\$s"
+    "https://api.bybit.com/spot/v3/public/quote/ticker/24hr?symbol=%1\$s",
+    errorPropertyName = "retMsg"
 ) {
     override fun parseCurrencyPairsFromJsonObject(
         requestId: Int,
@@ -55,13 +56,5 @@ class Bybit : SimpleMarket(
 
                 ticker.timestamp = getLong("t")
             }
-    }
-
-    override fun parseErrorFromJsonObject(
-        requestId: Int,
-        jsonObject: JSONObject,
-        checkerInfo: CheckerInfo?
-    ): String? {
-        return jsonObject.getString("retMsg")
     }
 }

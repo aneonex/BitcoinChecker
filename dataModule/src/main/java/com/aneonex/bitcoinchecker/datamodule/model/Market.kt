@@ -67,7 +67,7 @@ abstract class Market(
     }
 
     @Throws(Exception::class)
-    protected open fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject, checkerInfo: CheckerInfo?): String? {
+    protected open fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject, checkerInfo: CheckerInfo): String? {
         throw Exception()
     }
 

@@ -11,7 +11,8 @@ import org.json.JSONObject
 class Bittrex : SimpleMarket(
     "Bittrex",
     "https://api.bittrex.com/v3/markets",
-    "https://api.bittrex.com/v3/markets/%1\$s/ticker"
+    "https://api.bittrex.com/v3/markets/%1\$s/ticker",
+    errorPropertyName = "code"
 ) {
     override fun parseCurrencyPairs(
         requestId: Int,
@@ -47,13 +48,5 @@ class Bittrex : SimpleMarket(
             ticker.ask = it.getDouble("askRate")
             ticker.last = it.getDouble("lastTradeRate")
         }
-    }
-
-    override fun parseErrorFromJsonObject(
-        requestId: Int,
-        jsonObject: JSONObject,
-        checkerInfo: CheckerInfo?
-    ): String? {
-        return jsonObject.getString("code")
     }
 }

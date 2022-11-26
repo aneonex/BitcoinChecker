@@ -11,7 +11,8 @@ class CexIO : SimpleMarket(
     "CEX.IO",
     "https://cex.io/api/currency_limits",
     "https://cex.io/api/ticker/%1\$s",
-    "CEX IO"
+    "CEX IO",
+    errorPropertyName = "error"
 ) {
 
     override fun getPairId(checkerInfo: CheckerInfo): String {
@@ -43,13 +44,5 @@ class CexIO : SimpleMarket(
                     currencyCounter,
                     null))
             }
-    }
-
-    override fun parseErrorFromJsonObject(
-        requestId: Int,
-        jsonObject: JSONObject,
-        checkerInfo: CheckerInfo?
-    ): String? {
-        return jsonObject.getString("error")
     }
 }

@@ -31,8 +31,14 @@ class BwCom : SimpleMarket(
         }
     }
 
-    override fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject, checkerInfo: CheckerInfo?): String? {
-        return jsonObject.getJSONObject("resMsg").getString("message")
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo
+    ): String? {
+        return jsonObject
+            .getJSONObject("resMsg")
+            .getString("message")
     }
 
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {

@@ -85,8 +85,11 @@ class Bithumb : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
     }
 
     @Throws(Exception::class)
-    override fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject,
-                                          checkerInfo: CheckerInfo?): String? {
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo
+    ): String? {
         return jsonObject.getString("message")
     }
 

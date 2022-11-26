@@ -11,7 +11,8 @@ import org.json.JSONObject
 class Bleutrade : SimpleMarket(
     "Bleutrade",
     "https://bleutrade.com/api/v3/public/getmarkets",
-    "https://bleutrade.com/api/v3/public/getticker?market=%1\$s"
+    "https://bleutrade.com/api/v3/public/getticker?market=%1\$s",
+    errorPropertyName = "message"
 ) {
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
         val jsonTicker: JSONObject =
@@ -22,10 +23,6 @@ class Bleutrade : SimpleMarket(
         ticker.bid = jsonTicker.getDouble("Bid")
         ticker.ask = jsonTicker.getDouble("Ask")
         ticker.last = jsonTicker.getDouble("Last")
-    }
-
-    override fun parseErrorFromJsonObject(requestId: Int, jsonObject: JSONObject, checkerInfo: CheckerInfo?): String? {
-        return jsonObject.getString("message")
     }
 
     override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {

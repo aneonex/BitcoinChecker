@@ -20,7 +20,8 @@ class FtxUs : FtxBase(
 open class FtxBase(name: String, domain: String) : SimpleMarket(
     name,
     "https://ftx.$domain/api/markets",
-    "https://ftx.$domain/api/markets/%1\$s"
+    "https://ftx.$domain/api/markets/%1\$s",
+    errorPropertyName = "error"
 ) {
     override fun parseCurrencyPairsFromJsonObject(requestId: Int, jsonObject: JSONObject, pairs: MutableList<CurrencyPairInfo>) {
         jsonObject.getJSONArray("result").forEachJSONObject {  market ->
@@ -45,13 +46,5 @@ open class FtxBase(name: String, domain: String) : SimpleMarket(
             ticker.volQuote = market.getDouble("quoteVolume24h")
             ticker.vol = ticker.volQuote / ticker.last // Calculated base volume
         }
-    }
-
-    override fun parseErrorFromJsonObject(
-        requestId: Int,
-        jsonObject: JSONObject,
-        checkerInfo: CheckerInfo?
-    ): String? {
-        return jsonObject.getString("error")
     }
 }
