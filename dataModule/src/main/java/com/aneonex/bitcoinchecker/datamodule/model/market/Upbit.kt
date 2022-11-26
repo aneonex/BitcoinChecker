@@ -2,22 +2,17 @@ package com.aneonex.bitcoinchecker.datamodule.model.market
 
 import com.aneonex.bitcoinchecker.datamodule.model.CheckerInfo
 import com.aneonex.bitcoinchecker.datamodule.model.CurrencyPairInfo
-import com.aneonex.bitcoinchecker.datamodule.model.Market
 import com.aneonex.bitcoinchecker.datamodule.model.Ticker
+import com.aneonex.bitcoinchecker.datamodule.model.market.generic.SimpleMarket
 import org.json.JSONArray
+import org.json.JSONObject
 
-class Upbit : Market(NAME, TTS_NAME, null) {
-    companion object {
-        private const val NAME = "Upbit"
-        private const val TTS_NAME = "Up bit"
-        private const val URL = "https://api.upbit.com/v1/ticker?markets=%1\$s"
-        private const val URL_CURRENCY_PAIRS = "https://api.upbit.com/v1/market/all?isDetails=false"
-    }
-
-    override fun getCurrencyPairsUrl(requestId: Int): String {
-        return URL_CURRENCY_PAIRS
-    }
-
+class Upbit : SimpleMarket(
+    "Upbit",
+    "https://api.upbit.com/v1/market/all?isDetails=false",
+    "https://api.upbit.com/v1/ticker?markets=%1\$s",
+    "Up bit"
+) {
     override fun parseCurrencyPairs(requestId: Int, responseString: String, pairs: MutableList<CurrencyPairInfo>) {
         val markets = JSONArray(responseString)
 
@@ -36,10 +31,6 @@ class Upbit : Market(NAME, TTS_NAME, null) {
         }
     }
 
-    override fun getUrl(requestId: Int, checkerInfo: CheckerInfo): String {
-        return String.format(URL, checkerInfo.currencyPairId)
-    }
-
     override fun parseTicker(requestId: Int, responseString: String, ticker: Ticker, checkerInfo: CheckerInfo) {
         val jsonArray = JSONArray(responseString)
 
@@ -50,5 +41,15 @@ class Upbit : Market(NAME, TTS_NAME, null) {
             ticker.vol = getDouble("acc_trade_volume")
             ticker.timestamp = getLong("timestamp")
         }
+    }
+
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo
+    ): String? {
+        return jsonObject
+            .getJSONObject("error")
+            .getString("message")
     }
 }
