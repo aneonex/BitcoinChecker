@@ -9,39 +9,40 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class Latoken : SimpleMarket(
-        "LATOKEN",
-        "https://api.latoken.com/v2/ticker",
-        "https://api.latoken.com/v2/ticker/%1\$s",
-        "Latoken"
-        ) {
+    "LATOKEN",
+    "https://api.latoken.com/v2/ticker",
+    "https://api.latoken.com/v2/ticker/%1\$s",
+    "Latoken",
+    errorPropertyName = "message"
+) {
 
     override fun parseCurrencyPairs(
         requestId: Int,
         responseString: String,
         pairs: MutableList<CurrencyPairInfo>
     ) {
-        val pairsJson = JSONArray(responseString)
-        pairsJson.forEachJSONObject {
-            val symbol = it.getString("symbol")
-            val assets = symbol.split('/')
-            if(assets.size == 2) {
-                val baseAsset = assets[0]
-                val quoteAsset = assets[1]
+        JSONArray(responseString)
+            .forEachJSONObject {
+                val symbol = it.getString("symbol")
+                val assets = symbol.split('/')
+                if (assets.size == 2) {
+                    val baseAsset = assets[0]
+                    val quoteAsset = assets[1]
 
-                pairs.add(
-                    CurrencyPairInfo(
-                        baseAsset,
-                        quoteAsset,
-                        symbol
+                    pairs.add(
+                        CurrencyPairInfo(
+                            baseAsset,
+                            quoteAsset,
+                            symbol
+                        )
                     )
-                )
+                }
             }
-        }
     }
 
     override fun parseTickerFromJsonObject(requestId: Int, jsonObject: JSONObject, ticker: Ticker, checkerInfo: CheckerInfo) {
         jsonObject
-            .let {
+            .also {
                 ticker.last = it.getDouble("lastPrice")
 
                 ticker.vol = it.getDouble("amount24h")
