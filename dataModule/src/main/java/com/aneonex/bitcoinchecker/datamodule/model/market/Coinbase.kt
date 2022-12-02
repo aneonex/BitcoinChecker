@@ -99,4 +99,12 @@ class Coinbase : Market(NAME, TTS_NAME, CURRENCY_PAIRS) {
             }
         }
     }
+
+    override fun parseErrorFromJsonObject(
+        requestId: Int,
+        jsonObject: JSONObject,
+        checkerInfo: CheckerInfo
+    ): String? {
+        return jsonObject.getString("message")
+    }
 }
