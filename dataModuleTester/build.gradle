@@ -5,6 +5,12 @@ plugins {
     id 'dagger.hilt.android.plugin'
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 android {
     namespace 'com.aneonex.bitcoinchecker.tester'
 
@@ -61,7 +67,7 @@ dependencies {
     implementation project(':dataModule')
 
     implementation "androidx.core:core-ktx:$core_ktx_version"
-    implementation "androidx.appcompat:appcompat:1.5.1"
+    implementation "androidx.appcompat:appcompat:1.6.0"
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version")
 
