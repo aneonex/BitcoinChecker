@@ -8,7 +8,7 @@ import com.aneonex.bitcoinchecker.datamodule.util.forEachJSONObject
 import org.json.JSONObject
 
 class Bybit : SimpleMarket(
-    "Bybit",
+    "Bybit (Spot)",
     "https://api.bybit.com/spot/v3/public/symbols",
     "https://api.bybit.com/spot/v3/public/quote/ticker/24hr?symbol=%1\$s",
     errorPropertyName = "retMsg"

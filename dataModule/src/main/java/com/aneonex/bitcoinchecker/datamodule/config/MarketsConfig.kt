@@ -208,6 +208,8 @@ object MarketsConfig {
 
         Deribit(),
         Tokocrypto(),
+
+        BybitDerivatives(),
     )
 
     val MARKETS: Map<String, Market> = registeredMarkets.associateBy { it.key }

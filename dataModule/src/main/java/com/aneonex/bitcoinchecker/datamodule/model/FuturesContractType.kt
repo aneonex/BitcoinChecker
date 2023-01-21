@@ -13,7 +13,9 @@ enum class FuturesContractType(val value: Int) {
     MONTHLY(4),
     BIMONTHLY(5),
     QUARTERLY(6),
-    BIQUARTERLY(7);
+    BIQUARTERLY(7),
+
+    INVERSE_PERPETUAL(10);
 
     override fun toString(): String {
         return getShortName(this) ?: "None"
@@ -28,6 +30,9 @@ enum class FuturesContractType(val value: Int) {
                 PERPETUAL ->
                     @Suppress("SpellCheckingInspection")
                     "Perp"
+                INVERSE_PERPETUAL ->
+                    @Suppress("SpellCheckingInspection")
+                    "InvPerp"
                 WEEKLY -> "1W"
                 BIWEEKLY -> "2W"
                 MONTHLY -> "1M"
@@ -41,7 +46,8 @@ enum class FuturesContractType(val value: Int) {
 
             return when(contractType) {
                 NONE,
-                PERPETUAL ->
+                PERPETUAL,
+                INVERSE_PERPETUAL ->
                     null
 
                 WEEKLY -> getEndOfWeek(getCurrentDate())
