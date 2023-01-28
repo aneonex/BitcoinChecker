@@ -219,12 +219,14 @@ private fun MarketScreenMain(
                     }
                 }
 
-                if(contactTypes.isNotEmpty()) {
+                val hasContractTypes = contactTypes.isNotEmpty() && !(contactTypes.size == 1 && contactTypes[0] == FuturesContractType.NONE)
+
+                if(hasContractTypes) {
                     Row(
                         modifier = Modifier.padding(bottom = basePadding),
                     ) {
                         ComboBox(
-                            itemList = contactTypes.map { it.toString() },
+                            itemList = contactTypes.map { getContractTypeName(it) },
                             selectedIndex = contactTypes.indexOf(currentContractType),
                             label = stringResource(id = R.string.market_screen_contract_type),
                             onValueChange = { index ->
@@ -286,6 +288,13 @@ private fun MarketScreenMain(
             }
         }
     }
+}
+
+private fun getContractTypeName(contractType: FuturesContractType): String {
+    if(contractType == FuturesContractType.NONE)
+        return "Spot"
+
+    return contractType.toString()
 }
 
 /*

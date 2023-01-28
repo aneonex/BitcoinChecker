@@ -212,6 +212,8 @@ object MarketsConfig {
         BybitDerivatives(),
         Exbitron(),
         Txbit(),
+
+        Woo(),
     )
 
     val MARKETS: Map<String, Market> = registeredMarkets.associateBy { it.key }

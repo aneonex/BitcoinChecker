@@ -25,9 +25,8 @@ data class MyMarketPairsInfo(
 
         return pairs
             .filter {
-                it.contractType != FuturesContractType.NONE
-                    && it.currencyBase == baseCurrency
-                    && it.currencyCounter == quoteCurrency }
+                it.currencyBase == baseCurrency
+                && it.currencyCounter == quoteCurrency }
             .map { it.contractType }
     }
 
