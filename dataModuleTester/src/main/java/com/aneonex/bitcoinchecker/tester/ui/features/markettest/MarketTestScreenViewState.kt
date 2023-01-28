@@ -24,8 +24,4 @@ class MarketTestScreenViewState(
     val contractTypes: StateFlow<List<FuturesContractType>>,
 
     val marketTicker: StateFlow<MarketTickerResult?>
-) {
-
-//    fun getMarkets() = marketList
-
-}
+)

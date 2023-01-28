@@ -10,9 +10,6 @@ interface MyMarketRepository {
     suspend fun getMarketCurrencyPairsInfo(market: MyMarket): MyMarketPairsInfo
     fun isMarketSupportsUpdatePairs(market: MyMarket): Boolean
 
-//    suspend fun getBaseCurrencies(market: MyMarket): List<String>
-//    suspend fun getQuoteCurrencies(market: MyMarket, baseCurrency: String): List<String>
-
     suspend fun getMarketTicker(market: MyMarket, pairInfo: CurrencyPairInfo): MarketTickerResult
     suspend fun updateMarketCurrencyPairs(market: MyMarket)
 }

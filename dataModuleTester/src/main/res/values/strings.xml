@@ -17,6 +17,7 @@
     <string name="market_screen_market">Market</string>
     <string name="market_screen_contract_type">Contract Type</string>
     <string name="market_screen_get_price">Get Price</string>
+    <string name="market_screen_spot">Spot</string>
 
     <string name="ticker_last">Price</string>
     <string name="ticker_high">High</string>

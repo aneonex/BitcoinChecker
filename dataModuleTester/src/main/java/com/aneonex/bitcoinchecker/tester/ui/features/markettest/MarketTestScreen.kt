@@ -118,16 +118,16 @@ private fun MarketScreenMain(
     val marketTicker by viewState.marketTicker.collectAsState()
     val marketPairsUpdateState by viewState.marketPairsUpdateState.collectAsState()
 
-    val showSyncPairsDialog = remember { mutableStateOf(false) }
+    var showSyncPairsDialog by remember { mutableStateOf(false) }
 
-    if(showSyncPairsDialog.value){
+    if(showSyncPairsDialog){
         currentMarketPairsInfo?.also {
             SyncPairsDialog(
                 it,
                 marketPairsUpdateState,
                 onSyncClick = onSyncCurrencyPairsClick,
                 onDismiss = {
-                    showSyncPairsDialog.value = false
+                    showSyncPairsDialog = false
                     onSyncCurrencyPairsDialogClosed()
                 }
             )
@@ -152,9 +152,7 @@ private fun MarketScreenMain(
                 Row(Modifier.padding(bottom = basePadding)) {
                     ComboBox(
                         modifier = Modifier
-                            //.fillMaxWidth()
-                            .weight(1f)
-                        ,
+                            .weight(1f),
                         itemList = marketKeys,
                         selectedIndex = currentMarketIndex,
                         label = stringResource(id = R.string.market_screen_market),
@@ -211,7 +209,7 @@ private fun MarketScreenMain(
 
                     Button(
                         onClick = {
-                            showSyncPairsDialog.value = true
+                            showSyncPairsDialog = true
                         },
                         enabled = canUpdatePairs
                     ) {
@@ -290,9 +288,10 @@ private fun MarketScreenMain(
     }
 }
 
+@Composable
 private fun getContractTypeName(contractType: FuturesContractType): String {
     if(contractType == FuturesContractType.NONE)
-        return "Spot"
+        return stringResource(id = R.string.market_screen_spot)
 
     return contractType.toString()
 }

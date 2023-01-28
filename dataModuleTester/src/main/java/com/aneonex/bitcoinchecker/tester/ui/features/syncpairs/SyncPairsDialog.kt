@@ -24,9 +24,7 @@ fun SyncPairsDialog(
     onSyncClick: () -> Unit
 ) {
     AlertDialog(
-//        modifier = Modifier.fillMaxWidth(),
         onDismissRequest = {
-//                openDialog.value = false
             onDismiss()
         },
         title = {
@@ -65,9 +63,7 @@ fun SyncPairsDialog(
         },
         confirmButton = {
             Button(
-//                    modifier = Modifier.fillMaxWidth(),
                 onClick = {
-//                            openDialog.value = false
                     onDismiss()
                 }
             ) {
